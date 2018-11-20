@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" monitorInterval="10">
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36}:%L - %msg%n" />
+		</Console>
+		<RollingFile name="logfile">
+			<FileName>logs/com.nagoya.middleware.log</FileName>
+			<FilePattern>logs/com.nagoya.middleware.%d{yyyy-MM-dd}.log.zip</FilePattern>
+			<PatternLayout>
+				<Pattern>%d{yyyy-MMM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36}:%L -	%msg%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"	modulate="true" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="all">
+ 			<AppenderRef ref="console" />
+			<AppenderRef ref="logfile" />
+		</Root>
+	</Loggers>
+</Configuration>
