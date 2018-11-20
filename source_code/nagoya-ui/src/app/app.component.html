@@ -1,0 +1,28 @@
+<div class="wrapper">
+	<div class="jumbotron">
+		<h1 i18n="@@introductionHeader">{{'HOME.TITLE'|translate}}</h1>
+		<div class="row" style="margin: 0em; flex: 1;">
+  			<div class="col-sm-8" style="margin: 0!important;">
+  				<p class="lead" >{{'HOME.SUBTITLE'|translate}}</p>
+  			</div>
+  			<div class="col-sm-4" style="margin: 0!important; text-align: right;">
+  				<label>
+					{{'HOME.SELECT'|translate}}
+				    <select #langSelect (change)="translate.use(langSelect.value)">
+				    	<option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{lang}}</option>
+				    </select>
+			    </label>
+  			</div>
+		</div>
+	</div>
+
+	<div style="background-color: azure; height: 100vh;">
+		content will go here
+	</div>
+	
+	<footer>
+		<div class="container" style="text-align: center">
+			<div>Powered by CPB Software AG</div>
+		</div>
+	</footer>
+</div>
