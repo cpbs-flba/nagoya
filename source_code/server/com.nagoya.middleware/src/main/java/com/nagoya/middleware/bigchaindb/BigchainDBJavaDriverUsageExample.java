@@ -60,7 +60,7 @@ public class BigchainDBJavaDriverUsageExample {
         System.out.println("(*) Metadata Prepared..");
 
         // execute CREATE transaction
-        String txId = examples.doCreate(assetData, metaData, keys);
+        String txId1 = examples.doCreate(assetData, metaData, keys);
 
         // create transfer metadata
         MetaData transferMetadata = new MetaData();
@@ -71,7 +71,7 @@ public class BigchainDBJavaDriverUsageExample {
         Thread.sleep(5000);
 
         // execute TRANSFER transaction on the CREATED asset
-        examples.doTransfer(txId, transferMetadata, keys);
+        examples.doTransfer(txId1, transferMetadata, keys);
 
     }
 
@@ -206,7 +206,7 @@ public class BigchainDBJavaDriverUsageExample {
 
                 .addInput(null, fulfill, (EdDSAPublicKey) keys.getPublic()) //
 
-                .addOutput("100", (EdDSAPublicKey) keys.getPublic()) //
+                .addOutput("200", (EdDSAPublicKey) keys.getPublic()) //
 
                 .addAssets(txId, String.class) //
 

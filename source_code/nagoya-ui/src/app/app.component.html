@@ -29,8 +29,12 @@
 				</div>
 			</div>
 		</div>
-
-		<div>
+		<app-progress [hidden]="!showSpinner()"></app-progress>
+		<div style="margin: 1em;">
+			<div class="alert alert-danger" *ngFor='let message of messageService.errorMessages'>{{message}}</div>
+			<div class="alert alert-warning" *ngFor='let message of messageService.warningMessages'>{{message}}</div>
+			<div class="alert alert-info" *ngFor='let message of messageService.infoMessages'>{{message}}</div>
+			<div class="alert alert-success" *ngFor='let message of messageService.successMessages'>{{message}}</div>
 			<router-outlet></router-outlet>
 		</div>
 	</div>

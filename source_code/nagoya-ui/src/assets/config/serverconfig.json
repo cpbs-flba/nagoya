@@ -1,0 +1,8 @@
+{
+	"serverURL": "http://localhost:13200/rest/",
+
+	"pathPing": "ping",
+	"pathLogin": "users/login",
+	"pathLogout": "users/logout"
+    
+}

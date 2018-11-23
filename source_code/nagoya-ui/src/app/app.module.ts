@@ -1,5 +1,6 @@
 // angular components
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,7 +20,7 @@ import { IncompatibleBrowserComponent } from './incompatible-browser/incompatibl
 import { CookiesDialogComponent } from './cookies-dialog/cookies-dialog.component';
 
 // material
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import {
   MatAutocompleteModule,
@@ -56,9 +57,12 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatTreeModule
+  MatTreeModule,
 } from '@angular/material';
 import { CookieModule } from 'ngx-cookie';
+import { UserComponent } from './user/user.component';
+import { ProgressComponent } from './progress/progress.component';
+import { RegisterComponent } from './register/register.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/');
@@ -71,7 +75,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     AboutComponent,
     LegalComponent,
     TermsComponent,
-    CookiesDialogComponent
+    CookiesDialogComponent,
+    UserComponent,
+    ProgressComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -99,6 +106,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatTableModule,
     MatTabsModule,
     MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule
   ],
   exports: [

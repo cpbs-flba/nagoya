@@ -15,6 +15,16 @@
 		"RECOMMENDED_BROWSER": "Please update your browser or use one of the following recommended browsers:"
 	},
 	"GENERAL": {
-		"COOKIE_MESSAGE": "We are using cookies to provide a better user experience."
+		"EMAIL": "E-Mail",
+		"PASSWORD": "Password",
+		"PASSWORD_CONFIRMATION": "Password confirmation",
+		"AUTHENTICATE": "Login",
+		"REGISTER": "Sign up",
+		"FIRSTNAME": "First name",
+		"LASTNAME": "Last name"
+	},
+	"MESSAGES": {
+		"COOKIE_MESSAGE": "We are using cookies to provide a better user experience.",
+		"SERVER_UNREACHABLE": "Server communication failed. Please try again later."
 	}
 }

@@ -1,0 +1,17 @@
+.bodybackground {
+    width: 100%;
+	background-color: rgba(127, 127, 127, .3);
+	position: absolute;
+    z-index: 10000;
+    display: flex;
+    flex-flow: column;
+    height: 80%;
+}
+
+.content {
+	display: block;
+	position: absolute;
+	z-index: 1;
+	left: 47.3%;
+	top: 10%;
+}

@@ -1,0 +1,54 @@
+<div *ngIf="!isLoggedIn()">
+
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <mat-form-field style="width: 13em;">
+          <input autofocus matInput placeholder="{{ 'GENERAL.FIRSTNAME' | translate }}" [(ngModel)]="user.firstname"
+            type="text" id="firstname" name="firstname">
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field style="width: 13em;">
+          <input matInput placeholder="{{ 'GENERAL.LASTNAME' | translate }}" [(ngModel)]="user.lastname" id="lastname"
+            name="lastname">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <mat-form-field style="width: 13em;">
+          <input autofocus matInput placeholder="{{ 'GENERAL.EMAIL' | translate }}" [(ngModel)]="user.email" type="text"
+            id="email2" name="email2">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <mat-form-field style="width: 13em;">
+          <input matInput placeholder="{{ 'GENERAL.PASSWORD' | translate }}" [(ngModel)]="user.password" type="password"
+            id="password2" name="password2">
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field style="width: 13em;">
+          <input matInput placeholder="{{ 'GENERAL.PASSWORD_CONFIRMATION' | translate }}" [(ngModel)]="user.password"
+            type="password" id="password2" name="password2">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        Some terms...
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button type="submit" [disabled]="loginRunning" class="btn custombutton" (click)=registerUser();>
+          {{ 'GENERAL.REGISTER' | translate }}</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>

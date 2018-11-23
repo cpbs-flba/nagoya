@@ -1,0 +1,44 @@
+<div style="width: 100%" *ngIf="!isLoggedIn()">
+  <div class="container-full">
+    <div class="row justify-content-start">
+
+      <div class="col-sm-8">
+        <h2>Some content</h2>
+        Some description...
+      </div>
+
+      <div class="col-sm-4">
+        <div class="container">
+          <div class="row align-items-center justify-content-start">
+            <div class="col-sm">
+              <mat-form-field style="width: 10em;">
+                <input autofocus matInput placeholder="{{ 'GENERAL.EMAIL' | translate }}" [(ngModel)]="user.email" type="text"
+                  id="email" name="email">
+              </mat-form-field>
+            </div>
+            <div class="col-sm">
+              <mat-form-field style="width: 10em;">
+                <input matInput placeholder="{{ 'GENERAL.PASSWORD' | translate }}" [(ngModel)]="user.password" type="password"
+                  id="password" name="password">
+              </mat-form-field>
+            </div>
+            <div class="col-sm">
+              <button type="submit" [disabled]="loginRunning" class="btn custombutton" (click)=loginUser();>
+                {{ 'GENERAL.AUTHENTICATE' | translate }}</button>
+            </div>
+          </div>
+          <div class="row align-items-center justify-content-center">
+            <a class="flex-sm-fill text-sm-center nav-link" routerLink="/register">Don't have an account? Register here</a>
+          </div>
+          <div class="row align-items-center justify-content-center">
+            <a class="flex-sm-fill text-sm-center nav-link" routerLink="/register">I forgot my password</a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

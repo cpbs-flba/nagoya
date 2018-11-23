@@ -131,12 +131,14 @@ public abstract class Microservice {
         server.setHandler(handlers);
 
         // configure SSL
-        SslContextFactory sslContextFactory = new SslContextFactory();
         ClassLoader classLoader = Microservice.class.getClassLoader();
         URL resource = classLoader.getResource(ServerPropertiesProvider.getString(ServerProperty.SERVER_KEYSTORE));
+
+        SslContextFactory sslContextFactory = new SslContextFactory();
         sslContextFactory.setKeyStorePath(resource.toExternalForm());
         sslContextFactory.setKeyStorePassword(ServerPropertiesProvider.getString(ServerProperty.SERVER_KEYSTORE_PASSWORD));
         sslContextFactory.setKeyManagerPassword(ServerPropertiesProvider.getString(ServerProperty.SERVER_KEYSTORE_PASSWORD));
+        sslContextFactory.setEndpointIdentificationAlgorithm("HTTPS");
 
         HttpConfiguration https = new HttpConfiguration();
         https.addCustomizer(new SecureRequestCustomizer());

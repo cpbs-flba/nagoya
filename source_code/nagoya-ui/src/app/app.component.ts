@@ -4,6 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CookiesDialogComponent } from './cookies-dialog/cookies-dialog.component';
 import { CookieAcceptedService } from './cookie-accepted.service';
+import { UserService } from './user.service';
+import { ServerConfigService } from './serverconfig.service';
+import { MessageService } from './message.service';
+import { ProgressService } from './progress.service';
 
 @Component({
   selector: 'app-root',
@@ -11,18 +15,22 @@ import { CookieAcceptedService } from './cookie-accepted.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'nagoya-ui';
-
+  title = 'Nagoya UI';
 
   constructor(
     public incompatobleBrowserService: IncompatibleBrowserService,
     public translate: TranslateService,
     public cookieService: CookieAcceptedService,
+    public messageService: MessageService,
+    private userService: UserService,
+    private serverConfigService: ServerConfigService,
+    private progressService: ProgressService,
     private dialog: MatDialog
   ) {
     this.handleLanguages();
     this.handleCookies();
     incompatobleBrowserService.verifyBrowser();
+    this.serverConfigService.pingServer();
   }
 
   handleLanguages() {
@@ -37,6 +45,10 @@ export class AppComponent {
     }
   }
 
+  isLoggedIn() {
+    return this.userService.isLoggedIn();
+  }
+
   handleCookies() {
     var cookiesAllowed = this.cookieService.areCookiesAllowed();
     if (!cookiesAllowed) {
@@ -45,6 +57,13 @@ export class AppComponent {
       dialogConfig.autoFocus = true;
       this.dialog.open(CookiesDialogComponent, dialogConfig);
     }
+  }
+
+  showSpinner() {
+    if (this.progressService.getWorking()) {
+      return true;
+    }
+    return false;
   }
 
 }
