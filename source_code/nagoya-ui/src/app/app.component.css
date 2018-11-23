@@ -26,16 +26,19 @@ footer {
 
 .jumbotron {
   border-radius: 0;
-  padding: 0;
+  margin: 0;
+  padding: 1em;
   background-color: #2e9f2e;
   color: #ffffff;
 }
 
 .wrapper {
-  display: flex;
-  background-color: red;
-  justify-content: space-around;
-  flex-direction: column;
+  min-height: 100vh;
+}
+
+.innerwrapper {
+  flex: 1;
+  min-height: 95vh;
 }
 
 .language {

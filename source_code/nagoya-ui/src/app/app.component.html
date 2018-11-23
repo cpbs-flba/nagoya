@@ -1,42 +1,46 @@
 <div class="wrapper">
-	<div class="jumbotron">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<table>
-						<tr>
-							<td style="padding-right: 1em;"><img alt="plantinhand" src="./assets/icons/icons8-tree-planting-60_w.png"></td>
-							<td>
-								<h1 i18n="@@introductionHeader">{{'HOME.TITLE'|translate}}</h1>
-								<p class="lead">{{'HOME.SUBTITLE'|translate}}</p>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="col language">
-					<label>
-						{{'HOME.SELECT'|translate}}
-						<select #langSelect (change)="translate.use(langSelect.value)">
-							<option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{lang}}</option>
-						</select>
-					</label>
+	<div class="innerwrapper">
+		<div class="jumbotron">
+			<div class="container-full">
+				<div class="row">
+					<div class="col">
+						<table>
+							<tr>
+								<td>
+									<a class="flex-sm-fill text-sm-center nav-link" routerLink="/">
+										<img alt="plantinhand" src="./assets/icons/icons8-tree-planting-60_w.png">
+									</a>
+								</td>
+								<td>
+									<h1 i18n="@@introductionHeader">{{'HOME.TITLE'|translate}}</h1>
+									<p class="lead">{{'HOME.SUBTITLE'|translate}}</p>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="col language">
+						<label>
+							{{'HOME.SELECT'|translate}}
+							<select #langSelect (change)="translate.use(langSelect.value)">
+								<option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{lang}}</option>
+							</select>
+						</label>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div>
-		<router-outlet></router-outlet>
+		<div>
+			<router-outlet></router-outlet>
+		</div>
 	</div>
-
+	<footer class="page-row footer">
+		<div style="text-align: center;">
+			<nav class="nav nav-pills flex-column flex-sm-row navbar">
+				<a class="flex-sm-fill text-sm-center nav-link" routerLink="/terms">{{'SITES.TERMS'|translate}}</a>
+				<a class="flex-sm-fill text-sm-center nav-link" routerLink="/legal">{{'SITES.LEGAL'|translate}}</a>
+				<a class="flex-sm-fill text-sm-center nav-link" routerLink="/about">{{'SITES.ABOUT'|translate}}</a>
+			</nav>
+		</div>
+	</footer>
 </div>
-
-<footer class="page-row footer">
-	<div style="text-align: center;">
-		<nav class="nav nav-pills flex-column flex-sm-row navbar">
-			<a class="flex-sm-fill text-sm-center nav-link" routerLink="/terms">{{'SITES.TERMS'|translate}}</a>
-			<a class="flex-sm-fill text-sm-center nav-link" routerLink="/legal">{{'SITES.LEGAL'|translate}}</a>
-			<a class="flex-sm-fill text-sm-center nav-link" routerLink="/about">{{'SITES.ABOUT'|translate}}</a>
-		</nav>
-	</div>
-</footer>
