@@ -1,28 +1,42 @@
 <div class="wrapper">
 	<div class="jumbotron">
-		<h1 i18n="@@introductionHeader">{{'HOME.TITLE'|translate}}</h1>
-		<div class="row" style="margin: 0em; flex: 1;">
-  			<div class="col-sm-8" style="margin: 0!important;">
-  				<p class="lead" >{{'HOME.SUBTITLE'|translate}}</p>
-  			</div>
-  			<div class="col-sm-4" style="margin: 0!important; text-align: right;">
-  				<label>
-					{{'HOME.SELECT'|translate}}
-				    <select #langSelect (change)="translate.use(langSelect.value)">
-				    	<option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{lang}}</option>
-				    </select>
-			    </label>
-  			</div>
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<table>
+						<tr>
+							<td style="padding-right: 1em;"><img alt="plantinhand" src="./assets/icons/icons8-tree-planting-60_w.png"></td>
+							<td>
+								<h1 i18n="@@introductionHeader">{{'HOME.TITLE'|translate}}</h1>
+								<p class="lead">{{'HOME.SUBTITLE'|translate}}</p>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col language">
+					<label>
+						{{'HOME.SELECT'|translate}}
+						<select #langSelect (change)="translate.use(langSelect.value)">
+							<option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{lang}}</option>
+						</select>
+					</label>
+				</div>
+			</div>
 		</div>
 	</div>
 
-	<div style="background-color: azure; height: 100vh;">
-		content will go here
+	<div>
+		<router-outlet></router-outlet>
 	</div>
-	
-	<footer>
-		<div class="container" style="text-align: center">
-			<div>Powered by CPB Software AG</div>
-		</div>
-	</footer>
+
 </div>
+
+<footer class="page-row footer">
+	<div style="text-align: center;">
+		<nav class="nav nav-pills flex-column flex-sm-row navbar">
+			<a class="flex-sm-fill text-sm-center nav-link" routerLink="/terms">{{'SITES.TERMS'|translate}}</a>
+			<a class="flex-sm-fill text-sm-center nav-link" routerLink="/legal">{{'SITES.LEGAL'|translate}}</a>
+			<a class="flex-sm-fill text-sm-center nav-link" routerLink="/about">{{'SITES.ABOUT'|translate}}</a>
+		</nav>
+	</div>
+</footer>

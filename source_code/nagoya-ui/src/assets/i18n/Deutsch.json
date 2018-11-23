@@ -1,7 +1,20 @@
 {
 	"HOME": {
-		"TITLE": "Nagoya Protocol",
-		"SUBTITLE" : "Nagoya Protokollunterstützung",
+		"TITLE": "Nagoya Protokoll",
+		"SUBTITLE" : "Zugang zu genetischen Ressourcen und Benefit Sharing",
 		"SELECT": "Sprache"
-	}	
+	},
+	"SITES": {
+		"ABOUT": "Über uns",
+		"LEGAL": "Impressum",
+		"TERMS": "AGB"
+	},
+	"BROWSER_NOT_OK": {
+		"WARNING": "WARNUNG",
+		"ERROR_MSG" : "Sie verwenden einen veralteten Browser das nicht mehr unterstützt wird.",
+		"RECOMMENDED_BROWSER": "Bitte aktualisieren Sie Ihren Browser oder verwenden Sie eines der folgenden empfohlenen Browser:"
+	},
+	"GENERAL": {
+		"COOKIE_MESSAGE": "Wir verwenden Cookies um eine bessere User Experience anzubieten."
+	}
 }

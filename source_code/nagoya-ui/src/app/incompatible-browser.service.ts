@@ -53,7 +53,7 @@ export class IncompatibleBrowserService {
     }
   }
 
-  getBrowserVersion(browserName): any  {
+  getBrowserVersion(browserName): any {
     const userAgent = window.navigator.userAgent;
     const browserStart = userAgent.indexOf(browserName);
     if (browserStart > 0) {
