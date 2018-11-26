@@ -1,0 +1,30 @@
+{
+	"HOME": {
+		"TITLE": "Nagoya Protocol",
+		"SUBTITLE": "Access to genetic resources and benefit sharing",
+		"SELECT": "Language"
+	},
+	"SITES": {
+		"ABOUT": "About",
+		"LEGAL": "Legal",
+		"TERMS": "Terms"
+	},
+	"BROWSER_NOT_OK": {
+		"WARNING": "WARNING",
+		"ERROR_MSG": "You are using an outdated browser, which is not supported.",
+		"RECOMMENDED_BROWSER": "Please update your browser or use one of the following recommended browsers:"
+	},
+	"GENERAL": {
+		"EMAIL": "E-Mail",
+		"PASSWORD": "Password",
+		"PASSWORD_CONFIRMATION": "Password confirmation",
+		"AUTHENTICATE": "Login",
+		"REGISTER": "Sign up",
+		"FIRSTNAME": "First name",
+		"LASTNAME": "Last name"
+	},
+	"MESSAGES": {
+		"COOKIE_MESSAGE": "We are using cookies to provide a better user experience.",
+		"SERVER_UNREACHABLE": "Server communication failed. Please try again later."
+	}
+}

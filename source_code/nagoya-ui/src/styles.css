@@ -8,7 +8,7 @@
 @font-face {
 	font-family: 'Roboto';
 	font-style: inherit;
-	src: local('Roboto'), local('Roboto-Regular'), url('/assets/fonts/Roboto-Regular.ttf') format('ttf');
+	src: local('Roboto'), local('Roboto-Regular'), url('/src/theme/fonts/Roboto-Regular.ttf') format('ttf');
 }
 
 body {
@@ -39,4 +39,10 @@ input[text], button {
 	background-color: white;;
 	border-color: #e78200;
 	color: #e78200;
+}
+
+.homeSelect {
+  min-width:100px;
+  border-radius: 5px;
+  text-align-last:center;
 }

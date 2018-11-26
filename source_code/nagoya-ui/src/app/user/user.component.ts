@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { User } from '../model/user';
-import { ProgressService } from '../progress.service';
-import { MessageService } from '../message.service';
-import { UserService } from '../user.service';
+import { ProgressService } from '../services/progress.service';
+import { MessageService } from '../services/message.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-user',

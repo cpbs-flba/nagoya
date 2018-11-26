@@ -65,7 +65,7 @@ import { ProgressComponent } from './progress/progress.component';
 import { RegisterComponent } from './register/register.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/');
+  return new TranslateHttpLoader(http, './i18n/');
 }
 
 @NgModule({
@@ -85,13 +85,15 @@ export function HttpLoaderFactory(http: HttpClient) {
     CookieModule.forRoot(),
     HttpClientModule,
     BrowserAnimationsModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      },
-    }),
+    TranslateModule.forRoot(),
+
+    // TranslateModule.forRoot({
+    //   loader: {
+    //     provide: TranslateLoader,
+    //     useFactory: HttpLoaderFactory,
+    //     deps: [HttpClient]
+    //   },
+    // }),
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,

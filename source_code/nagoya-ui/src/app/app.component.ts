@@ -1,20 +1,23 @@
-import { Component } from '@angular/core';
-import { IncompatibleBrowserService } from './incompatible-browser.service';
+import {Component, OnInit} from '@angular/core';
+import { IncompatibleBrowserService } from './services/incompatible-browser.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CookiesDialogComponent } from './cookies-dialog/cookies-dialog.component';
-import { CookieAcceptedService } from './cookie-accepted.service';
-import { UserService } from './user.service';
-import { ServerConfigService } from './serverconfig.service';
-import { MessageService } from './message.service';
-import { ProgressService } from './progress.service';
+import { CookieAcceptedService } from './services/cookie-accepted.service';
+import { UserService } from './services/user.service';
+import { ServerConfigService } from './services/serverconfig.service';
+import { MessageService } from './services/message.service';
+import { ProgressService } from './services/progress.service';
+import {I18nService} from './services/i18n.service';
+import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
   title = 'Nagoya UI';
 
   constructor(
@@ -22,27 +25,25 @@ export class AppComponent {
     public translate: TranslateService,
     public cookieService: CookieAcceptedService,
     public messageService: MessageService,
+    private i18nService: I18nService,
     private userService: UserService,
     private serverConfigService: ServerConfigService,
     private progressService: ProgressService,
     private dialog: MatDialog
   ) {
-    this.handleLanguages();
+    // this.handleLanguages();
     this.handleCookies();
     incompatobleBrowserService.verifyBrowser();
     this.serverConfigService.pingServer();
   }
 
-  handleLanguages() {
-    this.translate.addLangs(['English', 'Deutsch']);
-    this.translate.setDefaultLang('English');
+  ngOnInit(): void {
+    this.i18nService.init(environment.defaultLanguage, environment.supportedLanguages);
 
-    const browserLang = this.translate.getBrowserLang();
-    if (browserLang.startsWith('de')) {
-      this.translate.use('Deutsch');
-    } else {
-      this.translate.use('English');
-    }
+  }
+
+  setLanguage(language: string) {
+    this.i18nService.language = language;
   }
 
   isLoggedIn() {
@@ -50,7 +51,7 @@ export class AppComponent {
   }
 
   handleCookies() {
-    var cookiesAllowed = this.cookieService.areCookiesAllowed();
+    const cookiesAllowed = this.cookieService.areCookiesAllowed();
     if (!cookiesAllowed) {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = true;
