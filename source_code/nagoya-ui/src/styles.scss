@@ -3,8 +3,18 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* angular merial themes */
+@import '~@angular/material/theming';
+//@import '@angular/material/prebuilt-themes/purple-green.css';
+@include mat-core();
 
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+// Primary colour
+$my-app-primary: mat-palette($mat-green);
+// Accent colour
+$my-app-accent: mat-palette($mat-deep-orange);
+
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent);
+@include angular-material-theme($my-app-theme);
+
 @font-face {
 	font-family: 'Roboto';
 	font-style: inherit;

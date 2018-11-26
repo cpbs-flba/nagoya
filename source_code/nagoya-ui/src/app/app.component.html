@@ -1,9 +1,6 @@
 <div class="wrapper">
 	<div class="innerwrapper">
-		<div class="jumbotron">
-			<div class="container-full">
-				<div class="row">
-					<div class="col">
+		<div>
 						<table>
 							<tr>
 								<td>
@@ -17,33 +14,28 @@
 								</td>
 							</tr>
 						</table>
-					</div>
-					<div class="col language">
-						<label>
-							{{'HOME.SELECT'|translate}}
-							<select #langSelect (change)="setLanguage(langSelect.value)" class="homeSelect">
-								<option *ngFor="let lang of i18nService.supportedLanguages" [value]="lang" [selected]="lang === translate.currentLang">{{lang}}</option>
-							</select>
-						</label>
-					</div>
-				</div>
-			</div>
+            <mat-form-field>
+              <mat-select placeholder="{{'HOME.SELECT'|translate}}" #langSelect [value]="translate.currentLang" (selectionChange)="setLanguage(langSelect.value)">
+                <mat-option *ngFor="let lang of i18nService.supportedLanguages" [value]="lang">{{lang}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 		</div>
 		<app-progress [hidden]="!showSpinner()"></app-progress>
 		<div style="margin: 1em;">
-			<div class="alert alert-danger" *ngFor='let message of messageService.errorMessages'>{{message}}</div>
-			<div class="alert alert-warning" *ngFor='let message of messageService.warningMessages'>{{message}}</div>
-			<div class="alert alert-info" *ngFor='let message of messageService.infoMessages'>{{message}}</div>
-			<div class="alert alert-success" *ngFor='let message of messageService.successMessages'>{{message}}</div>
+			<div class="alert-danger" *ngFor='let message of messageService.errorMessages'>{{message}}</div>
+			<div class="alert-warning" *ngFor='let message of messageService.warningMessages'>{{message}}</div>
+			<div class="alert-info" *ngFor='let message of messageService.infoMessages'>{{message}}</div>
+			<div class="alert-success" *ngFor='let message of messageService.successMessages'>{{message}}</div>
 			<router-outlet></router-outlet>
 		</div>
 	</div>
 	<footer class="page-row footer">
 		<div style="text-align: center;">
-			<nav class="nav nav-pills flex-column flex-sm-row navbar">
-				<a class="flex-sm-fill text-sm-center nav-link" routerLink="/terms">{{'SITES.TERMS'|translate}}</a>
-				<a class="flex-sm-fill text-sm-center nav-link" routerLink="/legal">{{'SITES.LEGAL'|translate}}</a>
-				<a class="flex-sm-fill text-sm-center nav-link" routerLink="/about">{{'SITES.ABOUT'|translate}}</a>
+			<nav>
+				<a routerLink="/terms">{{'SITES.TERMS'|translate}}</a>
+				<a routerLink="/legal">{{'SITES.LEGAL'|translate}}</a>
+				<a routerLink="/about">{{'SITES.ABOUT'|translate}}</a>
 			</nav>
 		</div>
 	</footer>

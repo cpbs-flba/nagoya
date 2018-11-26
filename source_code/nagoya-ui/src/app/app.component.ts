@@ -43,6 +43,7 @@ export class AppComponent implements OnInit {
   }
 
   setLanguage(language: string) {
+    console.log(language);
     this.i18nService.language = language;
   }
 
