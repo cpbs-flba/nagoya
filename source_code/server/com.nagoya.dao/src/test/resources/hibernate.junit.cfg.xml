@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+
+		<!-- Connection settings -->
+		<property name="hibernate.show_sql">false</property>
+
+		<!-- junit connection propterties  -->
+		<property name="hibernate.connection.url">jdbc:postgresql://dev2:5432/nagoyatdb1</property>
+		<property name="hibernate.connection.username">unagoyatest</property>
+		<property name="hibernate.connection.password">Nagoya2018</property>
+		
+		<!-- connection isolation level. possible values are: -->
+		<!-- 1: READ UNCOMMITTED -->
+		<!-- 2: READ COMMITTED -->
+		<!-- 4: REPEATABLE READ -->
+		<!-- 8: SERIALIZABLE -->
+		<property name="hibernate.connection.isolation">8</property>
+
+		<!-- connection driver -->
+		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+		
+		<!-- auto commit. possbile values are: false, true -->
+		<property name="hibernate.connection.autocommit">false</property>
+		
+		<!-- hibernate batch size: recommended values: between 5 and 30 -->
+		<property name="hibernate.jdbc.batch_size">15</property>
+		
+		<!-- Forces Hibernate to order SQL updates by the primary key value of the items being updated. 
+		This will result in fewer transaction deadlocks in highly concurrent systems. -->
+		<property name="hibernate.order_updates">true</property>
+
+		<!-- SQL dialect -->
+		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
+
+		<!-- Enable Hibernate's automatic session context management -->
+		<property name="current_session_context_class">thread</property>
+
+		<!-- Disable the second-level cache -->
+		<property name="hibernate.cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+		<property name="hibernate.cache.use_query_cache">false</property>
+		<property name="hibernate.cache.use_second_level_cache">false</property>
+		<property name="hibernate.cache.use_structured_entries">false</property>
+		<property name="hibernate.cache.generate_statistics">false</property>
+
+		<!-- c3p0 connection pool properties -->
+		<property name="hibernate.c3p0.min_size">1</property>
+		<property name="hibernate.c3p0.max_size">3</property>
+		<property name="hibernate.c3p0.timeout">60</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.idle_test_period">60</property>
+
+		<!-- Annotated entity classes -->
+		<mapping class="com.nagoya.model.dbo.DBO" />
+		<mapping class="com.nagoya.model.dbo.person.Address" />
+		<mapping class="com.nagoya.model.dbo.person.Person" />
+		<mapping class="com.nagoya.model.dbo.person.PersonNatural" />
+		<mapping class="com.nagoya.model.dbo.person.PersonLegal" />		
+		<mapping class="com.nagoya.model.dbo.user.OnlineUser" />
+		<mapping class="com.nagoya.model.dbo.user.UserRequest" />		
+
+	</session-factory>
+
+</hibernate-configuration>

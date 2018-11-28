@@ -4,43 +4,48 @@
 package com.nagoya.middleware.util;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * 
+ * @author flba
  * @author adim
  *
  */
-@SuppressWarnings("serial")
 public class DefaultReturnObject implements Serializable {
 
-	private String json;
-	private String jsonWebToken;
+	private static final long serialVersionUID = 1L;
+
+	private Object entity;
+	private Map<String, String> header = new HashMap<String, String>();
 
 	/**
-	 * @return the json
+	 * @return the entity
 	 */
-	public String getJson() {
-		return json;
+	public Object getEntity() {
+		return entity;
 	}
 
 	/**
-	 * @param json the json to set
+	 * @param entity the entity to set
 	 */
-	public void setJson(String json) {
-		this.json = json;
+	public void setEntity(Object entity) {
+		this.entity = entity;
 	}
 
 	/**
-	 * @return the jsonWebToken
+	 * @return the header
 	 */
-	public String getJsonWebToken() {
-		return jsonWebToken;
+	public Map<String, String> getHeader() {
+		return header;
 	}
 
 	/**
-	 * @param jsonWebToken the jsonWebToken to set
+	 * @param header the header to set
 	 */
-	public void setJsonWebToken(String jsonWebToken) {
-		this.jsonWebToken = jsonWebToken;
+	public void setHeader(Map<String, String> header) {
+		this.header = header;
 	}
 
 }

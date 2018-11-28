@@ -3,23 +3,169 @@
  */
 package com.nagoya.middleware.rest.impl;
 
-import javax.ws.rs.container.AsyncResponse;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+
+import com.nagoya.dao.db.ConnectionProvider;
 import com.nagoya.middleware.rest.UserResource;
+import com.nagoya.middleware.service.UserService;
+import com.nagoya.middleware.util.DefaultReturnObject;
+import com.nagoya.model.exception.BadRequestException;
+import com.nagoya.model.exception.ConflictException;
+import com.nagoya.model.exception.ForbiddenException;
+import com.nagoya.model.exception.NotAuthorizedException;
+import com.nagoya.model.exception.TimeoutException;
+import com.nagoya.model.to.person.Person;
+import com.nagoya.model.to.person.PersonLegal;
+import com.nagoya.model.to.person.PersonNatural;
 
 /**
+ * @author flba
  * @author adim
  *
  */
 public class UserResourceImpl implements UserResource {
 
-	/* (non-Javadoc)
-	 * @see com.nagoya.middleware.rest.UserResource#login(javax.ws.rs.container.AsyncResponse)
+	private static final Logger LOGGER = LogManager.getLogger(UserResourceImpl.class);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.nagoya.middleware.rest.UserResource#login(com.nagoya.model.person.to.
+	 * Person, javax.ws.rs.container.AsyncResponse)
 	 */
 	@Override
-	public void login(AsyncResponse asyncResponse) {
-		// TODO Auto-generated method stub
+	public void login(Person person, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService userService = new UserService(session);
+			DefaultReturnObject result = userService.login(person);
+			ResponseBuilder responseBuilder = Response.ok(result.getEntity());
+			Set<Entry<String,String>> entrySet = result.getHeader().entrySet();
+			for (Entry<String, String> entry : entrySet) {
+				responseBuilder.header(entry.getKey(), entry.getValue());
+			}
+			response = responseBuilder.build();
+		} catch (ForbiddenException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.FORBIDDEN).build();
+		} catch (NotAuthorizedException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.UNAUTHORIZED).build();
+		} catch (BadRequestException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.BAD_REQUEST).build();
+		} catch (Exception e) {
+			LOGGER.error(e);
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.nagoya.middleware.rest.UserResource#register(com.nagoya.model.to.person.PersonLegal, javax.ws.rs.container.AsyncResponse)
+	 */
+	@Override
+	public void register(PersonLegal person, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService userService = new UserService(session);
+			userService.register(person);
+			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
+			response = responseBuilder.build();
+		} catch (ConflictException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.CONFLICT).build();
+		} catch (BadRequestException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.BAD_REQUEST).build();
+		} catch (Exception e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.nagoya.middleware.rest.UserResource#register(com.nagoya.model.to.person.PersonNatural, javax.ws.rs.container.AsyncResponse)
+	 */
+	@Override
+	public void register(PersonNatural person, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService userService = new UserService(session);
+			userService.register(person);
+			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
+			response = responseBuilder.build();
+		} catch (ConflictException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.CONFLICT).build();
+		} catch (BadRequestException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.BAD_REQUEST).build();
+		} catch (Exception e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+	}
+
+	@Override
+	public void confirmRegistration(String token, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService userService = new UserService(session);
+			userService.confirmRegistration(token);
+			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
+			response = responseBuilder.build();
+		} catch (BadRequestException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.BAD_REQUEST).build();
+		} catch (TimeoutException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.REQUEST_TIMEOUT).build();
+		} catch (Exception e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+		
 	}
 
 }

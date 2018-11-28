@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>nagoya</artifactId>
+		<groupId>com.nagoya</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<description>Project representing a web microservice based on Jetty.</description>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>com.nagoya.model</artifactId>
+	<name>${project.artifactId}</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<org.glassfish.jersey.version>2.27</org.glassfish.jersey.version>
+		<org.eclipse.jetty.version>9.4.14.v20181114</org.eclipse.jetty.version>
+		<project.junit.version>4.11</project.junit.version>
+	</properties>
+
+	<dependencies>
+		<!-- internal dependencies -->
+		<dependency>
+			<groupId>com.nagoya</groupId>
+			<artifactId>com.nagoya.common</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		
+		<!-- DATABASE Dependencies -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${project.hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-envers</artifactId>
+			<version>${project.hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${project.hibernate.version}</version>
+		</dependency>
+	</dependencies>
+
+</project>

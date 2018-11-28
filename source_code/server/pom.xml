@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.nagoya</groupId>
 	<artifactId>nagoya</artifactId>
@@ -7,7 +9,6 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
 	<description>Nagoya Project General Build</description>
-	
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,9 +16,17 @@
 		<!-- maven version management -->
 		<version.maven-compiler-plugin>3.8.0</version.maven-compiler-plugin>
 		<version.maven-jar-plugin>3.1.0</version.maven-jar-plugin>
+
+		<!-- global dependency management -->
+		<project.junit.version>5.3.1</project.junit.version>
+		<project.hibernate.version>5.3.6.Final</project.hibernate.version>
+
 	</properties>
 
 	<modules>
+		<module>com.nagoya.common</module>
+		<module>com.nagoya.model</module>
+		<module>com.nagoya.dao</module>
 		<module>com.nagoya.middleware</module>
 	</modules>
 
@@ -28,8 +37,7 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${version.maven-compiler-plugin}</version>
 					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
+						<release>10</release>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -43,5 +51,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-  
+
 </project>

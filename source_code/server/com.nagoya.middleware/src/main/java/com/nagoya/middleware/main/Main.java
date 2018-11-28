@@ -15,23 +15,24 @@ package com.nagoya.middleware.main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nagoya.middleware.rest.impl.UserResourceImpl;
+
 /**
  * @author flba
  *
  */
 public class Main extends Microservice {
 
-    private static final Logger LOGGER = LogManager.getLogger(Main.class);
+	private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-    public static void main(String args[])
-        throws Exception {
-        LOGGER.debug("Starting program.");
+	public static void main(String args[]) throws Exception {
+		LOGGER.debug("Starting program.");
 
-        // add the REST resources here
-        // getResourceConfig().register(EnvironmentLogResourceImpl.class);
+		// add the REST resources here
+		getResourceConfig().register(UserResourceImpl.class);
 
-        Main main = new Main();
-        main.runServer(args);
-    }
+		Main main = new Main();
+		main.runServer(args);
+	}
 
 }

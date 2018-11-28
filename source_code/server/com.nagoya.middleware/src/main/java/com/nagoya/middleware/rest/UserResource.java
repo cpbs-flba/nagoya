@@ -12,12 +12,22 @@
 
 package com.nagoya.middleware.rest;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.server.ManagedAsync;
+
+import com.nagoya.model.to.person.Person;
+import com.nagoya.model.to.person.PersonLegal;
+import com.nagoya.model.to.person.PersonNatural;
 
 /**
  * Ping REST resource.
@@ -25,19 +35,88 @@ import org.glassfish.jersey.server.ManagedAsync;
  * @author Florin Bogdan Balint
  *
  */
-@Path("/")
+@Path("/users")
 public interface UserResource {
 
-    /**
-     * @return
-     *         <ul>
-     *         <li>204 No content</li>
-     *         <li>500 Internal server error - if something went terribly wrong.</li>
-     *         </ul>
-     */
-    @POST
-    @Path("ping")
-    @ManagedAsync
-    public void login(@Suspended final AsyncResponse asyncResponse);
+	public static final String QUERY_PARAM_TOKEN = "token";
+
+	public static final String HEADER_AUTHORIZATION = "Authorization";
+
+	public static final String HEADER_AUTHORIZATION_BEARER = "Bearer ";
+
+	public static final String DEFAULT_RESPONSE_ENCODING = ";charset=utf-8";
+
+	/**
+	 * @return
+	 *         <ul>
+	 *         <li>200 OK - if everything was okay</li>
+	 *         <li>400 Bad Request - if email/password are missing</li>
+	 *         <li>401 Unauthorized - in case of bad email/password combination</li>
+	 *         <li>403 Forbidden - if the user did not confirm his e-mail</li>
+	 *         <li>500 Internal server error - if something went terribly
+	 *         wrong.</li>
+	 *         </ul>
+	 */
+	@POST
+	@Path("login")
+	@Consumes({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
+	@Produces({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
+	@ManagedAsync
+	public void login(final Person person, @Suspended final AsyncResponse asyncResponse);
+
+	/**
+	 * @param person
+	 * @param asyncResponse
+	 * @return
+	 *         <ul>
+	 *         <li>204 No Content - if everything was okay</li>
+	 *         <li>409 Conflict - if the e-mail address is already registered</li>
+	 *         <li>500 Internal server error - if something went terribly
+	 *         wrong.</li>
+	 *         </ul>
+	 */
+	@PUT
+	@Path("register/legal")
+	@Consumes({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
+	@Produces({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
+	@ManagedAsync
+	public void register(final PersonLegal person, @Suspended final AsyncResponse asyncResponse);
+
+	/**
+	 * @param person
+	 * @param asyncResponse
+	 * @return
+	 *         <ul>
+	 *         <li>204 No Content - if everything was okay</li>
+	 *         <li>409 Conflict - if the e-mail address is already registered</li>
+	 *         <li>500 Internal server error - if something went terribly
+	 *         wrong.</li>
+	 *         </ul>
+	 */
+	@PUT
+	@Path("register/natural")
+	@Consumes({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
+	@Produces({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
+	@ManagedAsync
+	public void register(final PersonNatural person, @Suspended final AsyncResponse asyncResponse);
+
+	/**
+	 * @param token
+	 * @param asyncResponse
+	 * 
+	 * @return
+	 *         <ul>
+	 *         <li>204 No Content - if everything was okay</li>
+	 *         <li>400 Bad Request - if the token is invalid</li>
+	 *         <li>408 Request Timeout - if the token has expired</li>
+	 *         <li>500 Internal server error - if something went terribly
+	 *         wrong.</li>
+	 *         </ul>
+	 */
+	@GET
+	@Path("register/confirm")
+	@ManagedAsync
+	public void confirmRegistration(@QueryParam(QUERY_PARAM_TOKEN) String token,
+			@Suspended final AsyncResponse asyncResponse);
 
 }

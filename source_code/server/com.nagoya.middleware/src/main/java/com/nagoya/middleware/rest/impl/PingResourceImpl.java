@@ -18,7 +18,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 
+import com.nagoya.dao.db.ConnectionProvider;
 import com.nagoya.middleware.rest.PingResource;
 
 /**
@@ -27,19 +29,26 @@ import com.nagoya.middleware.rest.PingResource;
  */
 public class PingResourceImpl implements PingResource {
 
-    private static final Logger LOGGER = LogManager.getLogger(PingResourceImpl.class);
+	private static final Logger LOGGER = LogManager.getLogger(PingResourceImpl.class);
 
-    @Override
-    public void ping(@Suspended final AsyncResponse asyncResponse) {
-        LOGGER.info("Ping request received successfully.");
-        Response response = null;
-        try {
-            response = Response.noContent().build();
-        } catch (Exception e) {
-            LOGGER.error(e, e.getCause());
-            response = Response.serverError().build();
-        }
-        asyncResponse.resume(response);
-    }
+	@Override
+	public void ping(@Suspended final AsyncResponse asyncResponse) {
+		LOGGER.info("Ping request received successfully.");
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			LOGGER.info("DB connection okay.");
+			response = Response.noContent().build();
+		} catch (Exception e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+	}
 
 }

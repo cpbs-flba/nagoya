@@ -7,20 +7,26 @@
 		</Console>
 		<RollingFile name="logfile">
 			<FileName>logs/com.nagoya.middleware.log</FileName>
-			<FilePattern>logs/com.nagoya.middleware.%d{yyyy-MM-dd}.log.zip</FilePattern>
+			<FilePattern>logs/com.nagoya.middleware.%d{yyyy-MM-dd}.log.zip
+			</FilePattern>
 			<PatternLayout>
-				<Pattern>%d{yyyy-MMM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36}:%L -	%msg%n</Pattern>
+				<Pattern>%d{yyyy-MMM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36}:%L -
+					%msg%n</Pattern>
 			</PatternLayout>
 			<Policies>
-				<TimeBasedTriggeringPolicy interval="1"	modulate="true" />
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
 			</Policies>
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 	</Appenders>
 	<Loggers>
-		<Root level="all">
- 			<AppenderRef ref="console" />
+		<Root level="ALL">
+			<AppenderRef ref="console" />
 			<AppenderRef ref="logfile" />
 		</Root>
+		<Logger name="org.hibernate" level="ERROR" additivity="false">
+			<Appender-ref ref="logfile" level="ERROR" />
+		</Logger>
 	</Loggers>
 </Configuration>

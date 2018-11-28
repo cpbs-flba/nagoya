@@ -20,6 +20,12 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.nagoya</groupId>
+			<artifactId>com.nagoya.dao</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
 		<!-- START: REST DEPENDENCIES -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
@@ -47,7 +53,7 @@
 			<version>2.1.1</version>
 		</dependency>
 		<!-- STOP: REST DEPENDENCIES -->
-		
+
 		<!-- Jersey dependencies -->
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
@@ -75,7 +81,7 @@
 			<artifactId>jersey-container-servlet-core</artifactId>
 			<version>${org.glassfish.jersey.version}</version>
 		</dependency>
-		
+
 		<!-- Needed because of note: -->
 		<!-- "Jersey now defines it's own injection facade" -->
 		<dependency>
@@ -97,6 +103,18 @@
 		<!-- END: dependencies for the REST services -->
 
 		<!-- Further dependencies -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 		<!-- Jetty dependencies -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
