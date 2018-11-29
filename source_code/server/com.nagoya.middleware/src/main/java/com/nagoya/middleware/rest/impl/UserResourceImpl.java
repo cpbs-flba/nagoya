@@ -83,13 +83,13 @@ public class UserResourceImpl implements UserResource {
 	 * @see com.nagoya.middleware.rest.UserResource#register(com.nagoya.model.to.person.PersonLegal, javax.ws.rs.container.AsyncResponse)
 	 */
 	@Override
-	public void register(PersonLegal person, AsyncResponse asyncResponse) {
+	public void register(PersonLegal person, String language, AsyncResponse asyncResponse) {
 		Response response = null;
 		Session session = null;
 		try {
 			session = ConnectionProvider.getInstance().getSession();
 			UserService userService = new UserService(session);
-			userService.register(person);
+			userService.register(person, language);
 			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
 			response = responseBuilder.build();
 		} catch (ConflictException e) {
@@ -114,13 +114,13 @@ public class UserResourceImpl implements UserResource {
 	 * @see com.nagoya.middleware.rest.UserResource#register(com.nagoya.model.to.person.PersonNatural, javax.ws.rs.container.AsyncResponse)
 	 */
 	@Override
-	public void register(PersonNatural person, AsyncResponse asyncResponse) {
+	public void register(PersonNatural person, String language, AsyncResponse asyncResponse) {
 		Response response = null;
 		Session session = null;
 		try {
 			session = ConnectionProvider.getInstance().getSession();
 			UserService userService = new UserService(session);
-			userService.register(person);
+			userService.register(person, language);
 			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
 			response = responseBuilder.build();
 		} catch (ConflictException e) {
@@ -141,18 +141,153 @@ public class UserResourceImpl implements UserResource {
 	}
 
 	@Override
-	public void confirmRegistration(String token, AsyncResponse asyncResponse) {
+	public void confirm(Person person, String token, AsyncResponse asyncResponse) {
 		Response response = null;
 		Session session = null;
 		try {
 			session = ConnectionProvider.getInstance().getSession();
 			UserService userService = new UserService(session);
-			userService.confirmRegistration(token);
+			userService.confirmRequest(token, person);
 			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
 			response = responseBuilder.build();
 		} catch (BadRequestException e) {
 			LOGGER.error(e, e.getCause());
 			response = Response.status(Status.BAD_REQUEST).build();
+		} catch (TimeoutException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.REQUEST_TIMEOUT).build();
+		} catch (Exception e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+		
+	}
+
+	@Override
+	public void resetPassword(Person person, String language, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService userService = new UserService(session);
+			userService.resetPassword(person, language);
+			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
+			response = responseBuilder.build();
+		} catch (BadRequestException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.BAD_REQUEST).build();
+		} catch (Exception e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+		
+	}
+
+	@Override
+	public void delete(String authorization, String language, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService userService = new UserService(session);
+			DefaultReturnObject result = userService.delete(authorization, language);
+			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
+			Set<Entry<String,String>> entrySet = result.getHeader().entrySet();
+			for (Entry<String, String> entry : entrySet) {
+				responseBuilder.header(entry.getKey(), entry.getValue());
+			}
+			response = responseBuilder.build();
+		} catch (NotAuthorizedException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.UNAUTHORIZED).build();
+		} catch (TimeoutException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.REQUEST_TIMEOUT).build();
+		} catch (Exception e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.nagoya.middleware.rest.UserResource#update(java.lang.String, java.lang.String, com.nagoya.model.to.person.PersonNatural, javax.ws.rs.container.AsyncResponse)
+	 */
+	@Override
+	public void update(String authorization, String language, PersonNatural person, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService userService = new UserService(session);
+			DefaultReturnObject result = userService.update(authorization, language, person);
+			ResponseBuilder responseBuilder = Response.ok(result.getEntity());
+			Set<Entry<String,String>> entrySet = result.getHeader().entrySet();
+			for (Entry<String, String> entry : entrySet) {
+				responseBuilder.header(entry.getKey(), entry.getValue());
+			}
+			response = responseBuilder.build();
+		} catch (NotAuthorizedException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.UNAUTHORIZED).build();
+		} catch (ForbiddenException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.FORBIDDEN).build();
+		} catch (TimeoutException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.REQUEST_TIMEOUT).build();
+		} catch (Exception e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.nagoya.middleware.rest.UserResource#update(java.lang.String, java.lang.String, com.nagoya.model.to.person.PersonLegal, javax.ws.rs.container.AsyncResponse)
+	 */
+	@Override
+	public void update(String authorization, String language, PersonLegal person, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService userService = new UserService(session);
+			DefaultReturnObject result = userService.update(authorization, language, person);
+			ResponseBuilder responseBuilder = Response.ok(result.getEntity());
+			Set<Entry<String,String>> entrySet = result.getHeader().entrySet();
+			for (Entry<String, String> entry : entrySet) {
+				responseBuilder.header(entry.getKey(), entry.getValue());
+			}
+			response = responseBuilder.build();
+		} catch (NotAuthorizedException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.UNAUTHORIZED).build();
+		} catch (ForbiddenException e) {
+			LOGGER.error(e, e.getCause());
+			response = Response.status(Status.FORBIDDEN).build();
 		} catch (TimeoutException e) {
 			LOGGER.error(e, e.getCause());
 			response = Response.status(Status.REQUEST_TIMEOUT).build();

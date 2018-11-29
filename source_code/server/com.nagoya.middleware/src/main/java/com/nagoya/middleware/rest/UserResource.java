@@ -13,7 +13,9 @@
 package com.nagoya.middleware.rest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -42,6 +44,8 @@ public interface UserResource {
 
 	public static final String HEADER_AUTHORIZATION = "Authorization";
 
+	public static final String HEADER_LANGUAGE = "Accept-Language";
+
 	public static final String HEADER_AUTHORIZATION_BEARER = "Bearer ";
 
 	public static final String DEFAULT_RESPONSE_ENCODING = ";charset=utf-8";
@@ -65,6 +69,83 @@ public interface UserResource {
 	public void login(final Person person, @Suspended final AsyncResponse asyncResponse);
 
 	/**
+	 * @return
+	 *         <ul>
+	 *         <li>204 No content - if the request was processed successfully</li>
+	 *         <li>400 Bad request - if no email address is provided</li>
+	 *         <li>500 Internal server error - if something went terribly
+	 *         wrong.</li>
+	 *         </ul>
+	 */
+	@POST
+	@Path("resetpw")
+	@Consumes({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
+	@Produces({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
+	@ManagedAsync
+	public void resetPassword(//
+			final Person person, //
+			@HeaderParam(HEADER_LANGUAGE) String language, //
+			@Suspended final AsyncResponse asyncResponse);
+
+	/**
+	 * @return
+	 *         <ul>
+	 *         <li>204 No content - if the request was processed successfully</li>
+	 *         <li>401 Unauthorized - in case of a bad session token</li>
+	 *         <li>408 Request Timeout - if the session token has expired</li>
+	 *         <li>500 Internal server error - if something went terribly
+	 *         wrong.</li>
+	 *         </ul>
+	 */
+	@DELETE
+	@Path("delete")
+	@ManagedAsync
+	public void delete( //
+			@HeaderParam(HEADER_AUTHORIZATION) String authorization, //
+			@HeaderParam(HEADER_LANGUAGE) String language, //
+			@Suspended final AsyncResponse asyncResponse);
+
+	/**
+	 * @return
+	 *         <ul>
+	 *         <li>200 OK - if the request was processed successfully</li>
+	 *         <li>401 Unauthorized - in case of a bad session token</li>
+	 *         <li>403 Forbidden - in case of a bad password confirmation</li>
+	 *         <li>408 Request Timeout - if the session token has expired</li>
+	 *         <li>500 Internal server error - if something went terribly
+	 *         wrong.</li>
+	 *         </ul>
+	 */
+	@POST
+	@Path("update/natural")
+	@ManagedAsync
+	public void update( //
+			@HeaderParam(HEADER_AUTHORIZATION) String authorization, //
+			@HeaderParam(HEADER_LANGUAGE) String language, //
+			final PersonNatural person, //
+			@Suspended final AsyncResponse asyncResponse);
+	
+	/**
+	 * @return
+	 *         <ul>
+	 *         <li>200 OK - if the request was processed successfully</li>
+	 *         <li>401 Unauthorized - in case of a bad session token</li>
+	 *         <li>403 Forbidden - in case of a bad password confirmation</li>
+	 *         <li>408 Request Timeout - if the session token has expired</li>
+	 *         <li>500 Internal server error - if something went terribly
+	 *         wrong.</li>
+	 *         </ul>
+	 */
+	@POST
+	@Path("update/legal")
+	@ManagedAsync
+	public void update( //
+			@HeaderParam(HEADER_AUTHORIZATION) String authorization, //
+			@HeaderParam(HEADER_LANGUAGE) String language, //
+			final PersonLegal person, //
+			@Suspended final AsyncResponse asyncResponse);
+
+	/**
 	 * @param person
 	 * @param asyncResponse
 	 * @return
@@ -80,7 +161,8 @@ public interface UserResource {
 	@Consumes({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
 	@Produces({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
 	@ManagedAsync
-	public void register(final PersonLegal person, @Suspended final AsyncResponse asyncResponse);
+	public void register(final PersonLegal person, @HeaderParam(HEADER_LANGUAGE) String language,
+			@Suspended final AsyncResponse asyncResponse);
 
 	/**
 	 * @param person
@@ -98,9 +180,11 @@ public interface UserResource {
 	@Consumes({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
 	@Produces({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
 	@ManagedAsync
-	public void register(final PersonNatural person, @Suspended final AsyncResponse asyncResponse);
+	public void register(final PersonNatural person, @HeaderParam(HEADER_LANGUAGE) String language,
+			@Suspended final AsyncResponse asyncResponse);
 
 	/**
+	 * @param person
 	 * @param token
 	 * @param asyncResponse
 	 * 
@@ -114,9 +198,9 @@ public interface UserResource {
 	 *         </ul>
 	 */
 	@GET
-	@Path("register/confirm")
+	@Path("confirm")
 	@ManagedAsync
-	public void confirmRegistration(@QueryParam(QUERY_PARAM_TOKEN) String token,
+	public void confirm(final Person person, @QueryParam(QUERY_PARAM_TOKEN) String token,
 			@Suspended final AsyncResponse asyncResponse);
 
 }

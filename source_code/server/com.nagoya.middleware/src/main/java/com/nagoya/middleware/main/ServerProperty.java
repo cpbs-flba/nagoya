@@ -25,7 +25,11 @@ public enum ServerProperty {
     SERVER_PORT("server.port"), //
     SERVER_CONTEXT_PATH("server.context.path"), //
     SERVER_EIS_CONFIG("server.eis.config"), //
-    SERVER_ENABLE_CROSS_ORIGIN("server.enable.cross.origin") //
+    SERVER_ENABLE_CROSS_ORIGIN("server.enable.cross.origin"), //
+
+    SERVER_HOST_NAME("server.host.name"), //
+    SERVER_MAIL_CONFIRMATION_PATH("server.mail.confirmation.path"), //
+    EMAIL_CONFIG_FILENAME("email.config.filename") //
     ;
 
     private String property;

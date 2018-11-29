@@ -14,10 +14,17 @@ import com.nagoya.model.dbo.person.PersonType;
 public class Person implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private String email;
 	private String password;
+	/**
+	 * Always use this field for confirmation operations. This should be filled with
+	 * the actual password.
+	 */
+	private String passwordConfirmation;
 	private PersonType personType;
+
+	private Address address;
 
 	/**
 	 * @return the email
@@ -48,6 +55,20 @@ public class Person implements Serializable {
 	}
 
 	/**
+	 * @return the passwordConfirmation
+	 */
+	public String getPasswordConfirmation() {
+		return passwordConfirmation;
+	}
+
+	/**
+	 * @param passwordConfirmation the passwordConfirmation to set
+	 */
+	public void setPasswordConfirmation(String passwordConfirmation) {
+		this.passwordConfirmation = passwordConfirmation;
+	}
+
+	/**
 	 * @return the personType
 	 */
 	public PersonType getPersonType() {
@@ -61,5 +82,20 @@ public class Person implements Serializable {
 		this.personType = personType;
 	}
 
+	/**
+	 * 
+	 * @return the address
+	 */
+	public Address getAddress() {
+		return address;
+	}
+
+	/**
+	 * 
+	 * @param address the address to set
+	 */
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 
 }
