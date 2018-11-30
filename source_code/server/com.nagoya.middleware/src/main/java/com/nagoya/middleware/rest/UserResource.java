@@ -198,6 +198,7 @@ public interface UserResource {
 	 */
 	@POST
 	@Path("confirm")
+	@Consumes({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
 	@ManagedAsync
 	public void confirm(final Person person, @QueryParam(QUERY_PARAM_TOKEN) String token,
 			@Suspended final AsyncResponse asyncResponse);
