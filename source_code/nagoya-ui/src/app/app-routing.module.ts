@@ -11,7 +11,7 @@ import {AuthenticationGuard} from './core/authentication/authentication.guard';
 const routes: Routes = [
   {path: 'about', component: AboutComponent, canActivate: [AuthenticationGuard]},
   {path: 'legal', component: LegalComponent},
-  {path: 'terms', component: TermsComponent},
+  {path: 'terms', component: TermsComponent,  canActivate: [AuthenticationGuard]},
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'browsernotok', component: IncompatibleBrowserComponent},

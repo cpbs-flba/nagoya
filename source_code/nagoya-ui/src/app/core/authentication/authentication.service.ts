@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {map} from 'rxjs/internal/operators';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
+import {ServerConfigService} from '../../services/serverconfig.service';
+import {LoginContext} from '../../model/loginContext';
+import {User} from '../../model/user';
 
 export interface Credentials {
   // Customize received credentials here
-  username: string;
+  email: string;
   token: string;
 }
 
-export interface LoginContext {
-  username: string;
-  password: string;
-  remember?: boolean;
-}
 
 const credentialsKey = 'credentials';
 
@@ -23,7 +24,7 @@ const credentialsKey = 'credentials';
 export class AuthenticationService {
   private _credentials: Credentials | null;
 
-  constructor() {
+  constructor(private http: HttpClient, private serverConfigService: ServerConfigService) {
     const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
@@ -35,14 +36,17 @@ export class AuthenticationService {
    * @param context The login parameters.
    * @return The user credentials.
    */
-  login(context: LoginContext): Observable<Credentials> {
-    // Replace by proper authentication call
-    const data = {
-      username: context.username,
-      token: '123456'
-    };
-    this.setCredentials(data, context.remember);
-    return of(data);
+  login(context: LoginContext): Observable<User> {
+    return this.http.post<User>(environment.serverUrl + 'users/login', context)
+      .pipe(map(user => {
+        const data = {
+          email: user.email,
+          token: ' ',
+        };
+        console.log('in auth service');
+        this.setCredentials(data);
+        return user;
+      }));
   }
 
   /**
@@ -78,11 +82,11 @@ export class AuthenticationService {
    * @param credentials The user credentials.
    * @param remember True to remember credentials across sessions.
    */
-  private setCredentials(credentials?: Credentials, remember?: boolean) {
+  private setCredentials(credentials?: Credentials) {
     this._credentials = credentials || null;
 
     if (credentials) {
-      const storage = remember ? localStorage : sessionStorage;
+      const storage = sessionStorage;
       storage.setItem(credentialsKey, JSON.stringify(credentials));
     } else {
       sessionStorage.removeItem(credentialsKey);

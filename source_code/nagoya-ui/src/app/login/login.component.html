@@ -1,5 +1,5 @@
 <div class="userForm">
-  <div fxLayout="row" fxLayout.lt-md="column" >
+  <div fxLayout="row" fxLayout.lt-md="column">
     <!--<mat-card fxFlex="50%" class="cardStyling">-->
     <mat-card class="cardStyling" fxFlex="60">
       <mat-card-header>
@@ -42,20 +42,37 @@
       <mat-divider></mat-divider>
       <mat-card-content fxLayoutAlign="center center">
         <!--Login Form-->
-        <div fxLayout="column" fxFlex="80%" class="loginForm">
-          <mat-form-field>
-            <input matInput placeholder="{{ 'GENERAL.EMAIL' | translate }}" [(ngModel)]="user.email"
-                   type="text" id="email" name="email">
-          </mat-form-field>
+        <div fxFlex="80%" class="loginForm">
+          <form (ngSubmit)="loginUser()" [formGroup]="loginForm" novalidate fxLayout="column" >
 
-          <mat-form-field>
-            <input matInput placeholder="{{ 'GENERAL.PASSWORD' | translate }}" [(ngModel)]="user.password"
-                   type="password" id="password" name="password">
-          </mat-form-field>
-          <button mat-raised-button color="accent" type="submit" [disabled]="loginRunning" (click)=loginUser()>
-            {{ 'GENERAL.AUTHENTICATE' | translate }}
-          </button>
+            <div  [hidden]="!error || isLoading" translate>
+              Username or password incorrect.
+            </div>
 
+            <br/>
+
+            <mat-form-field>
+              <input matInput placeholder="{{ 'GENERAL.EMAIL' | translate }}"
+                     formControlName="email" autocomplete="email"
+                     type="text" id="email" name="email">
+              <mat-error *ngIf="loginForm.controls.email.valid || loginForm.controls.email.untouched">
+                <span translate>Email is required</span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput placeholder="{{ 'GENERAL.PASSWORD' | translate }}"
+                     formControlName="password" autocomplete="password"
+                     type="password" id="password" name="password">
+              <mat-error *ngIf="loginForm.controls.password.valid || loginForm.controls.password.untouched">
+                <span translate>Password is required</span>
+              </mat-error>
+            </mat-form-field>
+            <!--<button mat-raised-button color="accent" type="submit" [disabled]="loginRunning || loginForm.invalid" >-->
+            <button mat-raised-button color="accent" type="submit"  >
+              {{ 'GENERAL.AUTHENTICATE' | translate }}
+            </button>
+          </form>
 
           <div fxLayout="column" class="loginRegistrationBox">
             <div>
