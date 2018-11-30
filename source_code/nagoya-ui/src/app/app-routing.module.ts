@@ -7,14 +7,16 @@ import { IncompatibleBrowserComponent } from './incompatible-browser/incompatibl
 import { RegisterComponent } from './register/register.component';
 import {LoginComponent} from './login/login.component';
 import {AuthenticationGuard} from './core/authentication/authentication.guard';
+import {HomeComponent} from './home/home.component';
 
 const routes: Routes = [
-  {path: 'about', component: AboutComponent, canActivate: [AuthenticationGuard]},
+  {path: 'about', component: AboutComponent, },
   {path: 'legal', component: LegalComponent},
-  {path: 'terms', component: TermsComponent,  canActivate: [AuthenticationGuard]},
+  {path: 'terms', component: TermsComponent, },
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'browsernotok', component: IncompatibleBrowserComponent},
+  {path: 'home', component: HomeComponent, canActivate: [AuthenticationGuard]},
   {
     path: '',
     redirectTo: '/login',

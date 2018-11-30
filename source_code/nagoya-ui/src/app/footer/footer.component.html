@@ -1,6 +1,6 @@
 <div class="footer">
 
-<!--fxHide does not work on mat toolbar, therefore use div-->
+  <!--fxHide does not work on mat toolbar, therefore use div-->
 
   <div fxHide.gt-sm>
     <mat-toolbar color="primary" class="footerTable" fxLayout="end end">
@@ -19,8 +19,18 @@
   <div fxHide.lt-md>
     <mat-toolbar color="primary" class="footerTable">
 
-      <div fxFlex="50" fxLayoutAlign="center center"><a routerLink="/terms">{{'SITES.TERMS'|translate}}</a></div>
-      <div fxFlex="50" fxLayoutAlign="center center"><a routerLink="/legal">{{'SITES.LEGAL'|translate}}</a></div>
+      <div fxFlex="50" fxLayoutAlign="start center">
+        <div fxFlex="33">
+          <a routerLink="/terms">{{'SITES.TERMS'|translate}}</a>
+        </div>
+        <div fxFlex="33">
+          <a routerLink="/legal">{{'SITES.LEGAL'|translate}}</a>
+        </div>
+        <div fxFlex="33"></div>
+      </div>
+      <div fxFlex="50" fxLayoutAlign="end center" *ngIf="isLoggedIn()">
+        <button mat-raised-button color="accent" type="button" (click)="logout()">Logout</button>
+      </div>
 
     </mat-toolbar>
   </div>
