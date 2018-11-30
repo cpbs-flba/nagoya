@@ -38,6 +38,9 @@ public class Person extends DBO {
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "address_id")
 	private Address address;
+	
+	@Column(name = "public_key", nullable = false)
+	private String publicKey;
 
 	/**
 	 * @return the email
@@ -107,6 +110,20 @@ public class Person extends DBO {
 	 */
 	public void setAddress(Address address) {
 		this.address = address;
+	}
+
+	/**
+	 * @return the publicKey
+	 */
+	public String getPublicKey() {
+		return publicKey;
+	}
+
+	/**
+	 * @param publicKey the publicKey to set
+	 */
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
 	}
 
 }

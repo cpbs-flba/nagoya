@@ -1,5 +1,5 @@
 
-package com.nagoya.middleware.bigchaindb;
+package com.nagoya.common.blockchain.api.impl.deprecated;
 
 import java.io.IOException;
 import java.security.KeyPair;
