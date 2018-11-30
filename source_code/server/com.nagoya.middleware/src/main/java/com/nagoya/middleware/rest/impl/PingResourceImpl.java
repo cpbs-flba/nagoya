@@ -33,12 +33,12 @@ public class PingResourceImpl implements PingResource {
 
 	@Override
 	public void ping(@Suspended final AsyncResponse asyncResponse) {
-		LOGGER.info("Ping request received successfully.");
+		LOGGER.debug("Ping request received successfully.");
 		Response response = null;
 		Session session = null;
 		try {
 			session = ConnectionProvider.getInstance().getSession();
-			LOGGER.info("DB connection okay.");
+			LOGGER.debug("DB connection okay.");
 			response = Response.noContent().build();
 		} catch (Exception e) {
 			LOGGER.error(e, e.getCause());

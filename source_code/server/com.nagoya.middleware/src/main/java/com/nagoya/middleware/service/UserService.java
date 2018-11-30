@@ -23,6 +23,7 @@ import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.StringUtil;
 import com.nagoya.middleware.rest.UserResource;
+import com.nagoya.middleware.service.blockchain.BlockchainHelper;
 import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
@@ -58,10 +59,12 @@ public class UserService {
 
 	private static final Logger LOGGER = LogManager.getLogger(UserService.class);
 
+	private BlockchainHelper blockchainHelper;
 	private PersonDAO personDAO;
 
 	public UserService(Session session) {
 		this.personDAO = new PersonDAOImpl(session);
+		this.blockchainHelper = new BlockchainHelper();
 	}
 
 	public DefaultReturnObject login(Person person)
@@ -180,6 +183,7 @@ public class UserService {
 			person.setEmailConfirmed(true);
 			personDAO.update(person, true);
 			personDAO.delete(userRequest, true);
+			blockchainHelper.createCredentials();
 		}
 
 		if (userRequest.getRequestType().equals(RequestType.ACCOUNT_REMOVAL)) {

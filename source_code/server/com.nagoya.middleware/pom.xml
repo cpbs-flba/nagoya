@@ -25,6 +25,19 @@
 			<artifactId>com.nagoya.dao</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
+		<!-- Blockchain API -->
+		<dependency>
+			<groupId>com.nagoya</groupId>
+			<artifactId>com.nagoya.blockchain.api</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<!-- Blockchain API implementation -->
+		<!-- Theoretically this API could be extended with another implementation for another blockchain -->
+		<dependency>
+			<groupId>com.nagoya</groupId>
+			<artifactId>com.nagoya.blockchain.impl</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 
 		<!-- START: REST DEPENDENCIES -->
 		<dependency>
@@ -43,14 +56,14 @@
 			<version>2.3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.xml</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.1</version>
-		</dependency>
-		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>2.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.1</version>
 		</dependency>
 		<!-- STOP: REST DEPENDENCIES -->
 
@@ -102,7 +115,7 @@
 		</dependency>
 		<!-- END: dependencies for the REST services -->
 
-		<!-- Further dependencies -->
+		<!-- JSON web token -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
@@ -113,6 +126,12 @@
 					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<!-- java mail -->
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
 		</dependency>
 
 		<!-- Jetty dependencies -->
@@ -137,36 +156,123 @@
 			<version>${org.eclipse.jetty.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.1</version>
-		</dependency>
-
-		<!-- java mail -->
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>1.6.2</version>
-		</dependency>
 		
-		<dependency>
-			<groupId>com.bigchaindb</groupId>
-			<artifactId>bigchaindb-driver</artifactId>
-			<version>1.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.bigchaindb</groupId>
-			<artifactId>cryptoconditions</artifactId>
-			<version>1.0</version>
-		</dependency>
-
+		
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${version.org.apache.maven.plugins}</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<!-- version already defined in parent pom -->
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>com.nagoya.middleware.main.Main</mainClass>
+						</manifest>
+						<manifestEntries>
+							<Class-Path>serverconfig/</Class-Path>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${version.org.apache.maven.plugins}</version>
+				<executions>
+					<execution>
+						<id>copy-resources-1</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/deliverable/serverconfig</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-resources-2</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/deliverable/lib</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/lib</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-resources-3</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/deliverable</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}</directory>
+									<include>index.html</include>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-resources-4</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/deliverable</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}</directory>
+									<include>${project.artifactId}-${project.version}.${project.packaging}</include>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			
+		</plugins>
+	</build>
 
 </project>

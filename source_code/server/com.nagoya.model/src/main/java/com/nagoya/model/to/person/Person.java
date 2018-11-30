@@ -5,6 +5,7 @@ package com.nagoya.model.to.person;
 
 import java.io.Serializable;
 
+import com.nagoya.blockchain.api.Credentials;
 import com.nagoya.model.dbo.person.PersonType;
 
 /**
@@ -25,6 +26,8 @@ public class Person implements Serializable {
 	private PersonType personType;
 
 	private Address address;
+
+	private Credentials credentials;
 
 	/**
 	 * @return the email
@@ -96,6 +99,20 @@ public class Person implements Serializable {
 	 */
 	public void setAddress(Address address) {
 		this.address = address;
+	}
+
+	/**
+	 * @return the credentials
+	 */
+	public Credentials getCredentials() {
+		return credentials;
+	}
+
+	/**
+	 * @param credentials the credentials to set
+	 */
+	public void setCredentials(Credentials credentials) {
+		this.credentials = credentials;
 	}
 
 }

@@ -14,7 +14,6 @@ package com.nagoya.middleware.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -197,7 +196,7 @@ public interface UserResource {
 	 *         wrong.</li>
 	 *         </ul>
 	 */
-	@GET
+	@POST
 	@Path("confirm")
 	@ManagedAsync
 	public void confirm(final Person person, @QueryParam(QUERY_PARAM_TOKEN) String token,
