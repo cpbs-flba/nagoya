@@ -1,0 +1,28 @@
+<div class="footer">
+
+<!--fxHide does not work on mat toolbar, therefore use div-->
+
+  <div fxHide.gt-sm>
+    <mat-toolbar color="primary" class="footerTable" fxLayout="end end">
+      <div fxFlex="20" fxLayoutAlign="start center"><a routerLink="/terms">{{'SITES.TERMS'|translate}}</a></div>
+      <div fxFlex="20" fxLayoutAlign="start center"><a routerLink="/legal">{{'SITES.LEGAL'|translate}}</a></div>
+      <div fxFlex="10"></div>
+      <mat-form-field fxFlex="50" class="headerImg" fxHide.gt-sm="true">
+        <mat-select placeholder="{{'HOME.SELECT'|translate}}" #langSelect [value]="translate.currentLang"
+                    (selectionChange)="setLanguage(langSelect.value)">
+          <mat-option *ngFor="let lang of i18nService.supportedLanguages" [value]="lang">{{lang}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-toolbar>
+  </div>
+  <div fxHide.lt-md>
+    <mat-toolbar color="primary" class="footerTable">
+
+      <div fxFlex="50" fxLayoutAlign="center center"><a routerLink="/terms">{{'SITES.TERMS'|translate}}</a></div>
+      <div fxFlex="50" fxLayoutAlign="center center"><a routerLink="/legal">{{'SITES.LEGAL'|translate}}</a></div>
+
+    </mat-toolbar>
+  </div>
+
+</div>

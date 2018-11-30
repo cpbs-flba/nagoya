@@ -1,0 +1,20 @@
+<mat-toolbar color="primary" class="headerToolbar" fxLayout.xs="column">
+
+  <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100">
+    <img alt="plantinhand" src="./assets/icons/icons8-tree-planting-60_w.png" class="headerImg">
+
+    <div fxLayout="column" class="fillHeaderSpace">
+      <h1 class="headerTitle">{{'HOME.TITLE'|translate}}</h1>
+      <span fxHide.lt-sm="true" fxHide.xs="true">{{'HOME.SUBTITLE'|translate}}</span>
+    </div>
+  <div fxHide.lt-md fxFlex="50" fxLayoutAlign="end end">
+    <mat-form-field class="headerImg">
+      <mat-select placeholder="{{'HOME.SELECT'|translate}}" #langSelect [value]="translate.currentLang"
+                  (selectionChange)="setLanguage(langSelect.value)">
+        <mat-option *ngFor="let lang of i18nService.supportedLanguages" [value]="lang">{{lang}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  </div>
+</mat-toolbar>

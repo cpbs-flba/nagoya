@@ -46,6 +46,7 @@ public class UserResourceImpl implements UserResource {
 	 */
 	@Override
 	public void login(Person person, AsyncResponse asyncResponse) {
+		System.out.println("i am in login");
 		Response response = null;
 		Session session = null;
 		try {

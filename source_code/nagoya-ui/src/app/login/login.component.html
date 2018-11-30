@@ -1,0 +1,95 @@
+<div class="userForm">
+  <div fxLayout="row" fxLayout.lt-md="column">
+    <!--<mat-card fxFlex="50%" class="cardStyling">-->
+    <mat-card class="cardStyling" fxFlex="60">
+      <mat-card-header>
+        <mat-card-title>About the Nagoya Protocoll</mat-card-title>
+        <mat-card-subtitle>Everything you need to know</mat-card-subtitle>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+
+      <mat-card-content>
+        <div>
+          <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
+            et
+            dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+            clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
+            consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+            sed
+            diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+            takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+            sed
+            diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos
+            et
+            accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+            dolor sit amet.</p>
+          <p>
+            Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu
+            feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
+            delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing
+            elit,
+            sed diam</p>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="cardStyling" fxFlex="40">
+      <!--<mat-card fxFlex="50%" class="cardStyling">-->
+      <mat-card-header>
+        <mat-card-title>Login</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content fxLayoutAlign="center center">
+        <!--Login Form-->
+        <div fxFlex="80%" class="loginForm">
+          <form (ngSubmit)="loginUser()" [formGroup]="loginForm" novalidate fxLayout="column" >
+
+            <div  [hidden]="!error || isLoading" translate>
+              Username or password incorrect.
+            </div>
+
+            <br/>
+
+            <mat-form-field>
+              <input matInput placeholder="{{ 'GENERAL.EMAIL' | translate }}"
+                     formControlName="email" autocomplete="email"
+                     type="text" id="email" name="email">
+              <mat-error *ngIf="loginForm.controls.email.valid || loginForm.controls.email.untouched">
+                <span translate>Email is required</span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input matInput placeholder="{{ 'GENERAL.PASSWORD' | translate }}"
+                     formControlName="password" autocomplete="password"
+                     type="password" id="password" name="password">
+              <mat-error *ngIf="loginForm.controls.password.valid || loginForm.controls.password.untouched">
+                <span translate>Password is required</span>
+              </mat-error>
+            </mat-form-field>
+            <!--<button mat-raised-button color="accent" type="submit" [disabled]="loginRunning || loginForm.invalid" >-->
+            <button mat-raised-button color="accent" type="submit"  >
+              {{ 'GENERAL.AUTHENTICATE' | translate }}
+            </button>
+          </form>
+
+          <div fxLayout="column" class="loginRegistrationBox">
+            <div>
+              <a class="loginHint" routerLink="/register">Don't have an account? Register here</a>
+            </div>
+            <br/>
+            <div>
+              <a class="loginHint" routerLink="/register">I forgot my password</a>
+            </div>
+          </div>
+
+        </div>
+
+
+      </mat-card-content>
+    </mat-card>
+
+
+  </div>
+</div>

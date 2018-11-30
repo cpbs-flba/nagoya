@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie';
+import {Injectable} from '@angular/core';
+import {CookieService} from 'ngx-cookie';
 
 @Injectable({
   providedIn: 'root'
@@ -19,16 +19,11 @@ export class CookieAcceptedService {
 
   areCookiesAllowed() {
     const cookiesAccepted = this.cookieService.get(this.COOKIES_ACCEPTED_NAME);
-    if (cookiesAccepted == null) {
-      return false;
+
+    if (cookiesAccepted && cookiesAccepted.trim().toLowerCase() === 'true') {
+      return true;
     }
-    if (cookiesAccepted === null) {
-      return false;
-    }
-    if (cookiesAccepted.trim().toLowerCase() != 'true') {
-      return false;
-    }
-    return true;
+    return false;
   }
 
 }
