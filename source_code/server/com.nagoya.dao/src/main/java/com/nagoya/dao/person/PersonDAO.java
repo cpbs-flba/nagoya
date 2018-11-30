@@ -5,6 +5,7 @@ import com.nagoya.model.dbo.person.Person;
 import com.nagoya.model.dbo.user.OnlineUser;
 import com.nagoya.model.dbo.user.UserRequest;
 import com.nagoya.model.exception.ConflictException;
+import com.nagoya.model.exception.InvalidObjectException;
 
 public interface PersonDAO extends BasicDAO<Person> {
 
@@ -48,5 +49,11 @@ public interface PersonDAO extends BasicDAO<Person> {
 	 */
 	public UserRequest findUserRequest(String token) throws ConflictException;
 	
+	/**
+	 * 
+	 * @param person
+	 * @throws InvalidObjectException
+	 */
+	public void delete(Person person) throws InvalidObjectException;
 	
 }

@@ -20,6 +20,7 @@ import com.nagoya.model.dbo.person.Person;
 import com.nagoya.model.dbo.user.OnlineUser;
 import com.nagoya.model.dbo.user.UserRequest;
 import com.nagoya.model.exception.ConflictException;
+import com.nagoya.model.exception.InvalidObjectException;
 
 public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 
@@ -109,7 +110,7 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 		CriteriaQuery<OnlineUser> criteriaQuery = criteriaBuilder.createQuery(OnlineUser.class);
 
 		Root<OnlineUser> root = criteriaQuery.from(OnlineUser.class);
-		Predicate condition = criteriaBuilder.equal(root.get("session_token"), sessionToken);
+		Predicate condition = criteriaBuilder.equal(root.get("sessionToken"), sessionToken);
 		criteriaQuery.select(root).where(condition);
 
 		TypedQuery<OnlineUser> createdQuery = entityManager.createQuery(criteriaQuery);
@@ -144,6 +145,36 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 			return null;
 		} catch (NonUniqueResultException e) {
 			throw new ConflictException("Too many results found for token: " + token);
+		}
+	}
+
+	@Override
+	public void delete(Person person) throws InvalidObjectException {
+		// first delete the person data normally
+		Long id = person.getId();
+		super.delete(person, true);
+
+		// now clean up all history tables
+		String query1 = "DELETE FROM tperson_aud WHERE id=" + id.toString();
+		String query2 = "DELETE FROM tperson_legal_aud WHERE person_id=" + id.toString();
+		String query3 = "DELETE FROM tperson_natural_aud WHERE person_id=" + id.toString();
+		String query4 = "DELETE FROM tuser_request WHERE person_id=" + id.toString();
+		String query5 = "DELETE FROM tonline_user WHERE person_id=" + id.toString();
+
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			session.createNativeQuery(query1).executeUpdate();
+			session.createNativeQuery(query2).executeUpdate();
+			session.createNativeQuery(query3).executeUpdate();
+			session.createNativeQuery(query4).executeUpdate();
+			session.createNativeQuery(query5).executeUpdate();
+			transaction.commit();
+		} catch (HibernateException e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			throw e;
 		}
 	}
 

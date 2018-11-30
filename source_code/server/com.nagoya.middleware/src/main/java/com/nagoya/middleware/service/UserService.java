@@ -174,6 +174,7 @@ public class UserService {
 		Date expirationDate = userRequest.getExpirationDate();
 		Date currentDate = Calendar.getInstance().getTime();
 
+		personDAO.delete(userRequest, true);
 		if (expirationDate.before(currentDate)) {
 			throw new TimeoutException();
 		}
@@ -182,13 +183,11 @@ public class UserService {
 			com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
 			person.setEmailConfirmed(true);
 			personDAO.update(person, true);
-			personDAO.delete(userRequest, true);
-			blockchainHelper.createCredentials();
 		}
 
 		if (userRequest.getRequestType().equals(RequestType.ACCOUNT_REMOVAL)) {
 			com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
-			personDAO.delete(person, true);
+			personDAO.delete(person);
 		}
 
 		if (userRequest.getRequestType().equals(RequestType.PASSWORD_RECOVERY)) {
@@ -288,7 +287,7 @@ public class UserService {
 	}
 
 	public DefaultReturnObject delete(String authorization, String language)
-			throws NotAuthorizedException, ConflictException, TimeoutException {
+			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
 		com.nagoya.model.dbo.person.Person person = validateSession(authorization);
 
 		// we have a valid user
@@ -314,13 +313,14 @@ public class UserService {
 		return result;
 	}
 
-	public com.nagoya.model.dbo.person.Person validateSession(String authorization)
-			throws NotAuthorizedException, ConflictException, TimeoutException {
-		if (StringUtil.isNullOrBlank(authorization)) {
+	public com.nagoya.model.dbo.person.Person validateSession(String jsonWebToken)
+			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
+		if (StringUtil.isNullOrBlank(jsonWebToken)) {
 			throw new NotAuthorizedException();
 		}
 
-		OnlineUser onlineUser = personDAO.getOnlineUser(authorization);
+		String sessionToken = extractSessionToken(jsonWebToken);
+		OnlineUser onlineUser = personDAO.getOnlineUser(sessionToken);
 		if (onlineUser == null) {
 			throw new NotAuthorizedException();
 		}
@@ -336,7 +336,7 @@ public class UserService {
 
 	public DefaultReturnObject update(String authorization, String language, Person personTO)
 			throws NotAuthorizedException, ConflictException, TimeoutException, ForbiddenException,
-			InvalidObjectException, ResourceOutOfDateException {
+			InvalidObjectException, ResourceOutOfDateException, InvalidTokenException {
 		// validate the session token
 		com.nagoya.model.dbo.person.Person foundPerson = validateSession(authorization);
 

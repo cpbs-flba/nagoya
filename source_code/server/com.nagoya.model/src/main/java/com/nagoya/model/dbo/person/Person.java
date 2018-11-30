@@ -39,7 +39,7 @@ public class Person extends DBO {
 	@JoinColumn(name = "address_id")
 	private Address address;
 	
-	@Column(name = "public_key", nullable = false)
+	@Column(name = "public_key", nullable = true)
 	private String publicKey;
 
 	/**
