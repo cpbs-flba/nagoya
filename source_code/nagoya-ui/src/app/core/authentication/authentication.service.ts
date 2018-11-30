@@ -43,7 +43,6 @@ export class AuthenticationService {
           email: user.email,
           token: ' ',
         };
-        console.log('in auth service');
         this.setCredentials(data);
         return user;
       }));
@@ -92,5 +91,9 @@ export class AuthenticationService {
       sessionStorage.removeItem(credentialsKey);
       localStorage.removeItem(credentialsKey);
     }
+  }
+
+  getCredentials(){
+
   }
 }

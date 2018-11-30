@@ -10,6 +10,7 @@ import { MessageService } from './services/message.service';
 import { ProgressService } from './services/progress.service';
 import {I18nService} from './services/i18n.service';
 import {environment} from '../environments/environment';
+import {AuthenticationService} from './core';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,8 @@ export class AppComponent implements OnInit {
     private userService: UserService,
     private serverConfigService: ServerConfigService,
     private progressService: ProgressService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private authenticationService: AuthenticationService
   ) {
     // this.handleLanguages();
     this.handleCookies();
@@ -47,9 +49,6 @@ export class AppComponent implements OnInit {
     this.i18nService.language = language;
   }
 
-  isLoggedIn() {
-    return this.userService.isLoggedIn();
-  }
 
   handleCookies() {
     const cookiesAllowed = this.cookieService.areCookiesAllowed();
@@ -66,6 +65,13 @@ export class AppComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  isLoggedIn() {
+    return this.authenticationService.isAuthenticated();
+  }
+  logout() {
+    this.authenticationService.logout();
   }
 
 }

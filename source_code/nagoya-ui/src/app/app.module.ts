@@ -66,8 +66,10 @@ import { RegisterComponent } from './register/register.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import {LoginComponent} from './login/login.component';
-import {AuthenticationGuard} from './core/authentication/authentication.guard';
 import {CoreModule} from './core';
+import { HomeComponent } from './home/home.component';
+import {CommonModule} from '@angular/common';
+import {ToastrModule} from 'ngx-toastr';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './i18n/');
@@ -85,7 +87,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ProgressComponent,
     RegisterComponent,
     FooterComponent,
-    HeaderComponent
+    HeaderComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -129,6 +132,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatDividerModule,
     MatButtonModule,
     MatRadioModule,
+    BrowserAnimationsModule,
+    CommonModule,
+    ToastrModule.forRoot()
   ],
   exports: [
     MatAutocompleteModule,

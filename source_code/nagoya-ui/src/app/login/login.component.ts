@@ -9,6 +9,7 @@ import {Input} from '@angular/compiler/src/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {first} from 'rxjs/internal/operators';
 import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-user',
@@ -18,7 +19,6 @@ import {Router} from '@angular/router';
 export class LoginComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe: Subject<any> = new Subject();
-  // @Input() loginContext: LoginContext;
   loginRunning = false;
   error: string;
   loginForm: FormGroup;
@@ -29,11 +29,15 @@ export class LoginComponent implements OnInit, OnDestroy {
               private progressService: ProgressService,
               private messageService: MessageService,
               private authenticationService: AuthenticationService,
-              private router: Router) {
+              private router: Router,
+              private toastr: ToastrService) {
     this.createForm();
   }
 
   ngOnInit(): void {
+    if (this.isLoggedIn()) {
+      this.router.navigate(['home']);
+    }
 
   }
 
@@ -53,21 +57,24 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.loginRunning = true;
     this.progressService.startWorking();
-    this.messageService.clearAll();
+    // this.messageService.clearAll();
 
     this.authenticationService.login(data)
       .pipe(first())
       .subscribe(response => {
-        this.router.navigate(['terms']);
+        this.router.navigate(['home']);
 
       }, error => {
-        console.log('error, invalid data');
+        this.loginRunning = false;
+        if (error.status === 401) {
+          this.toastr.error('Invalid Input. Please check your credentials');
+        }
+        if (error.status === 403) {
+          this.toastr.error('Please confirm your E-Mail first.');
+        }
       });
   }
 
-  isLoggedIn() {
-    return this.userService.isLoggedIn();
-  }
 
   private createForm() {
     this.loginForm = this.formBuilder.group({
@@ -75,4 +82,9 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: ['', Validators.required],
     });
   }
+
+  isLoggedIn() {
+    return this.authenticationService.isAuthenticated();
+  }
+
 }
