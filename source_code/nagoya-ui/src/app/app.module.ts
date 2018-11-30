@@ -61,11 +61,13 @@ import {
   MatTreeModule,
 } from '@angular/material';
 import { CookieModule } from 'ngx-cookie';
-import { UserComponent } from './user/user.component';
 import { ProgressComponent } from './progress/progress.component';
 import { RegisterComponent } from './register/register.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
+import {LoginComponent} from './login/login.component';
+import {AuthenticationGuard} from './core/authentication/authentication.guard';
+import {CoreModule} from './core';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './i18n/');
@@ -79,7 +81,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     LegalComponent,
     TermsComponent,
     CookiesDialogComponent,
-    UserComponent,
+    LoginComponent,
     ProgressComponent,
     RegisterComponent,
     FooterComponent,
@@ -117,6 +119,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     AppRoutingModule,
 
+    CoreModule,
     MatToolbarModule,
     FlexLayoutModule,
     MatJumbotronModule,

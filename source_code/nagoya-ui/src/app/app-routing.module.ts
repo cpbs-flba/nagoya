@@ -4,22 +4,23 @@ import { AboutComponent } from './about/about.component';
 import { LegalComponent } from './legal/legal.component';
 import { TermsComponent } from './terms/terms.component';
 import { IncompatibleBrowserComponent } from './incompatible-browser/incompatible-browser.component';
-import { UserComponent } from './user/user.component';
 import { RegisterComponent } from './register/register.component';
+import {LoginComponent} from './login/login.component';
+import {AuthenticationGuard} from './core/authentication/authentication.guard';
 
 const routes: Routes = [
-  {path: 'about', component: AboutComponent},
+  {path: 'about', component: AboutComponent, canActivate: [AuthenticationGuard]},
   {path: 'legal', component: LegalComponent},
   {path: 'terms', component: TermsComponent},
   {path: 'register', component: RegisterComponent},
-  {path: 'user', component: UserComponent},
+  {path: 'login', component: LoginComponent},
   {path: 'browsernotok', component: IncompatibleBrowserComponent},
   {
     path: '',
-    redirectTo: '/user',
+    redirectTo: '/login',
     pathMatch: 'full'
   },
-  {path: '**', component: UserComponent}
+  {path: '**', component: LoginComponent}
 ];
 
 @NgModule({
