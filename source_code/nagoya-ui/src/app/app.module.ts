@@ -7,7 +7,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
+import {FlexLayoutModule} from '@angular/flex-layout';
+import { MatJumbotronModule } from '@angular-material-extensions/jumbotron';
 // ngx
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -63,6 +64,8 @@ import { CookieModule } from 'ngx-cookie';
 import { UserComponent } from './user/user.component';
 import { ProgressComponent } from './progress/progress.component';
 import { RegisterComponent } from './register/register.component';
+import { FooterComponent } from './footer/footer.component';
+import { HeaderComponent } from './header/header.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './i18n/');
@@ -78,7 +81,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     CookiesDialogComponent,
     UserComponent,
     ProgressComponent,
-    RegisterComponent
+    RegisterComponent,
+    FooterComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -110,7 +115,17 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+
+    MatToolbarModule,
+    FlexLayoutModule,
+    MatJumbotronModule,
+    MatGridListModule,
+    MatMenuModule,
+    MatCardModule,
+    MatDividerModule,
+    MatButtonModule,
+    MatRadioModule,
   ],
   exports: [
     MatAutocompleteModule,

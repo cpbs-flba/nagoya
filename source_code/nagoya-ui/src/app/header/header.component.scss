@@ -1,0 +1,31 @@
+
+.headerImg {
+  margin: 2.5%;
+}
+
+.headerToolbar {
+  min-height: 10%;
+  margin-bottom: 10px;
+}
+
+::ng-deep .mat-toolbar {
+
+  @media screen and (min-width: 400px) {
+    .headerTitle {
+      font-size: 1.7em;
+    }
+
+  }
+}
+
+.fillHeaderSpace {
+  flex: 1 1 auto;
+}
+
+.mat-toolbar {
+  height: 110px !important;
+  min-height: 110px !important;
+
+}
+
+

@@ -1,46 +1,78 @@
-<div style="width: 100%" *ngIf="!isLoggedIn()">
-  <div class="container-full">
-    <div class="row justify-content-start">
+<div class="userForm">
+  <div fxLayout="row" fxLayout.lt-md="column" >
+    <!--<mat-card fxFlex="50%" class="cardStyling">-->
+    <mat-card class="cardStyling" fxFlex="60">
+      <mat-card-header>
+        <mat-card-title>About the Nagoya Protocoll</mat-card-title>
+        <mat-card-subtitle>Everything you need to know</mat-card-subtitle>
+      </mat-card-header>
+      <mat-divider></mat-divider>
 
-      <div class="col-sm-8">
-        <h2>Some content</h2>
-        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      <mat-card-content>
+        <div>
+          <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
+            et
+            dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+            clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
+            consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+            sed
+            diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+            takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+            sed
+            diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos
+            et
+            accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+            dolor sit amet.</p>
+          <p>
+            Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu
+            feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
+            delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing
+            elit,
+            sed diam</p>
+        </div>
 
-          Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam</p>
-      </div>
+      </mat-card-content>
+    </mat-card>
 
-      <div class="col-sm-4">
-        <div class="container">
-          <div class="row align-items-center justify-content-start">
-            <div class="col-sm">
-              <mat-form-field style="width: 10em;">
-                <input autofocus matInput placeholder="{{ 'GENERAL.EMAIL' | translate }}" [(ngModel)]="user.email" type="text"
-                  id="email" name="email">
-              </mat-form-field>
+    <mat-card class="cardStyling" fxFlex="40">
+      <!--<mat-card fxFlex="50%" class="cardStyling">-->
+      <mat-card-header>
+        <mat-card-title>Login</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content fxLayoutAlign="center center">
+        <!--Login Form-->
+        <div fxLayout="column" fxFlex="80%" class="loginForm">
+          <mat-form-field>
+            <input matInput placeholder="{{ 'GENERAL.EMAIL' | translate }}" [(ngModel)]="user.email"
+                   type="text" id="email" name="email">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="{{ 'GENERAL.PASSWORD' | translate }}" [(ngModel)]="user.password"
+                   type="password" id="password" name="password">
+          </mat-form-field>
+          <button mat-raised-button color="accent" type="submit" [disabled]="loginRunning" (click)=loginUser()>
+            {{ 'GENERAL.AUTHENTICATE' | translate }}
+          </button>
+
+
+          <div fxLayout="column" class="loginRegistrationBox">
+            <div>
+              <a class="loginHint" routerLink="/register">Don't have an account? Register here</a>
             </div>
-            <div class="col-sm">
-              <mat-form-field style="width: 10em;">
-                <input matInput placeholder="{{ 'GENERAL.PASSWORD' | translate }}" [(ngModel)]="user.password" type="password"
-                  id="password" name="password">
-              </mat-form-field>
+            <br/>
+            <div>
+              <a class="loginHint" routerLink="/register">I forgot my password</a>
             </div>
-            <div class="col-sm">
-              <button type="submit" [disabled]="loginRunning" class="btn custombutton" (click)=loginUser();>
-                {{ 'GENERAL.AUTHENTICATE' | translate }}</button>
-            </div>
-          </div>
-          <div class="row align-items-center justify-content-center">
-            <a class="flex-sm-fill text-sm-center nav-link" routerLink="/register">Don't have an account? Register here</a>
-          </div>
-          <div class="row align-items-center justify-content-center">
-            <a class="flex-sm-fill text-sm-center nav-link" routerLink="/register">I forgot my password</a>
           </div>
 
         </div>
 
-      </div>
 
-    </div>
+      </mat-card-content>
+    </mat-card>
+
+
   </div>
-
 </div>
