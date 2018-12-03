@@ -1,0 +1,24 @@
+<form novalidate (ngSubmit)="onSubmit(form.value)" [(formGroup)]="form" fxLayout="column">
+
+  <div *ngFor="let property of objectProps">
+
+    <div [ngSwitch]="property.type" fxLayoutAlign="center">
+
+      <mat-form-field *ngSwitchCase="'text'" fxFlex="100">
+        <input matInput [formControlName]="property.key" [id]="property.key"
+               [type]="property.type" [placeholder]="property.label">
+      </mat-form-field>
+
+      <mat-form-field *ngSwitchCase="'password'" fxFlex="100">
+        <input matInput [formControlName]="property.key" [id]="property.key"
+               [type]="property.type" [placeholder]="property.label">
+      </mat-form-field>
+
+    </div>
+
+
+  </div>
+  <p class="submitFormButton">
+    <button fxFlex="100" type="submit" mat-raised-button color="accent" [disabled]="form.invalid">Save</button>
+  </p>
+</form>

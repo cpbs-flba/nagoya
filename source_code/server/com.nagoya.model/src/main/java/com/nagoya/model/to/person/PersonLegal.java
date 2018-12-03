@@ -1,5 +1,7 @@
 package com.nagoya.model.to.person;
 
+import com.nagoya.model.dbo.person.PersonType;
+
 public class PersonLegal extends Person {
 
 	private static final long serialVersionUID = 1L;
@@ -8,6 +10,10 @@ public class PersonLegal extends Person {
 	private String commercialRegisterNumber;
 	private String taxNumber;
 
+	public PersonLegal() {
+		this.setPersonType(PersonType.LEGAL);
+	}
+	
 	/**
 	 * @return the name
 	 */

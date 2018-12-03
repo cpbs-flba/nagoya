@@ -2,6 +2,8 @@ package com.nagoya.model.to.person;
 
 import java.util.Date;
 
+import com.nagoya.model.dbo.person.PersonType;
+
 public class PersonNatural extends Person {
 
 	private static final long serialVersionUID = 1L;
@@ -9,6 +11,10 @@ public class PersonNatural extends Person {
 	private String firstname;
 	private String lastname;
 	private Date birthdate;
+	
+	public PersonNatural() {
+		this.setPersonType(PersonType.NATURAL);
+	}
 
 	/**
 	 * @return the firstname
