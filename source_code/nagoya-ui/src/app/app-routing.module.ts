@@ -8,6 +8,7 @@ import {LoginComponent} from './login/login.component';
 import {AuthenticationGuard} from './core/authentication/authentication.guard';
 import {HomeComponent} from './home/home.component';
 import {RegistrationComponent} from './registration/registration.component';
+import {ConfirmationComponent} from './confirmation/confirmation.component';
 
 const routes: Routes = [
   {path: 'about', component: AboutComponent, },
@@ -17,6 +18,8 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'browsernotok', component: IncompatibleBrowserComponent},
   {path: 'home', component: HomeComponent, canActivate: [AuthenticationGuard]},
+  {path: 'confirmation', component: ConfirmationComponent},
+  {path: 'confirmation/:tokena', component: ConfirmationComponent},
   {
     path: '',
     redirectTo: '/login',

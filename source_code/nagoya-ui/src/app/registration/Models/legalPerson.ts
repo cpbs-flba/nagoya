@@ -8,7 +8,7 @@ export const legalPerson = {
     }
   },
   commercialRegisterNumber: {
-    label: 'commercialRegisterNumber',
+    label: 'Commercial Registernumber',
     value: '',
     type: 'text',
     validation: {
@@ -16,7 +16,7 @@ export const legalPerson = {
     }
   },
   taxNumber: {
-    label: 'taxNumber',
+    label: 'tax Number',
     value: '',
     type: 'text',
     validation: {
@@ -26,7 +26,7 @@ export const legalPerson = {
   email: {
     label: 'E-Mail',
     value: '',
-    type: 'text',
+    type: 'email',
     validation: {
       required: true
     }

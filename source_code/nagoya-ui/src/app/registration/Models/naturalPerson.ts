@@ -1,5 +1,5 @@
 export const naturalPerson = {
-  firstName: {
+  firstname: {
     label: 'Firstname',
     value: '',
     type: 'text',
@@ -7,7 +7,7 @@ export const naturalPerson = {
       required: true
     }
   },
-  lastName: {
+  lastname: {
     label: 'Lastname',
     value: '',
     type: 'text',
@@ -15,7 +15,15 @@ export const naturalPerson = {
       required: true
     }
   },
-  mail: {
+  birthdate: {
+    label: 'Birthdate',
+    value: '',
+    type: 'date',
+    validation: {
+      required: true
+    }
+  },
+  email: {
     label: 'E-Mail',
     value: '',
     type: 'text',

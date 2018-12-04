@@ -5,7 +5,6 @@ import {ProgressService} from '../services/progress.service';
 import {MessageService} from '../services/message.service';
 import {UserService} from '../services/user.service';
 import {AuthenticationService} from '../core';
-import {Input} from '@angular/compiler/src/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {first} from 'rxjs/internal/operators';
 import {Router} from '@angular/router';

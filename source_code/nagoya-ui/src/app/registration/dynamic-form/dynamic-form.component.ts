@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {HttpClient} from '@angular/common/http';
-import {RegistrationService} from '../registration.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {RegistrationService} from '../../services/registration.service';
+import {ToastrService} from 'ngx-toastr';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -11,12 +12,18 @@ import {RegistrationService} from '../registration.service';
 export class DynamicFormComponent implements OnInit {
 
   @Input() dataObject;
-  @Input() submitFunction;
+  @Input() selectedPersonType;
   public form: FormGroup;
   public objectProps;
+  maxDate: Date;
+  minDate: Date =  new Date('1900-01-01');
 
-  constructor(private registrationService: RegistrationService) {
+  constructor(private registrationService: RegistrationService,
+              private router: Router,
+              private toastr: ToastrService) {
 
+    this.maxDate = new Date();
+    this.maxDate.setFullYear(new Date().getFullYear() - 18);
   }
 
   ngOnInit() {
@@ -32,7 +39,7 @@ export class DynamicFormComponent implements OnInit {
     for (const prop of Object.keys(this.dataObject)) {
       formGroup[prop] = new FormControl(this.dataObject[prop].value || '', this.mapValidators(this.dataObject[prop].validation));
     }
-
+    // this.minDate =
     this.form = new FormGroup(formGroup);
 
   }
@@ -53,10 +60,20 @@ export class DynamicFormComponent implements OnInit {
     return formValidators;
   }
 
-  onSubmit(form) {
-    if (this.submitFunction) {
-      this.submitFunction(form);
-    }
-  }
+  onSubmit() {
+    console.log(this.form.value, this.selectedPersonType);
+    this.registrationService.register(this.form.value, this.selectedPersonType)
+      .subscribe(response => {
+        this.router.navigate(['confirmation']);
 
+      }, error => {
+
+        console.log(error);
+        if (error.status === 409) {
+          this.toastr.error('The E-Mail Adress is already registered');
+        } else {
+          this.toastr.error('Registration failed');
+        }
+      });
+  }
 }

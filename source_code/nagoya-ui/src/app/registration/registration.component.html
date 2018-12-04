@@ -16,14 +16,12 @@
 
 
       <!--Natural Person Form-->
-      <app-dynamic-form [dataObject]="naturalPerson"
-                        *ngIf="selectedPersonType === 'natural'"
-                        [submitFunction]="submitForm"></app-dynamic-form>
+      <app-dynamic-form [dataObject]="naturalPerson" [selectedPersonType]="selectedPersonType"
+                        *ngIf="selectedPersonType === 'natural'"></app-dynamic-form>
 
       <!--Legal Person Form-->
-      <app-dynamic-form [dataObject]="legalPerson"
-                        *ngIf="selectedPersonType === 'legal'"
-                        [submitFunction]="submitForm"></app-dynamic-form>
+      <app-dynamic-form [dataObject]="legalPerson" [selectedPersonType]="selectedPersonType"
+                        *ngIf="selectedPersonType === 'legal'"></app-dynamic-form>
 
 
     </mat-card-content>
