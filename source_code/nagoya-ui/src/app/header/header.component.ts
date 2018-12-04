@@ -11,7 +11,8 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private i18nService: I18nService, private translate: TranslateService) {
+  constructor(private i18nService: I18nService,
+              private translate: TranslateService) {
 
   }
 

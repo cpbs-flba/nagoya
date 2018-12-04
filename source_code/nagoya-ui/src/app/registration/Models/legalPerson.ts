@@ -1,6 +1,6 @@
 export const legalPerson = {
   name: {
-    label: 'Name',
+    label: 'NAME',
     value: '',
     type: 'text',
     validation: {
@@ -8,7 +8,7 @@ export const legalPerson = {
     }
   },
   commercialRegisterNumber: {
-    label: 'Commercial Registernumber',
+    label: 'COMMERCIAL_REGISTER_NUMBER',
     value: '',
     type: 'text',
     validation: {
@@ -16,7 +16,7 @@ export const legalPerson = {
     }
   },
   taxNumber: {
-    label: 'tax Number',
+    label: 'TAX_NUMBER',
     value: '',
     type: 'text',
     validation: {
@@ -24,7 +24,7 @@ export const legalPerson = {
     }
   },
   email: {
-    label: 'E-Mail',
+    label: 'EMAIL',
     value: '',
     type: 'email',
     validation: {
@@ -32,7 +32,7 @@ export const legalPerson = {
     }
   },
   password: {
-    label: 'Password',
+    label: 'PASSWORD',
     value: '',
     type: 'password',
     validation: {
@@ -40,7 +40,7 @@ export const legalPerson = {
     }
   },
   passwordConfirmation: {
-    label: 'Password Confirmation',
+    label: 'PASSWORD_CONFIRMATION',
     value: '',
     type: 'password',
     validation: {

@@ -1,13 +1,14 @@
 {
-	"HOME": {
+	"HEADER": {
 		"TITLE": "Nagoya Protocol",
 		"SUBTITLE": "Access to genetic resources and benefit sharing",
 		"SELECT": "Language"
 	},
-	"SITES": {
+	"FOOTER": {
 		"ABOUT": "About",
 		"LEGAL": "Legal",
-		"TERMS": "Terms"
+		"TERMS": "Terms",
+		"SELECT": "Language"
 	},
 	"BROWSER_NOT_OK": {
 		"WARNING": "WARNING",

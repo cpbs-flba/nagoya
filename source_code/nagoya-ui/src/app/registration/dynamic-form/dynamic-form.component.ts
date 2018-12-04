@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {RegistrationService} from '../../services/registration.service';
 import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -16,11 +17,12 @@ export class DynamicFormComponent implements OnInit {
   public form: FormGroup;
   public objectProps;
   maxDate: Date;
-  minDate: Date =  new Date('1900-01-01');
+  minDate: Date = new Date('1900-01-01');
 
   constructor(private registrationService: RegistrationService,
               private router: Router,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private translate: TranslateService) {
 
     this.maxDate = new Date();
     this.maxDate.setFullYear(new Date().getFullYear() - 18);
@@ -68,12 +70,17 @@ export class DynamicFormComponent implements OnInit {
 
       }, error => {
 
-        console.log(error);
         if (error.status === 409) {
-          this.toastr.error('The E-Mail Adress is already registered');
+          this.displayErrorMessage('CONFIRMATION.ERROR.EMAIL_ALREADY_IN_USE');
         } else {
-          this.toastr.error('Registration failed');
+          this.displayErrorMessage('REGISTRATION.FORM.ERROR.REGISTRATION_FAILED');
         }
       });
+  }
+
+  displayErrorMessage(key) {
+    this.translate.get(key).subscribe(value => {
+      this.toastr.error(value);
+    });
   }
 }

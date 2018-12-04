@@ -3,26 +3,14 @@
     <!--<mat-card fxFlex="50%" class="cardStyling">-->
     <mat-card class="cardStyling" fxFlex="60">
       <mat-card-header>
-        <mat-card-title>About the Nagoya Protocoll</mat-card-title>
-        <mat-card-subtitle>Everything you need to know</mat-card-subtitle>
+        <mat-card-title><span>{{'LOGIN.ABOUT.TITLE'|translate}}</span></mat-card-title>
+        <mat-card-subtitle><span>{{'LOGIN.ABOUT.SUB_TITLE'|translate}}</span></mat-card-subtitle>
       </mat-card-header>
       <mat-divider></mat-divider>
 
       <mat-card-content>
         <div>
-          <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
-            et
-            dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
-            clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-            consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-            sed
-            diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-            takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-            sed
-            diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos
-            et
-            accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
-            dolor sit amet.</p>
+          <p><span>{{'LOGIN.ABOUT.CONTENT'|translate}}</span></p>
           <p>
             Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu
             feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
@@ -46,7 +34,7 @@
           <form (ngSubmit)="loginUser()" [formGroup]="loginForm" novalidate fxLayout="column" >
 
             <div  [hidden]="!error || isLoading" translate>
-              Username or password incorrect.
+              <span>{{'LOGIN.ERROR.WRONG_DATA'|translate}}</span>
             </div>
 
             <br/>
@@ -56,7 +44,8 @@
                      formControlName="email" autocomplete="email"
                      type="text" id="email" name="email">
               <mat-error *ngIf="loginForm.controls.email.valid || loginForm.controls.email.untouched">
-                <span translate>Email is required</span>
+                <span>{{'LOGIN.VALIDATION.EMAIL_REQUIRED'|translate}}</span>
+
               </mat-error>
             </mat-form-field>
 
@@ -65,7 +54,7 @@
                      formControlName="password" autocomplete="password"
                      type="password" id="password" name="password">
               <mat-error *ngIf="loginForm.controls.password.valid || loginForm.controls.password.untouched">
-                <span translate>Password is required</span>
+                <span>{{'LOGIN.VALIDATION.PASSWORD_REQUIRED'|translate}}</span>
               </mat-error>
             </mat-form-field>
             <button mat-raised-button color="accent" type="submit" [disabled]="loginRunning || (loginForm.touched && loginForm.invalid)" >
@@ -75,11 +64,12 @@
 
           <div fxLayout="column" class="loginRegistrationBox">
             <div>
-              <a class="loginHint" routerLink="/register">Don't have an account? Register here</a>
+              <a class="loginHint" routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.REGISTRATION_LINK'|translate}}</span>
+              </a>
             </div>
             <br/>
             <div>
-              <a class="loginHint" routerLink="/register">I forgot my password</a>
+              <a class="loginHint" routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.PASSWORD_RECOVERY'|translate}}</span></a>
             </div>
           </div>
 

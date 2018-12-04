@@ -1,6 +1,6 @@
 export const naturalPerson = {
   firstname: {
-    label: 'Firstname',
+    label: 'FIRSTNAME',
     value: '',
     type: 'text',
     validation: {
@@ -8,7 +8,7 @@ export const naturalPerson = {
     }
   },
   lastname: {
-    label: 'Lastname',
+    label: 'LASTNAME',
     value: '',
     type: 'text',
     validation: {
@@ -16,7 +16,7 @@ export const naturalPerson = {
     }
   },
   birthdate: {
-    label: 'Birthdate',
+    label: 'BIRTHDATE',
     value: '',
     type: 'date',
     validation: {
@@ -24,7 +24,7 @@ export const naturalPerson = {
     }
   },
   email: {
-    label: 'E-Mail',
+    label: 'EMAIL',
     value: '',
     type: 'text',
     validation: {
@@ -32,7 +32,7 @@ export const naturalPerson = {
     }
   },
   password: {
-    label: 'Password',
+    label: 'PASSWORD',
     value: '',
     type: 'password',
     validation: {
@@ -40,7 +40,7 @@ export const naturalPerson = {
     }
   },
   passwordConfirmation: {
-    label: 'Password Confirmation',
+    label: 'PASSWORD_CONFIRMATION',
     value: '',
     type: 'password',
     validation: {

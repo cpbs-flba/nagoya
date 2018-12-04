@@ -102,15 +102,15 @@ export function HttpLoaderFactory(http: HttpClient) {
     CookieModule.forRoot(),
     HttpClientModule,
     BrowserAnimationsModule,
-    TranslateModule.forRoot(),
+    // TranslateModule.forRoot(),
 
-    // TranslateModule.forRoot({
-    //   loader: {
-    //     provide: TranslateLoader,
-    //     useFactory: HttpLoaderFactory,
-    //     deps: [HttpClient]
-    //   },
-    // }),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      },
+    }),
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,

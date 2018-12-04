@@ -3,6 +3,7 @@ import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {switchMap} from 'rxjs/internal/operators';
 import {RegistrationService} from '../services/registration.service';
 import {ToastrService} from 'ngx-toastr';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-confirmation',
@@ -20,7 +21,9 @@ export class ConfirmationComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private registrationService: RegistrationService,
               private router: Router,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private translate: TranslateService) {
+
 
   }
 
@@ -42,19 +45,24 @@ export class ConfirmationComponent implements OnInit {
     this.registrationService.confirm(this.token)
       .subscribe(response => {
         // this.router.navigate(['confirmation']);
-        console.log(response);
         this.handleSuccess();
       }, error => {
         this.startedConfirmation = false;
+
         if (error.status === 400) {
-          this.toastr.error('Your token is invalid');
+          this.displayErrorMessage('CONFIRMATION.ERROR.TOKEN_INVALID');
         } else if (error.status === 408) {
-          this.toastr.error('Your token has expired');
-          // TODO decide what to do
+          this.displayErrorMessage('CONFIRMATION.ERROR.TOKEN_EXPIRED');
         } else {
-          this.toastr.error('Registration failed');
+          this.displayErrorMessage('CONFIRMATION.ERROR.REGISTRATION_FAILED');
         }
       });
+  }
+
+  displayErrorMessage(key) {
+    this.translate.get(key).subscribe(value => {
+      this.toastr.error(value);
+    });
   }
 
   handleSuccess() {

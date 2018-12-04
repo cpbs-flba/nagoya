@@ -22,10 +22,9 @@ export class AppComponent implements OnInit {
   title = 'Nagoya UI';
 
   constructor(
-    public incompatobleBrowserService: IncompatibleBrowserService,
-    public translate: TranslateService,
-    public cookieService: CookieAcceptedService,
-    public messageService: MessageService,
+    private incompatobleBrowserService: IncompatibleBrowserService,
+    private translate: TranslateService,
+    private cookieService: CookieAcceptedService,
     private i18nService: I18nService,
     private userService: UserService,
     private serverConfigService: ServerConfigService,
@@ -45,7 +44,6 @@ export class AppComponent implements OnInit {
   }
 
   setLanguage(language: string) {
-    console.log(language);
     this.i18nService.language = language;
   }
 

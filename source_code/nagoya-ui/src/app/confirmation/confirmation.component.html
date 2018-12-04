@@ -2,13 +2,13 @@
 
   <mat-card class="cardStyling" *ngIf="afterRegistration">
     <mat-card-header>
-      <mat-card-title>Your registration was successfull</mat-card-title>
-      <mat-card-subtitle>Please confirm your E-Mail address</mat-card-subtitle>
+      <mat-card-title><span>{{'CONFIRMATION.AFTER_REGISTRATION.TITLE'|translate}}</span></mat-card-title>
+      <mat-card-subtitle><span>{{'CONFIRMATION.AFTER_REGISTRATION.SUB_TITLE'|translate}}</span></mat-card-subtitle>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
       <br/>
-      <p>A confirmation E-Mail was sent to you. Please follow the descriptions in order to confirm your registration</p>
+      <p><span>{{'CONFIRMATION.AFTER_REGISTRATION.CONTENT'|translate}}</span></p>
 
     </mat-card-content>
   </mat-card>
@@ -16,34 +16,25 @@
   <mat-card class="cardStyling" *ngIf="!afterRegistration">
     <mat-card-header>
       <mat-card-title>
-        <span *ngIf="startedConfirmation">Your Registration will be validated</span>
-        <span *ngIf="tokenConfirmed">Your registration was successfull</span>
-        <span *ngIf="!tokenConfirmed">Your registration was not successfull</span>
+        <span *ngIf="startedConfirmation">{{'CONFIRMATION.VALIDATION.START.TITLE'|translate}}</span>
+        <span *ngIf="tokenConfirmed">{{'CONFIRMATION.VALIDATION.SUCCESS.TITLE'|translate}}</span>
+        <span *ngIf="!tokenConfirmed">{{'CONFIRMATION.VALIDATION.FAILED.TITLE'|translate}}</span>
       </mat-card-title>
       <mat-card-subtitle>
-        <span *ngIf="startedConfirmation">Please wait for the confirmation</span>
-        <span *ngIf="tokenConfirmed">Your Registration was confirmed</span>
-        <span *ngIf="!tokenConfirmed">Your Registration was could not be confirmed</span>
+        <br />
+        <span *ngIf="startedConfirmation">{{'CONFIRMATION.VALIDATION.START.SUB_TITLE'|translate}}</span>
+        <span *ngIf="tokenConfirmed">{{'CONFIRMATION.VALIDATION.SUCCESS.SUB_TITLE'|translate}}</span>
+        <span *ngIf="!tokenConfirmed">{{'CONFIRMATION.VALIDATION.FAILED.SUB_TITLE'|translate}}</span>
       </mat-card-subtitle>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content>
       <mat-spinner *ngIf="spinner" class="spinner"></mat-spinner>
-
-      <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-        dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
-        clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-        consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed
-        diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-        takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-        diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-        accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
-        dolor sit amet.
-
-        Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu
-        feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
-        delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-        sed diam
+      <br />
+      <p>
+        <span *ngIf="startedConfirmation">{{'CONFIRMATION.VALIDATION.START.CONTENT'| translate}}</span>
+        <span *ngIf="tokenConfirmed">{{'CONFIRMATION.VALIDATION.SUCCESS.CONTENT'| translate}}</span>
+        <span *ngIf="!tokenConfirmed">{{'CONFIRMATION.VALIDATION.FAILED.CONTENT'| translate}}</span>
       </p>
     </mat-card-content>
   </mat-card>

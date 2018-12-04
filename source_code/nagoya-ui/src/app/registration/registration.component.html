@@ -1,8 +1,8 @@
 <div class="wrapper">
   <mat-card class="cardStyling">
     <mat-card-header>
-      <mat-card-title>Registration Form</mat-card-title>
-      <mat-card-subtitle>Please fill your information to login</mat-card-subtitle>
+      <mat-card-title><span>{{'REGISTRATION.FORM.TITLE'|translate}}</span></mat-card-title>
+      <mat-card-subtitle><span>{{'REGISTRATION.FORM.SUB_TITLE'|translate}}</span></mat-card-subtitle>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content fxLayout="column">
@@ -10,7 +10,7 @@
       <mat-radio-group [(ngModel)]="selectedPersonType" class="personTypeGroup" fxLayout="column"
                        fxLayoutAlign="start stretch">
         <mat-radio-button *ngFor="let personType of personTypes" [value]="personType" class="personTypeOption">
-          {{personType}}
+          <span>{{'REGISTRATION.FORM.PERSON_TYPE.' + personType |translate}}</span>
         </mat-radio-button>
       </mat-radio-group>
 

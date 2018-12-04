@@ -1,30 +1,109 @@
 {
-	"HOME": {
-		"TITLE": "Nagoya Protokoll",
-		"SUBTITLE" : "Zugang zu genetischen Ressourcen und Benefit Sharing",
-		"SELECT": "Sprache"
-	},
-	"SITES": {
-		"ABOUT": "Über uns",
-		"LEGAL": "Impressum",
-		"TERMS": "AGB"
-	},
-	"BROWSER_NOT_OK": {
-		"WARNING": "WARNUNG",
-		"ERROR_MSG" : "Sie verwenden einen veralteten Browser das nicht mehr unterstützt wird.",
-		"RECOMMENDED_BROWSER": "Bitte aktualisieren Sie Ihren Browser oder verwenden Sie eines der folgenden empfohlenen Browser:"
-	},
-	"GENERAL": {
-		"EMAIL": "E-Mail",
-		"PASSWORD": "Kennwort",
-		"PASSWORD_CONFIRMATION": "Kennwort bestätigen",
-		"AUTHENTICATE": "Anmelden",
-		"REGISTER": "Registrieren",
-		"FIRSTNAME": "Vorname",
-		"LASTNAME": "Nachname"
-	},
-	"MESSAGES": {
-		"COOKIE_MESSAGE": "Wir verwenden Cookies um eine bessere User Experience anzubieten.",
-		"SERVER_UNREACHABLE": "Serverkommunikation fehlgeschlagen. Bitte versuchen Sie es später erneut."
-	}
+  "HEADER": {
+    "TITLE": "Nagoya Protokoll",
+    "SUBTITLE": "Zugang zu genetischen Ressourcen und Benefit Sharing",
+    "SELECT": "Sprache"
+  },
+  "FOOTER": {
+    "SELECT": "Sprache",
+    "TERMS": "AGB",
+    "LEGAL": "Impressum",
+    "LOGOUT": "Abmelden"
+  },
+  "BROWSER_NOT_OK": {
+    "WARNING": "WARNUNG",
+    "ERROR_MSG": "Sie verwenden einen veralteten Browser das nicht mehr unterstützt wird.",
+    "RECOMMENDED_BROWSER": "Bitte aktualisieren Sie Ihren Browser oder verwenden Sie eines der folgenden empfohlenen Browser:"
+  },
+  "GENERAL": {
+    "EMAIL": "E-Mail",
+    "PASSWORD": "Kennwort",
+    "PASSWORD_CONFIRMATION": "Kennwort bestätigen",
+    "AUTHENTICATE": "Anmelden",
+    "REGISTER": "Registrieren",
+    "FIRSTNAME": "Vorname",
+    "LASTNAME": "Nachname"
+  },
+  "MESSAGES": {
+    "COOKIE_MESSAGE": "Wir verwenden Cookies um eine bessere User Experience anzubieten.",
+    "SERVER_UNREACHABLE": "Serverkommunikation fehlgeschlagen. Bitte versuchen Sie es später erneut."
+  },
+  "LOGIN": {
+    "ERROR": {
+      "WRONG_DATA": "Benutzername oder Passwort stimmen nicht überein",
+      "INVALID_INPUT":"Ungültige Eingabe, bitte prüfen Sie Ihre Eingabe",
+      "NOT_CONFIRMED":"Sie müssen Ihr Konto erst bestätigen, prüfen Sie Ihren E-Mail Posteingang",
+      "UNSPECIFIED":"Die Anmeldung ist fehlgeschlagen"
+    },
+    "VALIDATION": {
+      "EMAIL_REQUIRED": "Benutzername/E-Mail wird benötigt",
+      "PASSWORD_REQUIRED": "Passwort wird benötigt"
+    },
+    "LOGIN_FORM": {
+      "REGISTRATION_LINK": "Noch kein Konto? Registrieren Sie sich hier",
+      "PASSWORD_RECOVERY": "Passwort vergessen?"
+    },
+    "ABOUT": {
+      "TITLE": "Über das Nagoya Protokoll",
+      "SUB_TITLE": "Alle wichtigen Informationen",
+      "CONTENT": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stetclita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    }
+  },
+  "REGISTRATION": {
+    "FORM": {
+      "TITLE": "Anmeldeformular",
+      "SUB_TITLE": "Bitte geben Sie Ihre Daten ein, um sich zu registrieren ",
+      "PERSON_TYPE": {
+        "natural": "Natürliche Person",
+        "legal": "Rechtsperson"
+      },
+      "MODEL": {
+        "LASTNAME": "Nachname",
+        "FIRSTNAME": "Vorname",
+        "NAME": "Name",
+        "COMMERCIAL_REGISTER_NUMBER": "Handelsregisternummer",
+        "TAX_NUMBER": "Steuernummer",
+        "EMAIL": "E-Mail",
+        "PASSWORD": "Passwort",
+        "PASSWORD_CONFIRMATION": "Password Bestätigung",
+        "BIRTHDATE": "Geburtsdatum"
+      },
+      "BUTTON": {
+        "REGISTER": "Registrieren"
+      },
+      "ERROR" : {
+        "EMAIL_ALREADY_IN_USE":"Die angegebene E-Mail Adresse wird bereits verwendet",
+        "REGISTRATION_FAILED":"Die Registrierung ist fehlgeschlagen"
+      }
+    }
+  },
+  "CONFIRMATION": {
+    "AFTER_REGISTRATION": {
+      "TITLE": "Registrierung war erfolgreich",
+      "SUB_TITLE": "Bitte bestätigen Sie Ihre Registrierung",
+      "CONTENT": "Es wurde eine E-Mail an die angegebene E-Mail Adresse gesendet. Bitte folgen Sie den Anweisungen der E-Mail um Ihr Konto zu verifizieren"
+    },
+    "VALIDATION": {
+      "START": {
+        "TITLE":"Ihre Registrierung wird validiert",
+        "SUB_TITLE":"Bitte um einen Moment geduld",
+        "CONTENT":"Ihre Registrierung wird validiert und ihr Konto erstellt."
+      },
+      "SUCCESS": {
+        "TITLE":"Ihre Registrierung war erfolgreich",
+        "SUB_TITLE":"Ihre E-Mail Adresse wurde bestätigt",
+        "CONTENT":"Ihr Konto wurde erstellt. Sie können sich mit Ihrer verifizierten E-Mail Adresse nun einloggen."
+      },
+      "FAILED": {
+        "TITLE":"Ihre Registrierung war nicht erfolgreich",
+        "SUB_TITLE":"Wir konnten Ihre E-Mail Adresse nicht bestätigen",
+        "CONTENT":"Bitte starten Sie den Registrierungsprozess erneut. Beachten Sie, dass die Bestätiguns E-Mail ablaufen kann"
+      }
+    },
+    "ERROR":{
+      "TOKEN_INVALID":"Der Registrierungstoken ist ungültig",
+      "TOKEN_EXPIRED":"Der Registrierungstoken ist abgelaufen",
+      "REGISTRATION_FAILED":"Die Registrierung ist fehlgeschlagen"
+    }
+  }
 }

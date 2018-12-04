@@ -6,18 +6,18 @@
 
       <mat-form-field *ngSwitchCase="'text'" fxFlex="100">
         <input matInput [formControlName]="property.key" [id]="property.key"
-               [type]="property.type" [placeholder]="property.label">
+               [type]="property.type" [placeholder]=" 'REGISTRATION.FORM.MODEL.'+property.label | translate">
       </mat-form-field>
 
 
       <mat-form-field *ngSwitchCase="'password'" fxFlex="100">
         <input matInput [formControlName]="property.key" [id]="property.key"
-               [type]="property.type" [placeholder]="property.label">
+               [type]="property.type" [placeholder]="'REGISTRATION.FORM.MODEL.'+property.label | translate">
       </mat-form-field>
 
       <mat-form-field *ngSwitchCase="'date'" fxFlex="100">
         <input matInput [matDatepicker]="picker"
-               [formControlName]="property.key" [placeholder]="property.label"  [max]="maxDate" [min]="minDate" [id]="property.key">
+               [formControlName]="property.key" [placeholder]="'REGISTRATION.FORM.MODEL.'+property.label | translate"  [max]="maxDate" [min]="minDate" [id]="property.key">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker startView="year"></mat-datepicker>
       </mat-form-field>
@@ -25,6 +25,6 @@
   </div>
 
   <p class="submitFormButton">
-    <button fxFlex="100" type="submit" mat-raised-button color="accent" [disabled]="form.invalid">Save</button>
+    <button fxFlex="100" type="submit" mat-raised-button color="accent" [disabled]="form.invalid"><span>{{'REGISTRATION.FORM.BUTTON.REGISTER' | translate}}</span></button>
   </p>
 </form>
