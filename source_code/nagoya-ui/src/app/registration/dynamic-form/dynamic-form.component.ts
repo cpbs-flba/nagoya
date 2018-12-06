@@ -7,7 +7,7 @@ import {MessageService} from '../../services/message.service';
 @Component({
   selector: 'app-dynamic-form',
   templateUrl: './dynamic-form.component.html',
-  styleUrls: ['./dynamic-form.component.scss']
+  styleUrls: ['./dynamic-form.component.scss'],
 })
 export class DynamicFormComponent implements OnInit {
 
@@ -17,6 +17,7 @@ export class DynamicFormComponent implements OnInit {
   public objectProps;
   maxDate: Date;
   minDate: Date = new Date('1900-01-01');
+  spinner = false;
 
   constructor(private registrationService: RegistrationService,
               private router: Router,
@@ -61,14 +62,17 @@ export class DynamicFormComponent implements OnInit {
   }
 
   onSubmit() {
+    this.spinner = true;
     this.registrationService.register(this.form.value, this.selectedPersonType)
       .subscribe(response => {
+        this.spinner = false;
         this.router.navigate(['confirmation']);
 
       }, error => {
+        this.spinner = false;
 
         if (error.status === 409) {
-          this.messageService.displayErrorMessage('CONFIRMATION.ERROR.EMAIL_ALREADY_IN_USE');
+          this.messageService.displayErrorMessage('REGISTRATION.ERROR.EMAIL_ALREADY_IN_USE');
         } else {
           this.messageService.displayErrorMessage('REGISTRATION.FORM.ERROR.REGISTRATION_FAILED');
         }

@@ -14,7 +14,7 @@ export class ConfirmationComponent implements OnInit {
   afterRegistration: boolean;
   startedConfirmation: boolean = false;
   tokenConfirmed: boolean;
-  spinner: boolean = false;
+  spinner = false;
   token: string;
 
   constructor(private route: ActivatedRoute,
@@ -43,8 +43,8 @@ export class ConfirmationComponent implements OnInit {
     this.startedConfirmation = true;
     this.registrationService.confirm(this.token)
       .subscribe(response => {
-        // this.router.navigate(['confirmation']);
-        this.handleSuccess();
+        this.startedConfirmation = false;
+        this.tokenConfirmed = true;
       }, error => {
         this.startedConfirmation = false;
 
@@ -57,15 +57,5 @@ export class ConfirmationComponent implements OnInit {
         }
       });
   }
-
-  handleSuccess() {
-    this.delay(3000);
-
-  }
-
-  async delay(ms: number) {
-    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => this.startedConfirmation = false);
-  }
-
 
 }

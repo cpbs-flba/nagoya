@@ -22,7 +22,7 @@ export class RegistrationService {
   }
 
   public confirm(token) {
-    return this.http.post<any>(environment.serverUrl + 'users/confirm?token=' + token, {
+    return this.http.post<any>(environment.serverUrl + 'users/confirm?token=' + token, {}, {
       headers: new HttpHeaders({'Content-Type': 'application/json'}),
       observe: 'response'
     });

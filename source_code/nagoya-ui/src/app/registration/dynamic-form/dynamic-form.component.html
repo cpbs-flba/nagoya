@@ -1,4 +1,6 @@
-<form novalidate (ngSubmit)="onSubmit(form.value)" [(formGroup)]="form" fxLayout="column">
+<mat-spinner *ngIf="spinner" class="spinner"></mat-spinner>
+
+<form novalidate (ngSubmit)="onSubmit()" [(formGroup)]="form" fxLayout="column">
 
   <div *ngFor="let property of objectProps">
 
@@ -25,6 +27,6 @@
   </div>
 
   <p class="submitFormButton">
-    <button fxFlex="100" type="submit" mat-raised-button color="accent" [disabled]="form.invalid"><span>{{'REGISTRATION.FORM.BUTTON.REGISTER' | translate}}</span></button>
+    <button fxFlex="100" type="submit" mat-raised-button color="accent" [disabled]="form.invalid || spinner"><span>{{'REGISTRATION.FORM.BUTTON.REGISTER' | translate}}</span></button>
   </p>
 </form>

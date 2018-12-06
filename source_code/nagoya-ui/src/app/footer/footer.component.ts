@@ -12,8 +12,8 @@ import {Router} from '@angular/router';
 })
 export class FooterComponent implements OnInit {
 
-  constructor(private i18nService: I18nService,
-              private translate: TranslateService,
+  constructor(public i18nService: I18nService,
+              public translate: TranslateService,
               private authenticationService: AuthenticationService,
               private router: Router) {
   }
@@ -24,7 +24,6 @@ export class FooterComponent implements OnInit {
   }
 
   setLanguage(language: string) {
-    console.log(language);
     this.i18nService.language = language;
   }
 

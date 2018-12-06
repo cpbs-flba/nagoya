@@ -33,7 +33,7 @@
         <div fxFlex="100%" class="loginForm">
           <form (ngSubmit)="loginUser()" [formGroup]="loginForm" novalidate fxLayout="column" >
 
-            <div  [hidden]="!error || isLoading" translate>
+            <div  [hidden]="!error || loginRunning" translate>
               <span>{{'LOGIN.ERROR.WRONG_DATA'|translate}}</span>
             </div>
 

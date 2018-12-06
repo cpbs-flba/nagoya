@@ -12,8 +12,8 @@ import {Router} from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private i18nService: I18nService,
-              private translate: TranslateService,
+  constructor(public i18nService: I18nService,
+              public translate: TranslateService,
               private router: Router) {
 
   }

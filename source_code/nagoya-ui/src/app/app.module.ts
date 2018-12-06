@@ -1,5 +1,5 @@
 // angular components
-import {LOCALE_ID, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule, HttpClient} from '@angular/common/http';
@@ -72,7 +72,8 @@ import {CommonModule} from '@angular/common';
 import {ToastrModule} from 'ngx-toastr';
 import {RegistrationComponent} from './registration/registration.component';
 import {DynamicFormComponent} from './registration/dynamic-form/dynamic-form.component';
-import { ConfirmationComponent } from './confirmation/confirmation.component';
+import {ConfirmationComponent} from './confirmation/confirmation.component';
+import {MatMomentDateModule} from '@angular/material-moment-adapter';
 
 // import {RegistrationModule} from './registration/registration.module';
 
@@ -102,15 +103,15 @@ export function HttpLoaderFactory(http: HttpClient) {
     CookieModule.forRoot(),
     HttpClientModule,
     BrowserAnimationsModule,
-    // TranslateModule.forRoot(),
+    TranslateModule.forRoot(),
 
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      },
-    }),
+    // TranslateModule.forRoot({
+    //   loader: {
+    //     provide: TranslateLoader,
+    //     useFactory: HttpLoaderFactory,
+    //     deps: [HttpClient]
+    //   },
+    // }),
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
@@ -142,7 +143,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserAnimationsModule,
     CommonModule,
     ToastrModule.forRoot(),
-    // RegistrationModule,
+    MatMomentDateModule
   ],
   exports: [
     MatAutocompleteModule,
@@ -182,7 +183,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatTreeModule
   ],
   entryComponents: [CookiesDialogComponent],
-  providers: [{provide: LOCALE_ID, useValue: 'de-AT'}],
+  providers: [{provide: MAT_DATE_LOCALE, useValue: 'de-AT'}],
   bootstrap: [AppComponent]
 })
 export class AppModule {
