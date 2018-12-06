@@ -61,7 +61,6 @@ export class DynamicFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value, this.selectedPersonType);
     this.registrationService.register(this.form.value, this.selectedPersonType)
       .subscribe(response => {
         this.router.navigate(['confirmation']);
