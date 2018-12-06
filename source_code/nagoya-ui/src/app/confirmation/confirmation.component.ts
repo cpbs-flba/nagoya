@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {switchMap} from 'rxjs/internal/operators';
+import {ActivatedRoute, Router} from '@angular/router';
 import {RegistrationService} from '../services/registration.service';
-import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
+import {MessageService} from '../services/message.service';
 
 @Component({
   selector: 'app-confirmation',
@@ -21,7 +20,7 @@ export class ConfirmationComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private registrationService: RegistrationService,
               private router: Router,
-              private toastr: ToastrService,
+              private messageService: MessageService,
               private translate: TranslateService) {
 
 
@@ -50,19 +49,13 @@ export class ConfirmationComponent implements OnInit {
         this.startedConfirmation = false;
 
         if (error.status === 400) {
-          this.displayErrorMessage('CONFIRMATION.ERROR.TOKEN_INVALID');
+          this.messageService.displayErrorMessage('CONFIRMATION.ERROR.TOKEN_INVALID');
         } else if (error.status === 408) {
-          this.displayErrorMessage('CONFIRMATION.ERROR.TOKEN_EXPIRED');
+          this.messageService.displayErrorMessage('CONFIRMATION.ERROR.TOKEN_EXPIRED');
         } else {
-          this.displayErrorMessage('CONFIRMATION.ERROR.REGISTRATION_FAILED');
+          this.messageService.displayErrorMessage('CONFIRMATION.ERROR.REGISTRATION_FAILED');
         }
       });
-  }
-
-  displayErrorMessage(key) {
-    this.translate.get(key).subscribe(value => {
-      this.toastr.error(value);
-    });
   }
 
   handleSuccess() {

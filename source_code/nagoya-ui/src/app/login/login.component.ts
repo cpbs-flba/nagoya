@@ -30,8 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               private messageService: MessageService,
               private authenticationService: AuthenticationService,
               private router: Router,
-              private toastr: ToastrService,
-              private translate: TranslateService) {
+              ) {
     this.createForm();
   }
 
@@ -69,12 +68,12 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.loginRunning = false;
         if (error.status === 401) {
           // this.toastr.error('Invalid Input. Please check your credentials');
-          this.displayErrorMessage('LOGIN.ERROR.INVALID_INPUT');
+          this.messageService.displayErrorMessage('LOGIN.ERROR.INVALID_INPUT');
         } else if (error.status === 403) {
           // this.toastr.error('Please confirm your E-Mail first.');
-          this.displayErrorMessage('LOGIN.ERROR.NOT_CONFIRMED');
+          this.messageService.displayErrorMessage('LOGIN.ERROR.NOT_CONFIRMED');
         } else {
-          this.displayErrorMessage('LOGIN.ERROR.UNSPECIFIED');
+          this.messageService.displayErrorMessage('LOGIN.ERROR.UNSPECIFIED');
         }
       });
   }
@@ -89,13 +88,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   isLoggedIn() {
     return this.authenticationService.isAuthenticated();
-  }
-
-  // TODO Refactor
-  displayErrorMessage(key) {
-    this.translate.get(key).subscribe(value => {
-      this.toastr.error(value);
-    });
   }
 
 }

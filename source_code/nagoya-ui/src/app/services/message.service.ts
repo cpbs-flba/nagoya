@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import {ToastrService} from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class MessageService {
   warningMessages: string[] = [];
 
   constructor(
-    public translate: TranslateService
+    private translate: TranslateService,
+    private toastr: ToastrService,
   ) {
     // noop
   }
@@ -56,4 +58,9 @@ export class MessageService {
     this.successMessages.push(message);
   }
 
+  displayErrorMessage(key) {
+    this.translate.get(key).subscribe(value => {
+      this.toastr.error(value);
+    });
+  }
 }

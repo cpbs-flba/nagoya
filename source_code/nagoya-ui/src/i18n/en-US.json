@@ -1,31 +1,109 @@
 {
-	"HEADER": {
-		"TITLE": "Nagoya Protocol",
-		"SUBTITLE": "Access to genetic resources and benefit sharing",
-		"SELECT": "Language"
-	},
-	"FOOTER": {
-		"ABOUT": "About",
-		"LEGAL": "Legal",
-		"TERMS": "Terms",
-		"SELECT": "Language"
-	},
-	"BROWSER_NOT_OK": {
-		"WARNING": "WARNING",
-		"ERROR_MSG": "You are using an outdated browser, which is not supported.",
-		"RECOMMENDED_BROWSER": "Please update your browser or use one of the following recommended browsers:"
-	},
-	"GENERAL": {
-		"EMAIL": "E-Mail",
-		"PASSWORD": "Password",
-		"PASSWORD_CONFIRMATION": "Password confirmation",
-		"AUTHENTICATE": "Login",
-		"REGISTER": "Sign up",
-		"FIRSTNAME": "First name",
-		"LASTNAME": "Last name"
-	},
-	"MESSAGES": {
-		"COOKIE_MESSAGE": "We are using cookies to provide a better user experience.",
-		"SERVER_UNREACHABLE": "Server communication failed. Please try again later."
-	}
+  "HEADER": {
+    "TITLE": "Nagoya Protocol",
+    "SUBTITLE": "Access to genetic resources and benefit sharing",
+    "SELECT": "Language"
+  },
+  "FOOTER": {
+    "SELECT": "Language",
+    "TERMS": "Terms",
+    "LEGAL": "Legal",
+    "LOGOUT": "Logout"
+  },
+  "BROWSER_NOT_OK": {
+    "WARNING": "WARNUNG",
+    "ERROR_MSG": "You are using an outdated browser, which is not supported.",
+    "RECOMMENDED_BROWSER": "Please update your browser or use one of the following recommended browsers:"
+  },
+  "GENERAL": {
+    "EMAIL": "E-Mail",
+    "PASSWORD": "Password",
+    "PASSWORD_CONFIRMATION": "Password Confirmation",
+    "AUTHENTICATE": "Login",
+    "REGISTER": "Register",
+    "FIRSTNAME": "Firstname",
+    "LASTNAME": "Lastname"
+  },
+  "MESSAGES": {
+    "COOKIE_MESSAGE": "We use cookies to provide a better user experience",
+    "SERVER_UNREACHABLE": "Server communication failed. Please try again later."
+  },
+  "LOGIN": {
+    "ERROR": {
+      "WRONG_DATA": "E-Mail or Password do not match",
+      "INVALID_INPUT":"Invalid Credentials, please check your Input.",
+      "NOT_CONFIRMED":"You need to confirm your account first, check your e-mail inbox",
+      "UNSPECIFIED":"The login failed"
+    },
+    "VALIDATION": {
+      "EMAIL_REQUIRED": "Username/E-Mail is required",
+      "PASSWORD_REQUIRED": "Password is required"
+    },
+    "LOGIN_FORM": {
+      "REGISTRATION_LINK": "No account yet? register here",
+      "PASSWORD_RECOVERY": "forgot password?"
+    },
+    "ABOUT": {
+      "TITLE": "Everything about the Nagoya Protocol",
+      "SUB_TITLE": "All important information",
+      "CONTENT": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stetclita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    }
+  },
+  "REGISTRATION": {
+    "FORM": {
+      "TITLE": "Registration Form",
+      "SUB_TITLE": "Please enter your Data into the form to register",
+      "PERSON_TYPE": {
+        "natural": "Natural Person",
+        "legal": "Legal Person"
+      },
+      "MODEL": {
+        "LASTNAME": "Lastname",
+        "FIRSTNAME": "Firstname",
+        "NAME": "Name",
+        "COMMERCIAL_REGISTER_NUMBER": "Commercial Register Number",
+        "TAX_NUMBER": "Tax Number",
+        "EMAIL": "E-Mail",
+        "PASSWORD": "Password",
+        "PASSWORD_CONFIRMATION": "Password Confirmation",
+        "BIRTHDATE": "Birthdate"
+      },
+      "BUTTON": {
+        "REGISTER": "Sign up"
+      },
+      "ERROR" : {
+        "EMAIL_ALREADY_IN_USE":"The specified e-mail address is already in use",
+        "REGISTRATION_FAILED":"The registration failed"
+      }
+    }
+  },
+  "CONFIRMATION": {
+    "AFTER_REGISTRATION": {
+      "TITLE": "Registration was successful",
+      "SUB_TITLE": "Please confirm your registration",
+      "CONTENT": "An e-mail has been sent to the entered e-mail address. Please follow the instructions in the e-mail to verify your account"
+    },
+    "VALIDATION": {
+      "START": {
+        "TITLE":"Your registration will be validated",
+        "SUB_TITLE":"Please be patient for a moment",
+        "CONTENT":"Your registration will be validated and your account will be created."
+      },
+      "SUCCESS": {
+        "TITLE":"Your registration was successful",
+        "SUB_TITLE":"Your e-mail address has been confirmed",
+        "CONTENT":"Your account has been created. You can now log in with your verified e-mail address."
+      },
+      "FAILED": {
+        "TITLE":"Your registration was unsuccessful",
+        "SUB_TITLE":"We could not confirm your e-mail address",
+        "CONTENT":"Please start the registration process again. Note that the confirmation e-mail can expire."
+      }
+    },
+    "ERROR":{
+      "TOKEN_INVALID":"The registration token is invalid",
+      "TOKEN_EXPIRED":"The registration token has expired",
+      "REGISTRATION_FAILED":"The registration failed"
+    }
+  }
 }

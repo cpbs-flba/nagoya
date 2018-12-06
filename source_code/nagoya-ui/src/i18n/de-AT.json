@@ -65,7 +65,7 @@
         "TAX_NUMBER": "Steuernummer",
         "EMAIL": "E-Mail",
         "PASSWORD": "Passwort",
-        "PASSWORD_CONFIRMATION": "Password Bestätigung",
+        "PASSWORD_CONFIRMATION": "Passwort Bestätigung",
         "BIRTHDATE": "Geburtsdatum"
       },
       "BUTTON": {
