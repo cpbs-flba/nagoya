@@ -9,14 +9,15 @@ import {AuthenticationService, Credentials} from '../core';
 export class HomeComponent implements OnInit {
 
   userCredentials: Credentials;
+  email: string;
 
   constructor(private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
     this.userCredentials = this.authenticationService.credentials;
+    this.email = this.userCredentials.email;
   }
-
 
 
 }
