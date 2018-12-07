@@ -9,6 +9,7 @@ import {AuthenticationGuard} from './core/authentication/authentication.guard';
 import {HomeComponent} from './home/home.component';
 import {RegistrationComponent} from './registration/registration.component';
 import {ConfirmationComponent} from './confirmation/confirmation.component';
+import {ResourceComponent} from './resource/resource.component';
 
 const routes: Routes = [
   {path: 'about', component: AboutComponent, },
@@ -19,7 +20,8 @@ const routes: Routes = [
   {path: 'browsernotok', component: IncompatibleBrowserComponent},
   {path: 'home', component: HomeComponent, canActivate: [AuthenticationGuard]},
   {path: 'confirmation', component: ConfirmationComponent},
-  {path: 'confirmation/:tokena', component: ConfirmationComponent},
+  {path: 'confirmation/:token', component: ConfirmationComponent},
+  {path: 'resource', component: ResourceComponent},
   {
     path: '',
     redirectTo: '/login',

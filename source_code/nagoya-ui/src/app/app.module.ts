@@ -74,6 +74,9 @@ import {RegistrationComponent} from './registration/registration.component';
 import {DynamicFormComponent} from './registration/dynamic-form/dynamic-form.component';
 import {ConfirmationComponent} from './confirmation/confirmation.component';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
+import { ResourceComponent } from './resource/resource.component';
+import { CreationComponent } from './resource/creation/creation.component';
+import { TemplateComponent } from './resource/template/template.component';
 
 // import {RegistrationModule} from './registration/registration.module';
 
@@ -96,7 +99,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     HomeComponent,
     RegistrationComponent,
     DynamicFormComponent,
-    ConfirmationComponent
+    ConfirmationComponent,
+    ResourceComponent,
+    CreationComponent,
+    TemplateComponent
   ],
   imports: [
     BrowserModule,
@@ -136,6 +142,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatJumbotronModule,
     MatGridListModule,
     MatMenuModule,
+    MatListModule,
     MatCardModule,
     MatDividerModule,
     MatButtonModule,
@@ -143,7 +150,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserAnimationsModule,
     CommonModule,
     ToastrModule.forRoot(),
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatIconModule,
+    MatExpansionModule
   ],
   exports: [
     MatAutocompleteModule,
