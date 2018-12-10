@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {I18nService} from '../services/i18n.service';
 import {environment} from '../../environments/environment';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
+import {AuthenticationService} from '../core';
+import {MediaMatcher} from '@angular/cdk/layout';
 
 
 @Component({
@@ -14,9 +16,11 @@ export class HeaderComponent implements OnInit {
 
   constructor(public i18nService: I18nService,
               public translate: TranslateService,
-              private router: Router) {
-
+              private router: Router,
+              private authenticationService: AuthenticationService) {
   }
+
+  navigationLinks = ['home', 'resource'];
 
 
   ngOnInit(): void {
@@ -28,7 +32,12 @@ export class HeaderComponent implements OnInit {
   }
 
   navigateToHome() {
-    this.router.navigate(['home']);  }
+    this.router.navigate(['home']);
+  }
+
+  isLoggedIn() {
+    return this.authenticationService.isAuthenticated();
+  }
 }
 
 

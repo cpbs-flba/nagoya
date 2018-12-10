@@ -31,9 +31,9 @@
       <mat-card-content fxLayoutAlign="center center">
         <!--Login Form-->
         <div fxFlex="100%" class="loginForm">
-          <form (ngSubmit)="loginUser()" [formGroup]="loginForm" novalidate fxLayout="column" >
+          <form (ngSubmit)="loginUser()" [formGroup]="loginForm" novalidate fxLayout="column">
 
-            <div  [hidden]="!error || loginRunning" translate>
+            <div [hidden]="!error || loginRunning" translate>
               <span>{{'LOGIN.ERROR.WRONG_DATA'|translate}}</span>
             </div>
 
@@ -57,19 +57,33 @@
                 <span>{{'LOGIN.VALIDATION.PASSWORD_REQUIRED'|translate}}</span>
               </mat-error>
             </mat-form-field>
-            <button mat-raised-button color="accent" type="submit" [disabled]="loginRunning || (loginForm.touched && loginForm.invalid)" >
+
+
+
+            <button mat-raised-button color="accent" type="submit"
+                    [disabled]="loginRunning || (loginForm.touched && loginForm.invalid)">
               {{ 'GENERAL.AUTHENTICATE' | translate }}
             </button>
           </form>
 
+
           <div fxLayout="column" class="loginRegistrationBox">
+          <mat-form-field>
+            <mat-select placeholder="{{'HEADER.SELECT'|translate}}" #langSelect [value]="translate.currentLang"
+                        (selectionChange)="setLanguage(langSelect.value)">
+              <mat-option *ngFor="let lang of i18nService.supportedLanguages" [value]="lang">{{lang}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
             <div>
-              <a class="loginHint" routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.REGISTRATION_LINK'|translate}}</span>
+              <a class="loginHint"
+                 routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.REGISTRATION_LINK'|translate}}</span>
               </a>
             </div>
             <br/>
             <div>
-              <a class="loginHint" routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.PASSWORD_RECOVERY'|translate}}</span></a>
+              <a class="loginHint"
+                 routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.PASSWORD_RECOVERY'|translate}}</span></a>
             </div>
           </div>
 

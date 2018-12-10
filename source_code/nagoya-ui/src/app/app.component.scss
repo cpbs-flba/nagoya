@@ -1,0 +1,85 @@
+
+.wrapper {
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+  height: auto !important;
+  min-height: 100%;
+  min-width: 100%;
+  position: absolute;
+}
+
+.contentWrapper {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  /*min-height: 100%;*/
+  height: auto !important;
+  min-height: calc(100vh - 75px - 110px);
+
+  /*min-height: 100%;*/
+
+}
+
+.footer {
+  /*position:static;*/
+  width: 100%;
+  line-height: 1em;
+  /*bottom: 0;*/
+}
+
+.headerImg {
+  margin: 2.5%;
+}
+
+.headerToolbar {
+  min-height: 10%;
+  margin-bottom: 10px;
+}
+
+::ng-deep .mat-toolbar {
+  @media screen and (min-width: 400px) {
+   .headerTitle {
+     font-size: 1.7em;
+   }
+  }
+}
+
+.fillHeaderSpace {
+  flex: 1 1 auto;
+}
+
+.mat-toolbar {
+  height: 110px !important;
+  min-height: 110px !important;
+
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+
+.example-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.example-sidenav-container {
+  /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
+     causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
+  flex: 1;
+}
+
+.example-is-mobile .example-sidenav-container {
+  /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
+     `<body>` to be our scrolling element for mobile layouts. */
+  flex: 1 0 auto;
+}
+
+

@@ -15,7 +15,7 @@ export class ResourceComponent implements OnInit {
   ngOnInit() {
   }
 
-  createNewResource() {
+  toggleResourceCreation() {
     this.createNew = !this.createNew;
   }
 

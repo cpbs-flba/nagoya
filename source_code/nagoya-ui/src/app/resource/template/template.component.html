@@ -1,3 +1,17 @@
+<h1 class="mat-h1">Meine genetischen Ressourcen</h1>
+
+<div>
+  <mat-form-field fxFlex>
+    <input matInput type="text" placeholder="Search Here" [(ngModel)]="value">
+    <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+      <mat-icon>close</mat-icon>
+    </button>
+    <button mat-button *ngIf="!value" matPrefix mat-icon-button>
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
+
 <mat-accordion>
   <mat-expansion-panel>
     <mat-expansion-panel-header>

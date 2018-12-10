@@ -10,6 +10,7 @@ import {first} from 'rxjs/internal/operators';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
+import {I18nService} from '../services/i18n.service';
 
 @Component({
   selector: 'app-user',
@@ -30,7 +31,8 @@ export class LoginComponent implements OnInit, OnDestroy {
               private messageService: MessageService,
               private authenticationService: AuthenticationService,
               private router: Router,
-              ) {
+              private i18nService: I18nService,
+              public translate: TranslateService) {
     this.createForm();
   }
 
@@ -89,5 +91,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   isLoggedIn() {
     return this.authenticationService.isAuthenticated();
   }
+
+  setLanguage(language: string) {
+    this.i18nService.language = language;
+  }
+
 
 }

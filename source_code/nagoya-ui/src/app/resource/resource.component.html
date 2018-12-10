@@ -1,12 +1,20 @@
-<h1>Genetische Resourcen</h1>
+<h1 class="mat-h1">Genetische Resourcen</h1>
 
 <div>
-  <button mat-raised-button color="accent" (click)="createNewResource()" [disabled]="createNew">
-    <mat-icon>add</mat-icon>
-    <span>Neue Resource</span>
-  </button>
-
-  <app-creation *ngIf="createNew"></app-creation>
+  <div>
+    <button mat-raised-button color="accent" (click)="toggleResourceCreation()" [disabled]="createNew" class="createButton">
+      <mat-icon>add</mat-icon>
+      <span>Neue Resource</span>
+    </button>
+    <div fxFlex></div>
+    <button mat-button (click)="toggleResourceCreation()" *ngIf="createNew">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <br/>
+  <div class="creationForm">
+    <app-creation *ngIf="createNew"></app-creation>
+  </div>
 </div>
 
 <app-template></app-template>
