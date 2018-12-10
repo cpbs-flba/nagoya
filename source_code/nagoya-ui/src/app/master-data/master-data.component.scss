@@ -1,0 +1,20 @@
+.wrapper {
+  max-width: 550px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.descriptionTitle{
+  font-style:italic;
+  color: gray;
+  text-decoration: none;
+}
+
+.descriptionBlock {
+  background-color: white;
+  display:inline-block;
+}
+
+.innerDescriptionBlock {
+  padding: 15px;
+}

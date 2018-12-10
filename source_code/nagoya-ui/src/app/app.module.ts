@@ -81,6 +81,7 @@ import { MasterDataComponent } from './master-data/master-data.component';
 import { TradeOfferComponent } from './trade-offer/trade-offer.component';
 import { TradeOverviewComponent } from './trade-overview/trade-overview.component';
 import { TradeContractComponent } from './trade-contract/trade-contract.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 // import {RegistrationModule} from './registration/registration.module';
 
@@ -110,7 +111,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterDataComponent,
     TradeOfferComponent,
     TradeOverviewComponent,
-    TradeContractComponent
+    TradeContractComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,

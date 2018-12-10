@@ -13,6 +13,8 @@ import {ResourceComponent} from './resource/resource.component';
 import {TradeOfferComponent} from './trade-offer/trade-offer.component';
 import {TradeContractComponent} from './trade-contract/trade-contract.component';
 import {TradeOverviewComponent} from './trade-overview/trade-overview.component';
+import {MasterDataComponent} from './master-data/master-data.component';
+import {ChangePasswordComponent} from './change-password/change-password.component';
 
 const routes: Routes = [
   {path: 'about', component: AboutComponent, },
@@ -28,6 +30,8 @@ const routes: Routes = [
   {path: 'trade/offers', component: TradeOfferComponent},
   {path: 'trade/contract', component: TradeContractComponent},
   {path: 'trade/overview', component: TradeOverviewComponent},
+  {path: 'masterData', component: MasterDataComponent},
+  {path: 'change/password', component: ChangePasswordComponent},
   {
     path: '',
     redirectTo: '/login',
