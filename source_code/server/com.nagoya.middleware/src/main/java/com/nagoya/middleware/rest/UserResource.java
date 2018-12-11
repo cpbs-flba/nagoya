@@ -183,6 +183,8 @@ public interface UserResource {
 			@Suspended final AsyncResponse asyncResponse);
 
 	/**
+	 * Only needed for Password Reset, Account Deletion and Registration
+	 * 
 	 * @param person
 	 * @param token
 	 * @param asyncResponse

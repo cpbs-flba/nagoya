@@ -25,7 +25,7 @@ export class AuthenticationService {
   private _credentials: Credentials | null;
 
   constructor(private http: HttpClient, private serverConfigService: ServerConfigService) {
-    const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
+    const savedCredentials = sessionStorage.getItem(credentialsKey);
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
     }
@@ -89,11 +89,11 @@ export class AuthenticationService {
       storage.setItem(credentialsKey, JSON.stringify(credentials));
     } else {
       sessionStorage.removeItem(credentialsKey);
-      localStorage.removeItem(credentialsKey);
+      // localStorage.removeItem(credentialsKey);
     }
   }
 
-  getCredentials(){
+  getCredentials() {
 
   }
 }

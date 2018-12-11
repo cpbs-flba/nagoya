@@ -32,7 +32,8 @@ export class LoginComponent implements OnInit, OnDestroy {
               private authenticationService: AuthenticationService,
               private router: Router,
               private i18nService: I18nService,
-              public translate: TranslateService) {
+              public translate: TranslateService,
+              ) {
     this.createForm();
   }
 
@@ -64,6 +65,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authenticationService.login(data)
       .pipe(first())
       .subscribe(response => {
+        console.log(response);
+        this.userService.setUser(response);
         this.router.navigate(['home']);
 
       }, error => {

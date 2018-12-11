@@ -17,6 +17,9 @@ public class Person implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String email;
+	/**
+	 * new password
+	 */
 	private String password;
 	/**
 	 * Always use this field for confirmation operations. This should be filled with
