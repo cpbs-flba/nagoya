@@ -13,6 +13,10 @@ import com.nagoya.model.dbo.person.Address;
 import com.nagoya.model.dbo.person.Person;
 import com.nagoya.model.dbo.person.PersonLegal;
 import com.nagoya.model.dbo.person.PersonType;
+import com.nagoya.model.dbo.person.group.PersonGroup;
+import com.nagoya.model.dbo.resource.GeneticResource;
+import com.nagoya.model.dbo.resource.ResourceFile;
+import com.nagoya.model.dbo.resource.VisibilityType;
 import com.nagoya.model.exception.InvalidObjectException;
 import com.nagoya.model.exception.ResourceOutOfDateException;
 
@@ -51,13 +55,30 @@ public class PersonDAOTest extends DAOTest {
 		Assert.assertNotNull(address.getId());
 		Assert.assertNotNull(legalPerson.getId());
 
+		PersonGroup pg = new PersonGroup();
+		pg.setName("testgroup");
+		pg.getPersons().add(legalPerson);
+		personDAO.insert(pg, true);
+		
+		GeneticResource resource = new GeneticResource();
+		resource.setIdentifier("i123");
+		resource.setDescription("sonneblume");
+		resource.setOwner(legalPerson);
+		resource.setVisibilityType(VisibilityType.PUBLIC);
+		resource.setSource("Brasil");
+		ResourceFile rf = new ResourceFile();
+		rf.setContent("test".getBytes());
+		rf.setName("sometext");
+		rf.setType("txt");
+		resource.getFiles().add(rf);
+		personDAO.insert(resource, true);
 
 		// update the legal person
 		legalPerson.setName("Legal Corp. 2 ");
 		personDAO.update(legalPerson, true);
 
 		// delete the person
-		personDAO.delete(legalPerson, true);
+		// personDAO.delete(legalPerson, true);
 	}
 
 }

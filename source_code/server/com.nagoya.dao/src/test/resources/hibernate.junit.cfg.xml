@@ -63,6 +63,10 @@
 		<mapping class="com.nagoya.model.dbo.person.PersonLegal" />		
 		<mapping class="com.nagoya.model.dbo.user.OnlineUser" />
 		<mapping class="com.nagoya.model.dbo.user.UserRequest" />		
+		<mapping class="com.nagoya.model.dbo.person.PersonKeys" />		
+		<mapping class="com.nagoya.model.dbo.person.group.PersonGroup" />		
+		<mapping class="com.nagoya.model.dbo.resource.GeneticResource" />		
+		<mapping class="com.nagoya.model.dbo.resource.ResourceFile" />		
 
 	</session-factory>
 

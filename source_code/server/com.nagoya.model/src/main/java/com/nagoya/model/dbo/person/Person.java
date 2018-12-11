@@ -1,5 +1,8 @@
 package com.nagoya.model.dbo.person;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,12 +11,17 @@ import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import com.nagoya.model.dbo.DBO;
 
-/** * @author Florin Bogdan Balint * */
+/**
+ * @author Florin Bogdan Balint
+ */
 @Audited
 @Entity(name = "tperson")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -38,9 +46,11 @@ public class Person extends DBO {
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "address_id")
 	private Address address;
-	
-	@Column(name = "public_key", nullable = true)
-	private String publicKey;
+
+	@NotAudited
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "person_id")
+	private Set<PersonKeys> keys = new HashSet<PersonKeys>();
 
 	/**
 	 * @return the email
@@ -113,17 +123,17 @@ public class Person extends DBO {
 	}
 
 	/**
-	 * @return the publicKey
+	 * @return the keys
 	 */
-	public String getPublicKey() {
-		return publicKey;
+	public Set<PersonKeys> getKeys() {
+		return keys;
 	}
 
 	/**
-	 * @param publicKey the publicKey to set
+	 * @param keys the keys to set
 	 */
-	public void setPublicKey(String publicKey) {
-		this.publicKey = publicKey;
+	public void setKeys(Set<PersonKeys> keys) {
+		this.keys = keys;
 	}
 
 }

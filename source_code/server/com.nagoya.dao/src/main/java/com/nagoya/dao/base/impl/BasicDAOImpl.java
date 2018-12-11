@@ -61,6 +61,8 @@ public class BasicDAOImpl<T> implements BasicDAO<T> {
 			transaction = session.beginTransaction();
 			Long generatedId = (Long) session.save(dbo);
 			dbo.setId(generatedId);
+			session.flush();
+			session.clear();
 			transaction.commit();
 			return dbo;
 		} catch (HibernateException e) {
@@ -118,7 +120,10 @@ public class BasicDAOImpl<T> implements BasicDAO<T> {
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			session.update(dbo);
+			DBO merged = (DBO) session.merge(dbo);
+			session.update(merged);
+			session.flush();
+			session.clear();
 			transaction.commit();
 		} catch (org.hibernate.HibernateException | javax.persistence.OptimisticLockException e) {
 			throw new ResourceOutOfDateException(e.getMessage());
@@ -150,6 +155,8 @@ public class BasicDAOImpl<T> implements BasicDAO<T> {
 		try {
 			transaction = session.beginTransaction();
 			session.delete(dbo);
+			session.flush();
+			session.clear();
 			transaction.commit();
 		} catch (Exception e) {
 			if (transaction != null) {

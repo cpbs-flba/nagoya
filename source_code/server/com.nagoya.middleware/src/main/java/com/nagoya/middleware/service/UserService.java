@@ -27,7 +27,7 @@ import com.nagoya.middleware.service.blockchain.BlockchainHelper;
 import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
-import com.nagoya.model.dbo.person.PersonType;
+import com.nagoya.model.dbo.person.PersonKeys;
 import com.nagoya.model.dbo.user.OnlineUser;
 import com.nagoya.model.dbo.user.RequestType;
 import com.nagoya.model.dbo.user.UserRequest;
@@ -39,10 +39,7 @@ import com.nagoya.model.exception.InvalidTokenException;
 import com.nagoya.model.exception.NotAuthorizedException;
 import com.nagoya.model.exception.ResourceOutOfDateException;
 import com.nagoya.model.exception.TimeoutException;
-import com.nagoya.model.to.person.Address;
 import com.nagoya.model.to.person.Person;
-import com.nagoya.model.to.person.PersonLegal;
-import com.nagoya.model.to.person.PersonNatural;
 import com.nagoya.model.to.person.PersonTransformer;
 
 import io.jsonwebtoken.Claims;
@@ -106,7 +103,7 @@ public class UserService {
 
 	public void register(Person person, String language) throws BadRequestException, ConflictException {
 		validate(person);
-		com.nagoya.model.dbo.person.Person toRegister = PersonTransformer.getDBO(person);
+		com.nagoya.model.dbo.person.Person toRegister = PersonTransformer.getDBO(null, person);
 
 		// encrypt password
 		String plainPassword = toRegister.getPassword();
@@ -160,8 +157,8 @@ public class UserService {
 		mailService.sendPasswordResetMail(email, token, expirationDate);
 	}
 
-	public void confirmRequest(String token, Person personTO) throws TimeoutException, BadRequestException,
-			ConflictException, InvalidObjectException, ResourceOutOfDateException {
+	public DefaultReturnObject confirmRequest(String token, Person personTO) throws TimeoutException,
+			BadRequestException, ConflictException, InvalidObjectException, ResourceOutOfDateException {
 		if (StringUtil.isNullOrBlank(token)) {
 			throw new BadRequestException();
 		}
@@ -174,15 +171,29 @@ public class UserService {
 		Date expirationDate = userRequest.getExpirationDate();
 		Date currentDate = Calendar.getInstance().getTime();
 
-		personDAO.delete(userRequest, true);
 		if (expirationDate.before(currentDate)) {
+			personDAO.delete(userRequest, true);
 			throw new TimeoutException();
 		}
 
 		if (userRequest.getRequestType().equals(RequestType.REGISTRATION)) {
 			com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
+			// set the email confirmation flag
 			person.setEmailConfirmed(true);
+
+			// TODO: generate keys and remove mockup
+			PersonKeys pk = new PersonKeys();
+			pk.setPublicKey("GfHq2tTVk9z4eXgyNEBphzvcS6BQfFPmp8U3Ah3V6G63rSd9MsP1PhMSdPsU");
+			pk.setPrivateKey("2mWNaEKEJrtB1rEvHsFx8aQXMJMRX8dFYUe9vrMnsBQW5vL79zphrCsZMfr9Fxb33U");
+			person.getKeys().add(pk);
 			personDAO.update(person, true);
+
+			Person dto = PersonTransformer.getDTO(person);
+			// hide the password hash
+			dto.setPassword(null);
+			DefaultReturnObject result = new DefaultReturnObject();
+			result.setEntity(dto);
+			return result;
 		}
 
 		if (userRequest.getRequestType().equals(RequestType.ACCOUNT_REMOVAL)) {
@@ -200,6 +211,10 @@ public class UserService {
 			person.setPassword(newEncryptedPassword);
 			personDAO.update(person, true);
 		}
+
+		personDAO.delete(userRequest, true);
+
+		return null;
 	}
 
 	private String createSession(com.nagoya.model.dbo.person.Person person) {
@@ -347,50 +362,10 @@ public class UserService {
 			throw new ForbiddenException();
 		}
 
-		// update address
-		Address addressTO = personTO.getAddress();
-		if (addressTO == null) {
-			foundPerson.setAddress(null);
-		} else {
-			com.nagoya.model.dbo.person.Address addressDBO = foundPerson.getAddress();
-			if (addressDBO == null) {
-				addressDBO = new com.nagoya.model.dbo.person.Address();
-			}
-			addressDBO.setStreet(addressTO.getStreet());
-			addressDBO.setNumber(addressTO.getNumber());
-			addressDBO.setCity(addressTO.getCity());
-			addressDBO.setZip(addressTO.getZip());
-			addressDBO.setRegion(addressTO.getRegion());
-			addressDBO.setCountry(addressTO.getCountry());
-			
-			foundPerson.setAddress(addressDBO);
-		}
-
-		// update password
-		String newPassword = personTO.getPassword();
-		if (StringUtil.isNotNullOrBlank(newPassword)) {
-			String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(newPassword);
-			foundPerson.setPassword(encryptPassword);
-		}
-
-		foundPerson.setEmail(personTO.getEmail());
-		PersonType personType = foundPerson.getPersonType();
-		if (personType.equals(PersonType.LEGAL) && personTO.getPersonType().equals(PersonType.LEGAL)) {
-			PersonLegal legalPersonTO = (PersonLegal) personTO;
-			com.nagoya.model.dbo.person.PersonLegal legalDBO = (com.nagoya.model.dbo.person.PersonLegal) foundPerson;
-			legalDBO.setName(legalPersonTO.getName());
-			legalDBO.setCommercialRegisterNumber(legalPersonTO.getCommercialRegisterNumber());
-			legalDBO.setTaxNumber(legalPersonTO.getTaxNumber());
-			personDAO.update(legalDBO, true);
-		}
-		if (personType.equals(PersonType.NATURAL) && personTO.getPersonType().equals(PersonType.NATURAL)) {
-			PersonNatural naturalPersonTO = (PersonNatural) personTO;
-			com.nagoya.model.dbo.person.PersonNatural naturalPersonDBO = (com.nagoya.model.dbo.person.PersonNatural) foundPerson;
-			naturalPersonDBO.setFirstname(naturalPersonTO.getFirstname());
-			naturalPersonDBO.setLastname(naturalPersonTO.getLastname());
-			naturalPersonDBO.setBirthdate(naturalPersonTO.getBirthdate());
-			personDAO.update(naturalPersonDBO, true);
-		}
+		String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(personTO.getPassword());
+		personTO.setPassword(encryptPassword);
+		foundPerson = PersonTransformer.getDBO(foundPerson, personTO);
+		personDAO.update(foundPerson, true);
 
 		DefaultReturnObject result = new DefaultReturnObject();
 		String newToken = createSession(foundPerson);

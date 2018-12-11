@@ -4,7 +4,10 @@
 package com.nagoya.model.to.person;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nagoya.blockchain.api.Credentials;
 import com.nagoya.model.dbo.person.PersonType;
 
@@ -12,6 +15,7 @@ import com.nagoya.model.dbo.person.PersonType;
  * @author flba
  *
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Person implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -28,6 +32,8 @@ public class Person implements Serializable {
 	private Address address;
 
 	private Credentials credentials;
+
+	private Set<PersonKeys> keys = new HashSet<PersonKeys>();
 
 	/**
 	 * @return the email
@@ -113,6 +119,20 @@ public class Person implements Serializable {
 	 */
 	public void setCredentials(Credentials credentials) {
 		this.credentials = credentials;
+	}
+
+	/**
+	 * @return the keys
+	 */
+	public Set<PersonKeys> getKeys() {
+		return keys;
+	}
+
+	/**
+	 * @param keys the keys to set
+	 */
+	public void setKeys(Set<PersonKeys> keys) {
+		this.keys = keys;
 	}
 
 }

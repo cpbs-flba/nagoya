@@ -10,11 +10,11 @@
 		<!-- Connection settings -->
 		<property name="hibernate.show_sql">false</property>
 
-		<!-- junit connection propterties -->
-		<property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/nagoyatdb1</property>
+		<!-- junit connection propterties  -->
+		<property name="hibernate.connection.url">jdbc:postgresql://dev2:5432/nagoyatdb1</property>
 		<property name="hibernate.connection.username">unagoyatest</property>
 		<property name="hibernate.connection.password">Nagoya2018</property>
-
+		
 		<!-- connection isolation level. possible values are: -->
 		<!-- 1: READ UNCOMMITTED -->
 		<!-- 2: READ COMMITTED -->
@@ -24,16 +24,15 @@
 
 		<!-- connection driver -->
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-
+		
 		<!-- auto commit. possbile values are: false, true -->
 		<property name="hibernate.connection.autocommit">false</property>
-
+		
 		<!-- hibernate batch size: recommended values: between 5 and 30 -->
 		<property name="hibernate.jdbc.batch_size">15</property>
-
-		<!-- Forces Hibernate to order SQL updates by the primary key value of 
-			the items being updated. This will result in fewer transaction deadlocks 
-			in highly concurrent systems. -->
+		
+		<!-- Forces Hibernate to order SQL updates by the primary key value of the items being updated. 
+		This will result in fewer transaction deadlocks in highly concurrent systems. -->
 		<property name="hibernate.order_updates">true</property>
 
 		<!-- SQL dialect -->
@@ -51,8 +50,8 @@
 
 		<!-- c3p0 connection pool properties -->
 		<property name="hibernate.c3p0.min_size">1</property>
-		<property name="hibernate.c3p0.max_size">5</property>
-		<property name="hibernate.c3p0.timeout">60</property>
+		<property name="hibernate.c3p0.max_size">3</property>
+		<property name="hibernate.c3p0.timeout">30</property>
 		<property name="hibernate.c3p0.max_statements">50</property>
 		<property name="hibernate.c3p0.idle_test_period">60</property>
 
@@ -61,10 +60,14 @@
 		<mapping class="com.nagoya.model.dbo.person.Address" />
 		<mapping class="com.nagoya.model.dbo.person.Person" />
 		<mapping class="com.nagoya.model.dbo.person.PersonNatural" />
-		<mapping class="com.nagoya.model.dbo.person.PersonLegal" />
+		<mapping class="com.nagoya.model.dbo.person.PersonLegal" />		
 		<mapping class="com.nagoya.model.dbo.user.OnlineUser" />
-		<mapping class="com.nagoya.model.dbo.user.UserRequest" />
-		
+		<mapping class="com.nagoya.model.dbo.user.UserRequest" />		
+		<mapping class="com.nagoya.model.dbo.person.PersonKeys" />		
+		<mapping class="com.nagoya.model.dbo.person.group.PersonGroup" />		
+		<mapping class="com.nagoya.model.dbo.resource.GeneticResource" />		
+		<mapping class="com.nagoya.model.dbo.resource.ResourceFile" />		
+
 	</session-factory>
 
 </hibernate-configuration>

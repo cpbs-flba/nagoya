@@ -72,7 +72,6 @@ CREATE TABLE tperson (
   password 				TEXT NOT NULL, 
   person_type 			TEXT NOT NULL,
   address_id 			BIGINT DEFAULT NULL,
-  public_key 			TEXT DEFAULT NULL,
   creation_date 		TIMESTAMP(0) DEFAULT NULL,
   creation_user		 	TEXT DEFAULT NULL,
   modification_date 	TIMESTAMP(0) DEFAULT NULL,
@@ -92,7 +91,6 @@ CREATE TABLE tperson_aud (
   password 				TEXT DEFAULT NULL, 
   person_type 			TEXT DEFAULT NULL,
   address_id 			BIGINT DEFAULT NULL,
-  public_key 			TEXT DEFAULT NULL,
   creation_date 		TIMESTAMP(0) DEFAULT NULL,
   creation_user 		TEXT DEFAULT NULL,
   modification_date 	TIMESTAMP(0) DEFAULT NULL,
@@ -198,6 +196,174 @@ CREATE TABLE tuser_request (
   request_type 			TEXT NOT NULL,
   token					TEXT NOT NULL,
   expiration_date		TIMESTAMP(0) NOT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+-- ----------------------------------------------
+-- person_keys
+-- ----------------------------------------------
+DROP TABLE IF EXISTS tperson_keys;
+DROP SEQUENCE IF EXISTS tperson_keys_seq;
+
+CREATE SEQUENCE tperson_keys_seq;
+CREATE TABLE tperson_keys (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tperson_keys_seq'),
+  person_id				BIGINT DEFAULT NULL,
+  public_key 			TEXT NOT NULL,
+  private_key			TEXT DEFAULT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS tperson_keys_aud;
+DROP SEQUENCE IF EXISTS tperson_keys_aud_seq;
+
+CREATE SEQUENCE tperson_keys_aud_seq;
+CREATE TABLE tperson_keys_aud (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tperson_keys_aud_seq'),
+  person_id				BIGINT DEFAULT NULL,
+  public_key			TEXT DEFAULT NULL,
+  private_key			TEXT DEFAULT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  revtype 				SMALLINT DEFAULT NULL,
+  PRIMARY KEY (id, rev)
+);
+
+
+-- ----------------------------------------------
+-- person_group
+-- ----------------------------------------------
+DROP TABLE IF EXISTS tperson_group;
+DROP SEQUENCE IF EXISTS tperson_group_seq;
+
+CREATE SEQUENCE tperson_group_seq;
+CREATE TABLE tperson_group (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tperson_group_seq'),
+  name					TEXT NOT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS tperson_group_aud;
+DROP SEQUENCE IF EXISTS tperson_group_aud_seq;
+
+CREATE SEQUENCE tperson_group_aud_seq;
+CREATE TABLE tperson_group_aud (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tperson_group_aud_seq'),
+  name					TEXT DEFAULT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  revtype 				SMALLINT DEFAULT NULL,
+  PRIMARY KEY (id, rev)
+);
+
+-- ----------------------------------------------
+-- person_person_group
+-- ----------------------------------------------
+DROP TABLE IF EXISTS tperson_person_group;
+DROP SEQUENCE IF EXISTS tperson_person_group_seq;
+
+CREATE SEQUENCE tperson_person_group_seq;
+CREATE TABLE tperson_person_group (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tperson_person_group_seq'),
+  person_id				BIGINT NOT NULL,
+  person_group_id		BIGINT NOT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS tperson_person_group_aud;
+DROP SEQUENCE IF EXISTS tperson_person_group_aud_seq;
+
+CREATE SEQUENCE tperson_person_group_aud_seq;
+CREATE TABLE tperson_person_group_aud (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tperson_person_group_aud_seq'),
+  person_id				BIGINT DEFAULT NULL,
+  person_group_id		BIGINT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  revtype 				SMALLINT DEFAULT NULL,
+  PRIMARY KEY (id, rev)
+);
+
+-- ----------------------------------------------
+-- genetic_resource
+-- ----------------------------------------------
+DROP TABLE IF EXISTS tgenetic_resource;
+DROP SEQUENCE IF EXISTS tgenetic_resource_seq;
+
+CREATE SEQUENCE tgenetic_resource_seq;
+CREATE TABLE tgenetic_resource (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tgenetic_resource_seq'),
+  person_id				BIGINT NOT NULL,
+  identifier			TEXT DEFAULT NULL,
+  description			TEXT DEFAULT NULL,
+  origin				TEXT DEFAULT NULL,
+  source				TEXT DEFAULT NULL,
+  hash_sequence			TEXT DEFAULT NULL,
+  visibility_type		TEXT DEFAULT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS tgenetic_resource_aud;
+DROP SEQUENCE IF EXISTS tgenetic_resource_aud_seq;
+
+CREATE SEQUENCE tgenetic_resource_aud_seq;
+CREATE TABLE tgenetic_resource_aud (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tgenetic_resource_aud_seq'),
+  person_id				BIGINT DEFAULT NULL,
+  identifier			TEXT DEFAULT NULL,
+  description			TEXT DEFAULT NULL,
+  origin				TEXT DEFAULT NULL,
+  source				TEXT DEFAULT NULL,
+  hash_sequence			TEXT DEFAULT NULL,
+  visibility_type		TEXT DEFAULT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  revtype 				SMALLINT DEFAULT NULL,
+  PRIMARY KEY (id, rev)
+);
+
+-- ----------------------------------------------
+-- genetic_resource_file
+-- ----------------------------------------------
+DROP TABLE IF EXISTS tgenetic_resource_file;
+DROP SEQUENCE IF EXISTS tgenetic_resource_file_seq;
+
+CREATE SEQUENCE tgenetic_resource_file_seq;
+CREATE TABLE tgenetic_resource_file (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tgenetic_resource_file_seq'),
+  genetic_resource_id	BIGINT DEFAULT NULL,
+  name					TEXT DEFAULT NULL,
+  type					TEXT DEFAULT NULL,
+  content				BYTEA DEFAULT NULL,
   creation_date 		TIMESTAMP(0) DEFAULT NULL,
   creation_user 		TEXT DEFAULT NULL,
   modification_date 	TIMESTAMP(0) DEFAULT NULL,

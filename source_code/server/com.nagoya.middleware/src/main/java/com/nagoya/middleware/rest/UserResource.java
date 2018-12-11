@@ -123,7 +123,7 @@ public interface UserResource {
 			@HeaderParam(HEADER_LANGUAGE) String language, //
 			final PersonNatural person, //
 			@Suspended final AsyncResponse asyncResponse);
-	
+
 	/**
 	 * @return
 	 *         <ul>
@@ -183,13 +183,21 @@ public interface UserResource {
 			@Suspended final AsyncResponse asyncResponse);
 
 	/**
+	 * REST service used when a user confirms an action (by clicking on a link in
+	 * the received e-mail).
+	 * 
+	 * In all cases, a JSON web token (e.g., Authorization Bearer ...) is NOT
+	 * transmitted here for security reasons.
+	 * 
 	 * @param person
 	 * @param token
 	 * @param asyncResponse
 	 * 
 	 * @return
 	 *         <ul>
-	 *         <li>204 No Content - if everything was okay</li>
+	 *         <li>200 OK - in the case of an account registration, if everything
+	 *         was okay</li>
+	 *         <li>204 No Content - in all other cases, if everything was okay</li>
 	 *         <li>400 Bad Request - if the token is invalid</li>
 	 *         <li>408 Request Timeout - if the token has expired</li>
 	 *         <li>500 Internal server error - if something went terribly
@@ -199,6 +207,7 @@ public interface UserResource {
 	@POST
 	@Path("confirm")
 	@Consumes({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
+	@Produces({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
 	@ManagedAsync
 	public void confirm(final Person person, @QueryParam(QUERY_PARAM_TOKEN) String token,
 			@Suspended final AsyncResponse asyncResponse);

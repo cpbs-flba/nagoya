@@ -59,13 +59,13 @@ public class UserResourceImpl implements UserResource {
 			}
 			response = responseBuilder.build();
 		} catch (ForbiddenException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.FORBIDDEN).build();
 		} catch (NotAuthorizedException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.UNAUTHORIZED).build();
 		} catch (BadRequestException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.BAD_REQUEST).build();
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -93,13 +93,13 @@ public class UserResourceImpl implements UserResource {
 			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
 			response = responseBuilder.build();
 		} catch (ConflictException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.CONFLICT).build();
 		} catch (BadRequestException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.BAD_REQUEST).build();
 		} catch (Exception e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.serverError().build();
 		} finally {
 			if (session != null) {
@@ -124,13 +124,13 @@ public class UserResourceImpl implements UserResource {
 			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
 			response = responseBuilder.build();
 		} catch (ConflictException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.CONFLICT).build();
 		} catch (BadRequestException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.BAD_REQUEST).build();
 		} catch (Exception e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.serverError().build();
 		} finally {
 			if (session != null) {
@@ -147,17 +147,22 @@ public class UserResourceImpl implements UserResource {
 		try {
 			session = ConnectionProvider.getInstance().getSession();
 			UserService userService = new UserService(session);
-			userService.confirmRequest(token, person);
-			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
+			DefaultReturnObject result = userService.confirmRequest(token, person);
+			ResponseBuilder responseBuilder = null;
+			if (result == null) {
+				responseBuilder = Response.status(Status.NO_CONTENT);
+			} else {
+				responseBuilder = Response.ok(result.getEntity());
+			}
 			response = responseBuilder.build();
 		} catch (BadRequestException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.BAD_REQUEST).build();
 		} catch (TimeoutException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.REQUEST_TIMEOUT).build();
 		} catch (Exception e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.serverError().build();
 		} finally {
 			if (session != null) {
@@ -179,10 +184,10 @@ public class UserResourceImpl implements UserResource {
 			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
 			response = responseBuilder.build();
 		} catch (BadRequestException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.BAD_REQUEST).build();
 		} catch (Exception e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.serverError().build();
 		} finally {
 			if (session != null) {
@@ -208,13 +213,13 @@ public class UserResourceImpl implements UserResource {
 			}
 			response = responseBuilder.build();
 		} catch (NotAuthorizedException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.UNAUTHORIZED).build();
 		} catch (TimeoutException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.REQUEST_TIMEOUT).build();
 		} catch (Exception e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.serverError().build();
 		} finally {
 			if (session != null) {
@@ -244,16 +249,16 @@ public class UserResourceImpl implements UserResource {
 			}
 			response = responseBuilder.build();
 		} catch (NotAuthorizedException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.UNAUTHORIZED).build();
 		} catch (ForbiddenException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.FORBIDDEN).build();
 		} catch (TimeoutException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.REQUEST_TIMEOUT).build();
 		} catch (Exception e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.serverError().build();
 		} finally {
 			if (session != null) {
@@ -283,16 +288,16 @@ public class UserResourceImpl implements UserResource {
 			}
 			response = responseBuilder.build();
 		} catch (NotAuthorizedException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.UNAUTHORIZED).build();
 		} catch (ForbiddenException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.FORBIDDEN).build();
 		} catch (TimeoutException e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.status(Status.REQUEST_TIMEOUT).build();
 		} catch (Exception e) {
-			LOGGER.error(e, e.getCause());
+			LOGGER.error(e, e);
 			response = Response.serverError().build();
 		} finally {
 			if (session != null) {
