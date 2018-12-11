@@ -1,21 +1,26 @@
-<form novalidate fxLayout="column">
-
+<form [formGroup]="geneticResourceForm" (ngSubmit)="onSubmit()" novalidate fxLayout="column">
   <mat-form-field>
-    <input matInput placeholder="Pflanzen Name" type="text">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Pflanzen Art" type="text">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Famile" type="text">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Ursprungsland" type="text">
+    <input matInput type="text" formControlName="denotation" placeholder="denotation">
   </mat-form-field>
 
-  <div fxLayout="row">
-    <div fxFlex></div>
-    <button type="submit" mat-raised-button color="accent" class="addButton"><span>Hinzufügen</span></button>
-  </div>
+  <mat-form-field>
+    <input matInput type="text" formControlName="description" placeholder="description">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="text" formControlName="source" placeholder="source">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="text" formControlName="origin" placeholder="origin">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="text" formControlName="geneSequence" placeholder="gene sequence">
+  </mat-form-field>
+
+  <button type="submit" mat-raised-button color="accent" [disabled]="geneticResourceForm.invalid">
+    <span>Hinzufügen</span>
+  </button>
+
+
 </form>
-<br />

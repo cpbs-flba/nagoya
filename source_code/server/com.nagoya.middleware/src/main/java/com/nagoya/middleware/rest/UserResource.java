@@ -188,6 +188,7 @@ public interface UserResource {
 	 * 
 	 * In all cases, a JSON web token (e.g., Authorization Bearer ...) is NOT
 	 * transmitted here for security reasons.
+	 * Only needed for Password Reset, Account Deletion and Registration
 	 * 
 	 * @param person
 	 * @param token
