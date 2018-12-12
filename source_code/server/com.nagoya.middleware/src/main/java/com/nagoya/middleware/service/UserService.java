@@ -408,6 +408,8 @@ public class UserService {
 		personDAO.update(foundPerson, true);
 
 		DefaultReturnObject result = new DefaultReturnObject();
+		Person dto = PersonTransformer.getDTO(foundPerson);
+		result.setEntity(dto);
 		String newToken = updateSession(onlineUser);
 		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
 		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
