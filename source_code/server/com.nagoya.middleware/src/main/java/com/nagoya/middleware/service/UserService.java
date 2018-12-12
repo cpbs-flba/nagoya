@@ -244,6 +244,31 @@ public class UserService {
 
 		return jsonWebToken;
 	}
+	
+	public String updateSession(OnlineUser onlineUser) throws InvalidObjectException, ResourceOutOfDateException {
+		// step 1: create new session
+		String sessionToken = DefaultIDGenerator.generateRandomID();
+		LOGGER.debug("Created token:\r\n" + sessionToken);
+		Key key = MacProvider.generateKey();
+		String privateKey = new String(Base64.getEncoder().encode(key.getEncoded()), StandardCharsets.UTF_8);
+
+		// append the deadline to the token
+		Date deadline = DefaultDateProvider.getDeadline(10);
+		long time = deadline.getTime();
+		Map<String, Object> claims = new HashMap<>();
+		claims.put("deadline", time);
+
+		String jsonWebToken = Jwts.builder().setClaims(claims).setSubject(sessionToken)
+				.signWith(SignatureAlgorithm.HS512, key).compact();
+
+		// persist
+		onlineUser.setExpirationDate(deadline);
+		onlineUser.setPrivateKey(privateKey);
+		onlineUser.setSessionToken(sessionToken);
+		personDAO.update(onlineUser, true);
+
+		return jsonWebToken;
+	}
 
 	public static String checkSignature(String token, String privateKey) throws BadRequestException {
 		try {
@@ -303,7 +328,8 @@ public class UserService {
 
 	public DefaultReturnObject delete(String authorization, String language)
 			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
-		com.nagoya.model.dbo.person.Person person = validateSession(authorization);
+		OnlineUser onlineUser = validateSession(authorization);
+		com.nagoya.model.dbo.person.Person person = onlineUser.getPerson();
 
 		// we have a valid user
 		UserRequest userRequest = new UserRequest();
@@ -328,7 +354,7 @@ public class UserService {
 		return result;
 	}
 
-	public com.nagoya.model.dbo.person.Person validateSession(String jsonWebToken)
+	public OnlineUser validateSession(String jsonWebToken)
 			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
 		if (StringUtil.isNullOrBlank(jsonWebToken)) {
 			throw new NotAuthorizedException();
@@ -340,21 +366,30 @@ public class UserService {
 			throw new NotAuthorizedException();
 		}
 
+		// if the session expired, remove the object
 		Date expirationDate = onlineUser.getExpirationDate();
 		Date currentDate = Calendar.getInstance().getTime();
 		if (currentDate.after(expirationDate)) {
+			try {
+				// always delete the old/expired session
+				personDAO.delete(onlineUser, true);
+			} catch (InvalidObjectException e) {
+				LOGGER.error(e, e);
+			}
+			// then throw an exception
 			throw new TimeoutException();
 		}
 
-		return onlineUser.getPerson();
+		return onlineUser;
 	}
 
 	public DefaultReturnObject update(String authorization, String language, Person personTO)
 			throws NotAuthorizedException, ConflictException, TimeoutException, ForbiddenException,
 			InvalidObjectException, ResourceOutOfDateException, InvalidTokenException {
 		// validate the session token
-		com.nagoya.model.dbo.person.Person foundPerson = validateSession(authorization);
-
+		OnlineUser onlineUser = validateSession(authorization);
+		com.nagoya.model.dbo.person.Person foundPerson = onlineUser.getPerson();
+		
 		// all updates must be confirmed via password confirmation
 		String actualPassword = foundPerson.getPassword();
 		String passwordConfirmation = personTO.getPasswordConfirmation();
@@ -368,10 +403,19 @@ public class UserService {
 		personDAO.update(foundPerson, true);
 
 		DefaultReturnObject result = new DefaultReturnObject();
-		String newToken = createSession(foundPerson);
+		String newToken = updateSession(onlineUser);
 		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
 		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
 		return result;
+	}
+
+	public void logout(String authorization) throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
+		OnlineUser onlineUser = validateSession(authorization);
+		try {
+			personDAO.delete(onlineUser, true);
+		} catch (InvalidObjectException e) {
+			LOGGER.debug("Could not delete a user session - maybe it was already deleted.");
+		}
 	}
 
 }

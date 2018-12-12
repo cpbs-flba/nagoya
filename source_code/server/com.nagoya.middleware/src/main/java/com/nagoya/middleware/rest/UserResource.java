@@ -14,6 +14,7 @@ package com.nagoya.middleware.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -127,6 +128,21 @@ public interface UserResource {
 	/**
 	 * @return
 	 *         <ul>
+	 *         <li>204 OK - if the request was processed successfully</li>
+	 *         <li>500 Internal server error - if something went terribly
+	 *         wrong.</li>
+	 *         </ul>
+	 */
+	@GET
+	@Path("logout")
+	@ManagedAsync
+	public void logout( //
+			@HeaderParam(HEADER_AUTHORIZATION) String authorization, //
+			@Suspended final AsyncResponse asyncResponse);
+
+	/**
+	 * @return
+	 *         <ul>
 	 *         <li>200 OK - if the request was processed successfully</li>
 	 *         <li>401 Unauthorized - in case of a bad session token</li>
 	 *         <li>403 Forbidden - in case of a bad password confirmation</li>
@@ -187,8 +203,8 @@ public interface UserResource {
 	 * the received e-mail).
 	 * 
 	 * In all cases, a JSON web token (e.g., Authorization Bearer ...) is NOT
-	 * transmitted here for security reasons.
-	 * Only needed for Password Reset, Account Deletion and Registration
+	 * transmitted here for security reasons. Only needed for Password Reset,
+	 * Account Deletion and Registration
 	 * 
 	 * @param person
 	 * @param token

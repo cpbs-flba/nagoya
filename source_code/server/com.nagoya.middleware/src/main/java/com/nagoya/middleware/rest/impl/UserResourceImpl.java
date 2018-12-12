@@ -308,4 +308,36 @@ public class UserResourceImpl implements UserResource {
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.nagoya.middleware.rest.UserResource#logout(java.lang.String, javax.ws.rs.container.AsyncResponse)
+	 */
+	@Override
+	public void logout(String authorization, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService userService = new UserService(session);
+			userService.logout(authorization);
+			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
+			response = responseBuilder.build();
+		} catch (NotAuthorizedException e) {
+			// LOGGER.error(e, e); -- this is fine at this location
+			response = Response.status(Status.NO_CONTENT).build();
+		} catch (TimeoutException e) {
+			// LOGGER.error(e, e); -- this is fine at this location
+			response = Response.status(Status.NO_CONTENT).build();
+		} catch (Exception e) {
+			LOGGER.error(e, e);
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+		
+	}
+
 }
