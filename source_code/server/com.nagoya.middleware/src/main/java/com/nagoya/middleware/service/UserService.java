@@ -397,8 +397,13 @@ public class UserService {
 			throw new ForbiddenException();
 		}
 
-		String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(personTO.getPassword());
-		personTO.setPassword(encryptPassword);
+		String newPassword = personTO.getPassword();
+		if (StringUtil.isNotNullOrBlank(newPassword)) {
+			String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(newPassword);
+			personTO.setPassword(encryptPassword);
+		} else {
+			personTO.setPassword(foundPerson.getPassword());
+		}
 		foundPerson = PersonTransformer.getDBO(foundPerson, personTO);
 		personDAO.update(foundPerson, true);
 

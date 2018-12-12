@@ -1,15 +1,14 @@
 export class GeneticResource  {
-  denotation: string;
+  identifier: string;
   description: string;
   source: string;
   origin: string;
-  geneSequence?: string;
-  // images?: File[];
-  // documents?: File[];
-  // access: Access;
+  hashSequence?: string;
+  files?: File[];
+  visibilityType: VisibilityType;
 }
-enum Access {
-  Private,
-  Public,
-  Group
+enum VisibilityType {
+  PRIVATE,
+  PUBLIC,
+  GROUP
 }

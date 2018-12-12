@@ -112,27 +112,34 @@ public final class PersonTransformer {
 		if (dto == null) {
 			return null;
 		}
-		if (dbo == null) {
-			dbo = new com.nagoya.model.dbo.person.Person();
-		}
-		dbo.setEmail(dto.getEmail());
-		dbo.setPassword(dto.getPassword());
-		dbo.setAddress(getDBO(dbo.getAddress(), dto.getAddress()));
+
 		PersonType personType = dto.getPersonType();
-		dbo.setPersonType(personType);
 		if (personType == null) {
 			return dbo;
 		}
+		
+		if (dbo == null) {
+			if (personType.equals(PersonType.LEGAL)) {
+				dbo = new com.nagoya.model.dbo.person.PersonLegal();
+			} else {
+				dbo = new com.nagoya.model.dbo.person.PersonNatural();
+			}
+		}
+		
+		dbo.setEmail(dto.getEmail());
+		dbo.setPassword(dto.getPassword());
+		dbo.setAddress(getDBO(dbo.getAddress(), dto.getAddress()));
+		dbo.setPersonType(personType);
+		
 		if (personType.equals(PersonType.LEGAL)) {
 			com.nagoya.model.to.person.PersonLegal legalTO = (com.nagoya.model.to.person.PersonLegal) dto;
-			com.nagoya.model.dbo.person.PersonLegal legal = new com.nagoya.model.dbo.person.PersonLegal(dbo);
-			legal.setName(legalTO.getName());
+			com.nagoya.model.dbo.person.PersonLegal legal = (com.nagoya.model.dbo.person.PersonLegal) dbo;
 			legal.setCommercialRegisterNumber(legalTO.getCommercialRegisterNumber());
 			legal.setTaxNumber(legalTO.getTaxNumber());
 			return legal;
 		} else {
 			com.nagoya.model.to.person.PersonNatural naturalTO = (com.nagoya.model.to.person.PersonNatural) dto;
-			com.nagoya.model.dbo.person.PersonNatural natural = new com.nagoya.model.dbo.person.PersonNatural(dbo);
+			com.nagoya.model.dbo.person.PersonNatural natural = (com.nagoya.model.dbo.person.PersonNatural) dbo;
 			natural.setFirstname(naturalTO.getFirstname());
 			natural.setLastname(naturalTO.getLastname());
 			natural.setBirthdate(naturalTO.getBirthdate());
