@@ -15,6 +15,7 @@ package com.nagoya.middleware.main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nagoya.middleware.rest.impl.GeneticResourceImpl;
 import com.nagoya.middleware.rest.impl.UserResourceImpl;
 
 /**
@@ -30,6 +31,7 @@ public class Main extends Microservice {
 
 		// add the REST resources here
 		getResourceConfig().register(UserResourceImpl.class);
+		getResourceConfig().register(GeneticResourceImpl.class);
 
 		Main main = new Main();
 		main.runServer(args);

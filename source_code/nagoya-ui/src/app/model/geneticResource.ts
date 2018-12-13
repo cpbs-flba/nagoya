@@ -1,3 +1,5 @@
+import {VisibilityType} from './visibilityType';
+
 export class GeneticResource  {
   identifier: string;
   description: string;
@@ -7,8 +9,4 @@ export class GeneticResource  {
   files?: File[];
   visibilityType: VisibilityType;
 }
-enum VisibilityType {
-  PRIVATE,
-  PUBLIC,
-  GROUP
-}
+

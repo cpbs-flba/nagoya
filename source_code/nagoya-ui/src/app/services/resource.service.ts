@@ -1,18 +1,18 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {GeneticResource} from '../model/geneticResource';
 import {environment} from '../../environments/environment';
-import {AuthenticationService} from '../core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MasterDataService {
+export class ResourceService {
 
   constructor(private http: HttpClient) {
   }
 
-  public update(person: Person) {
-    return this.http.post<Person>(environment.serverUrl + 'users/update/' + person.personType.toLowerCase(), person, {
+  public create(geneticResource) {
+    return this.http.put<GeneticResource>(environment.serverUrl + 'genetics/', geneticResource, {
       headers: new HttpHeaders({'Content-Type': 'application/json'}),
       observe: 'response'
     });

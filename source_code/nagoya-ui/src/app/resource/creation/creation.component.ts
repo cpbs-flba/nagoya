@@ -1,6 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {GeneticResource} from '../../model/geneticResource';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {VisibilityType} from '../../model/visibilityType';
+import {ResourceService} from '../../services/resource.service';
+import {BehaviorSubject} from 'rxjs';
 
 
 @Component({
@@ -10,9 +12,16 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 })
 export class CreationComponent implements OnInit {
 
-  geneticResourceForm: FormGroup;
+  @Input()
+  createNew: boolean;
+  @Output()
+    createNewChange = new EventEmitter<boolean>();
 
-  constructor(private formBuilder: FormBuilder) {
+  geneticResourceForm: FormGroup;
+  visibilityTypes = Object.keys(VisibilityType);
+  selectedType: VisibilityType;
+
+  constructor(private formBuilder: FormBuilder, private resourceService: ResourceService) {
     this.createForm();
   }
 
@@ -21,15 +30,23 @@ export class CreationComponent implements OnInit {
 
   onSubmit() {
     console.log(this.geneticResourceForm.getRawValue());
+    this.resourceService.create(this.geneticResourceForm.getRawValue()).subscribe(result => {
+      console.log(result);
+      this.createNew = !this.createNew;
+      this.createNewChange.emit(this.createNew);
+    }, error => {
+      console.log(error);
+    });
   }
 
   createForm() {
     this.geneticResourceForm = this.formBuilder.group({
-      denotation: ['', Validators.required],
+      identifier: ['', Validators.required],
       description: ['', Validators.required],
       source: ['', Validators.required],
       origin: ['', Validators.required],
-      geneSequence: [''],
+      hashSequence: [''],
+      visibilityType: ['', Validators.required]
     });
   }
 }

@@ -14,6 +14,9 @@
           <!--</mat-option>-->
         <!--</mat-select>-->
       <!--</mat-form-field>-->
+      <div fxFlex="50" fxLayoutAlign="end center" *ngIf="isLoggedIn()">
+        <button mat-raised-button color="accent" type="button" (click)="logout()"><span>{{'FOOTER.LOGOUT'|translate}}</span></button>
+      </div>
     </mat-toolbar>
   </div>
   <div fxHide.lt-md>
@@ -31,7 +34,6 @@
       <div fxFlex="50" fxLayoutAlign="end center" *ngIf="isLoggedIn()">
         <button mat-raised-button color="accent" type="button" (click)="logout()"><span>{{'FOOTER.LOGOUT'|translate}}</span></button>
       </div>
-
     </mat-toolbar>
   </div>
 

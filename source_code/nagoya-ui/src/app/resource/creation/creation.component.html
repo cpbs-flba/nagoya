@@ -1,6 +1,6 @@
 <form [formGroup]="geneticResourceForm" (ngSubmit)="onSubmit()" novalidate fxLayout="column">
   <mat-form-field>
-    <input matInput type="text" formControlName="denotation" placeholder="denotation">
+    <input matInput type="text" formControlName="identifier" placeholder="identifier">
   </mat-form-field>
 
   <mat-form-field>
@@ -15,8 +15,17 @@
     <input matInput type="text" formControlName="origin" placeholder="origin">
   </mat-form-field>
   <mat-form-field>
-    <input matInput type="text" formControlName="geneSequence" placeholder="gene sequence">
+    <input matInput type="text" formControlName="hashSequence" placeholder="hash Sequence">
   </mat-form-field>
+
+  <span class="visibilityRadioHint">Sichtbarkeit</span>
+  <mat-radio-group formControlName="visibilityType" class="visibilityRadioGroup">
+
+    <mat-radio-button [checked] *ngFor="let visibilityType of visibilityTypes" [value]="visibilityType"
+                      class="visibilityRadioButton">
+      {{visibilityType.valueOf()}}
+    </mat-radio-button>
+  </mat-radio-group>
 
   <button type="submit" mat-raised-button color="accent" [disabled]="geneticResourceForm.invalid">
     <span>Hinzufügen</span>
