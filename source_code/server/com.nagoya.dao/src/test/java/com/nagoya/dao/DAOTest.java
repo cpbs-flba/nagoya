@@ -28,8 +28,14 @@ public class DAOTest {
 			session.createNativeQuery("DELETE FROM tperson_legal").executeUpdate();
 			session.createNativeQuery("DELETE FROM tperson_legal_aud").executeUpdate();
 
-			session.createNativeQuery("DELETE FROM tclient").executeUpdate();
-			session.createNativeQuery("DELETE FROM tclient_aud").executeUpdate();
+			session.createNativeQuery("DELETE FROM tgenetic_resource").executeUpdate();
+			session.createNativeQuery("DELETE FROM tgenetic_resource_aud").executeUpdate();
+			
+			session.createNativeQuery("DELETE FROM tgenetic_resource_file").executeUpdate();
+			
+			session.createNativeQuery("DELETE FROM tperson_group").executeUpdate();
+			session.createNativeQuery("DELETE FROM tperson_group_aud").executeUpdate();
+			
 			transaction.commit();
 		} catch (Exception e) {
 			transaction.rollback();

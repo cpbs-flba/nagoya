@@ -179,5 +179,21 @@ public interface GeneticResource {
 			@PathParam("resourceId") String resourceId, //
 			final com.nagoya.model.to.resource.GeneticResource geneticRessource, //
 			@Suspended final AsyncResponse asyncResponse);
+	
+	/**
+	 * Search for a genetic resources based on the specified filter.
+	 * 
+	 * @param authorization
+	 * @param geneticRessourceFilter
+	 * @param asyncResponse
+	 */
+	@POST
+	@Path("/search")
+	@Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+	@Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+	@ManagedAsync
+	public void search(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+			final com.nagoya.model.to.resource.filter.GeneticResourceFilter geneticRessourceFilter, //
+			@Suspended final AsyncResponse asyncResponse);
 
 }
