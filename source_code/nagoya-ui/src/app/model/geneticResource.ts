@@ -1,4 +1,5 @@
 import {VisibilityType} from './visibilityType';
+import {ResourceFile} from './resourceFile';
 
 export class GeneticResource  {
   identifier: string;
@@ -6,7 +7,7 @@ export class GeneticResource  {
   source: string;
   origin: string;
   hashSequence?: string;
-  files?: File[];
+  files?: ResourceFile[];
   visibilityType: VisibilityType;
 }
 

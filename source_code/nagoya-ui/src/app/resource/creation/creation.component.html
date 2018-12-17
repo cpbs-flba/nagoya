@@ -1,4 +1,4 @@
-<form [formGroup]="geneticResourceForm" (ngSubmit)="onSubmit()" novalidate fxLayout="column">
+<form [formGroup]="geneticResourceForm" novalidate fxLayout="column">
   <mat-form-field>
     <input matInput type="text" formControlName="identifier" placeholder="identifier">
   </mat-form-field>
@@ -27,8 +27,29 @@
     </mat-radio-button>
   </mat-radio-group>
 
-  <button type="submit" mat-raised-button color="accent" [disabled]="geneticResourceForm.invalid">
-    <span>Hinzufügen</span>
+  <div>
+    <mat-card *ngFor="let attachment of attachments" fxLayout="row">
+      <div fxLayoutAlign="center center">
+        {{attachment.name}}
+      </div>
+      <div fxFlex></div>
+      <div>
+        <button mat-button (click)="removeAttachment(attachment)"><mat-icon>delete</mat-icon></button>
+      </div>
+    </mat-card>
+    <br />
+  </div>
+  <br />
+
+  <input type="file" hidden #fileInput (change)="addAttachment($event)">
+
+  <button mat-flat-button color="accent" (click)="fileInput.click()">
+    ADD FILE
+  </button>
+  <br />
+
+  <button type="submit" mat-raised-button color="accent" [disabled]="geneticResourceForm.invalid" (click)="onSubmit()">
+    <span>CREATE</span>
   </button>
 
 
