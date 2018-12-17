@@ -163,7 +163,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatMomentDateModule,
     MatIconModule,
     MatExpansionModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatAutocompleteModule
   ],
   exports: [
     MatAutocompleteModule,

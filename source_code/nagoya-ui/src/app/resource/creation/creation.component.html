@@ -27,6 +27,42 @@
     </mat-radio-button>
   </mat-radio-group>
 
+
+
+
+  <mat-form-field>
+    <input type="text" placeholder="Ordnung" matInput [matAutocomplete]="taxonomicOrder">
+    <mat-autocomplete #taxonomicOrder="matAutocomplete">
+      <mat-option *ngFor="let order of orders" [value]="order">
+        {{order}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input type="text" placeholder="Familie" matInput [matAutocomplete]="taxonomicFamily">
+    <mat-autocomplete #taxonomicFamily="matAutocomplete">
+      <mat-option *ngFor="let family of families" [value]="family">
+        {{family}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input type="text" placeholder="Subfamilie" matInput [matAutocomplete]="taxonomicSubFamily">
+    <mat-autocomplete #taxonomicSubFamily="matAutocomplete">
+      <mat-option *ngFor="let subFamily of subFamilies" [value]="subFamily">
+        {{subFamily}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+
+
+
+
+
+
   <div>
     <mat-card *ngFor="let attachment of attachments" fxLayout="row">
       <div fxLayoutAlign="center center">
@@ -43,7 +79,7 @@
 
   <input type="file" hidden #fileInput (change)="addAttachment($event)">
 
-  <button mat-flat-button color="accent" (click)="fileInput.click()">
+  <button mat-raised-button color="accent" (click)="fileInput.click()">
     ADD FILE
   </button>
   <br />

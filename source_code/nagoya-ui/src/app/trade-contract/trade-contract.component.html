@@ -1,24 +1,55 @@
 <div fxLayout="column" class="contentWrapper">
   <h1 class="mat-h1">Neuen Vertrag erstellen</h1>
 
-  <mat-form-field>
-    <mat-select placeholder="Genetische Ressource" name="geneticResource">
-      <mat-option>Sonnenblume</mat-option>
-    </mat-select>
-  </mat-form-field>
-
+  <!-- Recipient -->
   <mat-form-field>
     <input matInput placeholder="Empfänger" type="text">
   </mat-form-field>
 
-  <mat-form-field>
-    <input matInput placeholder="Betrag" type="text">
-  </mat-form-field>
+  <!-- Resources -->
+  <h2>Ressourcen</h2>
+  <mat-selection-list class="resourceSelectionList">
+    <div class="innerResourceSelectionList">
+      <mat-list-option *ngFor="let resource of geneticResources">
+        {{resource}}
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+
+  <!-- Attachments -->
+  <div fxLayout="column">
+    <div fxLayout="row">
+      <div>
+        <h2>Dokumente</h2>
+      </div>
+      <div fxFlex></div>
+      <div>
+        <input type="file" hidden #fileInput (change)="addAttachment($event)">
+
+        <button mat-raised-button (click)="fileInput.click()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div *ngFor="let attachment of attachments" fxLayout="row">
+      <div fxLayoutAlign="center center">
+        {{attachment.name}}
+      </div>
+      <div fxFlex></div>
+      <div>
+        <button mat-button (click)="removeAttachment(attachment)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <br/>
+  </div>
 
 
-  <mat-form-field>
-    <input matInput placeholder="Dokument" type="text">
-  </mat-form-field>
-
-  <button type="submit" mat-raised-button color="accent">Angebot erstellen</button>
+  <div fxLayout="row">
+    <div fxFlex></div>
+    <button type="submit" mat-raised-button color="accent">Angebot erstellen</button>
+  </div>
+  <br/>
 </div>

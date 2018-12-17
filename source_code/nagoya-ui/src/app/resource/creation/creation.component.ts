@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angula
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VisibilityType} from '../../model/visibilityType';
 import {ResourceService} from '../../services/resource.service';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {GeneticResource} from '../../model/geneticResource';
 import {ResourceFile} from '../../model/resourceFile';
 
@@ -18,13 +18,16 @@ export class CreationComponent implements OnInit {
   createNew: boolean;
   @Output()
   createNewChange = new EventEmitter<boolean>();
-
   geneticResourceForm: FormGroup;
   visibilityTypes = Object.keys(VisibilityType);
-  selectedType: VisibilityType;
   attachments: ResourceFile[] = [];
 
   @ViewChild('file') fileInput;
+  orders: string[] = ['Ordnung 1', 'Ordnung 2', 'Ordnung 3'];
+  filteredOrders: Observable<string[]>;
+  families: string[] = ['Famile 1', 'Famile 2', 'Famile 3'];
+  subFamilies: string[] = ['Unterfamilie 1', 'Unterfamilie 2', 'Unterfamilie 3'];
+
 
   constructor(private formBuilder: FormBuilder, private resourceService: ResourceService) {
     this.createForm();
@@ -50,7 +53,7 @@ export class CreationComponent implements OnInit {
       source: ['', Validators.required],
       origin: ['', Validators.required],
       hashSequence: [''],
-      visibilityType: ['', Validators.required],
+      visibilityType: ['', Validators.required]
     });
   }
 
@@ -63,13 +66,8 @@ export class CreationComponent implements OnInit {
       resourceFile.type = file.type;
       reader.readAsDataURL(file);
 
-
       reader.onload = () => {
         resourceFile.content = reader.result.toString().split(',')[1];
-        if(this.attachments.indexOf(resourceFile,0)){
-          
-        }
-
         this.attachments.push(resourceFile);
       };
     }
