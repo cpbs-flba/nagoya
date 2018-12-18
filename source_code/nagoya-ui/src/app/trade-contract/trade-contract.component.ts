@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ResourceFile} from '../model/resourceFile';
+import {ResourceService} from '../services/resource.service';
+import {GeneticResource} from '../model/geneticResource';
 
 @Component({
   selector: 'app-trade-contract',
@@ -8,13 +10,19 @@ import {ResourceFile} from '../model/resourceFile';
 })
 export class TradeContractComponent implements OnInit {
 
-  geneticResources: string[] = ['Resource 1','Resource 2','Resource 3','Resource 4','Resource 5','Resource 6','Resource 7','Resource 8'];
+  geneticResources: GeneticResource [];
   attachments: ResourceFile[] = [];
 
 
-  constructor() { }
+  constructor(private resourceService: ResourceService) { }
 
   ngOnInit() {
+    this.resourceService.getAll().subscribe(response => {
+      this.geneticResources = response;
+    }, error => {
+      //TODO
+      console.log(error);
+    });
   }
 
   addAttachment(event: any) {

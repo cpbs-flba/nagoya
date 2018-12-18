@@ -5,6 +5,7 @@ import {ResourceService} from '../../services/resource.service';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {GeneticResource} from '../../model/geneticResource';
 import {ResourceFile} from '../../model/resourceFile';
+import {TranslateService} from '@ngx-translate/core';
 
 
 @Component({
@@ -29,7 +30,9 @@ export class CreationComponent implements OnInit {
   subFamilies: string[] = ['Unterfamilie 1', 'Unterfamilie 2', 'Unterfamilie 3'];
 
 
-  constructor(private formBuilder: FormBuilder, private resourceService: ResourceService) {
+  constructor(private formBuilder: FormBuilder,
+              private resourceService: ResourceService,
+              public translate: TranslateService) {
     this.createForm();
   }
 

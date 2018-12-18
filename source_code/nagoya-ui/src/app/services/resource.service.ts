@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {GeneticResource} from '../model/geneticResource';
 import {environment} from '../../environments/environment';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,4 +18,18 @@ export class ResourceService {
       observe: 'response'
     });
   }
+
+  public getAll(): Observable<GeneticResource []> {
+    return this.http.post<GeneticResource []>(environment.serverUrl + 'genetics/search', {}, {
+      headers: new HttpHeaders({'Content-Type': 'application/json'})
+    });
+  }
+
+  public search(geneticResourceFilter): Observable<GeneticResource []> {
+    return this.http.post<GeneticResource []>(environment.serverUrl + 'genetics/search', geneticResourceFilter, {
+      headers: new HttpHeaders({'Content-Type': 'application/json'})
+    });
+  }
+
+
 }

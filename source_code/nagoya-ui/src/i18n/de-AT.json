@@ -29,19 +29,19 @@
     "SERVER_UNREACHABLE": "Serverkommunikation fehlgeschlagen. Bitte versuchen Sie es später erneut."
   },
   "LEGAL": {
-    "TITLE":"Impressum",
-    "CONTENT":"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
+    "TITLE": "Impressum",
+    "CONTENT": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
   },
   "TERMS": {
-    "TITLE":"AGB",
-    "CONTENT":"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
+    "TITLE": "AGB",
+    "CONTENT": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
   },
   "LOGIN": {
     "ERROR": {
       "WRONG_DATA": "Benutzername oder Passwort stimmen nicht überein",
-      "INVALID_INPUT":"Ungültige Eingabe, bitte prüfen Sie Ihre Eingabe",
-      "NOT_CONFIRMED":"Sie müssen Ihr Konto erst bestätigen, prüfen Sie Ihren E-Mail Posteingang",
-      "UNSPECIFIED":"Die Anmeldung ist fehlgeschlagen"
+      "INVALID_INPUT": "Ungültige Eingabe, bitte prüfen Sie Ihre Eingabe",
+      "NOT_CONFIRMED": "Sie müssen Ihr Konto erst bestätigen, prüfen Sie Ihren E-Mail Posteingang",
+      "UNSPECIFIED": "Die Anmeldung ist fehlgeschlagen"
     },
     "VALIDATION": {
       "EMAIL_REQUIRED": "Benutzername/E-Mail wird benötigt",
@@ -79,9 +79,9 @@
       "BUTTON": {
         "REGISTER": "Registrieren"
       },
-      "ERROR" : {
-        "EMAIL_ALREADY_IN_USE":"Die angegebene E-Mail Adresse wird bereits verwendet",
-        "REGISTRATION_FAILED":"Die Registrierung ist fehlgeschlagen"
+      "ERROR": {
+        "EMAIL_ALREADY_IN_USE": "Die angegebene E-Mail Adresse wird bereits verwendet",
+        "REGISTRATION_FAILED": "Die Registrierung ist fehlgeschlagen"
       }
     }
   },
@@ -93,30 +93,117 @@
     },
     "VALIDATION": {
       "START": {
-        "TITLE":"Ihre Registrierung wird validiert",
-        "SUB_TITLE":"Bitte um einen Moment geduld",
-        "CONTENT":"Ihre Registrierung wird validiert und ihr Konto erstellt."
+        "TITLE": "Ihre Registrierung wird validiert",
+        "SUB_TITLE": "Bitte um einen Moment geduld",
+        "CONTENT": "Ihre Registrierung wird validiert und ihr Konto erstellt."
       },
       "SUCCESS": {
-        "TITLE":"Ihre Registrierung war erfolgreich",
-        "SUB_TITLE":"Ihre E-Mail Adresse wurde bestätigt",
-        "CONTENT":"Ihr Konto wurde erstellt. Sie können sich mit Ihrer verifizierten E-Mail Adresse nun einloggen."
+        "TITLE": "Ihre Registrierung war erfolgreich",
+        "SUB_TITLE": "Ihre E-Mail Adresse wurde bestätigt",
+        "CONTENT": "Ihr Konto wurde erstellt. Sie können sich mit Ihrer verifizierten E-Mail Adresse nun einloggen."
       },
       "FAILED": {
-        "TITLE":"Ihre Registrierung war nicht erfolgreich",
-        "SUB_TITLE":"Wir konnten Ihre E-Mail Adresse nicht bestätigen",
-        "CONTENT":"Bitte starten Sie den Registrierungsprozess erneut. Beachten Sie, dass die Bestätiguns E-Mail ablaufen kann"
+        "TITLE": "Ihre Registrierung war nicht erfolgreich",
+        "SUB_TITLE": "Wir konnten Ihre E-Mail Adresse nicht bestätigen",
+        "CONTENT": "Bitte starten Sie den Registrierungsprozess erneut. Beachten Sie, dass die Bestätiguns E-Mail ablaufen kann"
       }
     },
-    "ERROR":{
-      "TOKEN_INVALID":"Der Registrierungstoken ist ungültig",
-      "TOKEN_EXPIRED":"Der Registrierungstoken ist abgelaufen",
-      "REGISTRATION_FAILED":"Die Registrierung ist fehlgeschlagen"
+    "ERROR": {
+      "TOKEN_INVALID": "Der Registrierungstoken ist ungültig",
+      "TOKEN_EXPIRED": "Der Registrierungstoken ist abgelaufen",
+      "REGISTRATION_FAILED": "Die Registrierung ist fehlgeschlagen"
     }
   },
   "HOME": {
     "TITLE": "Willkommen!",
-    "SUB_TITLE" : "Sie haben sich erfolgreich angemeldet",
-    "CONTENT" : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
+    "SUB_TITLE": "Sie haben sich erfolgreich angemeldet",
+    "CONTENT": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
+  },
+  "MASTER_DATA": {
+    "TITLE": "Ihre Stammdaten",
+    "DESCRIPTION": {
+      "FIRSTNAME": "Vorname",
+      "LASTNAME": "Nachname",
+      "NAME": "Name",
+      "COMMERCIAL_REGISTER_NUMBER": "Handelsregisternummer",
+      "TAX_NUMBER": "Steuernummer",
+      "EMAIL": "E-Mail",
+      "PASSWORD_CONFIRMATION": "mit Passwort bestätigen"
+    },
+    "ACTION": {
+      "EDIT": "Bearbeiten",
+      "UPDATE": "Ändern"
+    }
+  },
+  "CHANGE_PASSWORD": {
+    "TITLE": "Passwort Änderung",
+    "SUB_TITLE": "Hier können Sie Ihr Passwort ändern",
+    "FORM": {
+      "OLD_PASSWORD": "altes Passwort",
+      "NEW_PASSWORD": "neues Passwort",
+      "NEW_PASSWORD_CONFIRMATION": "neues Passwort bestätigen"
+    },
+    "ACTION": {
+      "UPDATE": "Ändern"
+    },
+    "ERROR": {
+      "NO_MATCH": "Passwörter stimmen nicht überein"
+    }
+  },
+  "RESOURCE": {
+    "TITLE": "Genetische Ressourcen",
+    "ACTION": {
+      "CREATE": "Neue Ressource"
+    },
+    "CREATION": {
+      "FORM": {
+        "HEADER": {
+          "DESCRIPTION": "Beschreibung",
+          "TAXONOMY": "Taxonomische Einordnung",
+          "ATTACHMENT": "Dokumente"
+        },
+        "IDENTIFIER": "Bezeichnung",
+        "DESCRIPTION": "Beschreibung",
+        "SOURCE": "Herkunft",
+        "ORIGIN": "Ursprung",
+        "HASH_SEQUENCE": "Gen Sequenz",
+        "VISIBILITY": "Sichtbarkeit",
+        "TAXONOMOY": {
+          "ORDER": "Ordnung",
+          "FAMILY": "Familie",
+          "SUBFAMILY": "Subfamilie"
+        }
+      },
+      "ACTION": {
+        "CREATE": "Erstellen"
+      }
+    },
+    "OVERVIEW": {
+      "TITLE": "Meine genetischen Ressourcen",
+      "SEARCH": {
+        "TITLE": "Suche",
+        "FORM": {
+          "IDENTIFIER": "Bezeichnung",
+          "DESCRIPTION": "Beschreibung",
+          "SOURCE": "Herkunft",
+          "ORIGIN": "Ursprung",
+          "HASH_SEQUENCE": "Gen Sequenz"
+        }
+      },
+      "LIST": {
+        "DESCRIPTION": "Beschreibung",
+        "SOURCE": "Herkunft",
+        "ORIGIN": "Ursprung",
+        "HASH_SEQUENCE": "Gen Sequenz",
+        "VISIBILITY": "Sichtbarkeit"
+      }
+    }
+  },
+  "ENUM": {
+    "VISIBILITY_TYPES": {
+      "PRIVATE": "Privat",
+      "PUBLIC": "Öffentlich",
+      "GROUP": "Gruppen"
+    }
   }
 }

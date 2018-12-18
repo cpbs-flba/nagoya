@@ -3,6 +3,7 @@ import {Form, FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, V
 import {ErrorStateMatcher} from '@angular/material';
 import {MasterDataService} from '../services/master-data.service';
 import {UserService} from '../services/user.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-change-password',
@@ -15,7 +16,10 @@ export class ChangePasswordComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
 
 
-  constructor(private formBuilder: FormBuilder, private masterDataService: MasterDataService, private userService: UserService) {
+  constructor(private formBuilder: FormBuilder,
+              private masterDataService: MasterDataService,
+              private userService: UserService,
+              private translate: TranslateService) {
     this.pwChangeForm = this.createForm();
   }
 

@@ -76,12 +76,12 @@ import {ConfirmationComponent} from './confirmation/confirmation.component';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import { ResourceComponent } from './resource/resource.component';
 import { CreationComponent } from './resource/creation/creation.component';
-import { TemplateComponent } from './resource/template/template.component';
 import { MasterDataComponent } from './master-data/master-data.component';
 import { TradeOfferComponent } from './trade-offer/trade-offer.component';
 import { TradeOverviewComponent } from './trade-overview/trade-overview.component';
 import { TradeContractComponent } from './trade-contract/trade-contract.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import {OverviewComponent} from './resource/overview/overview.component';
 
 // import {RegistrationModule} from './registration/registration.module';
 
@@ -107,7 +107,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ConfirmationComponent,
     ResourceComponent,
     CreationComponent,
-    TemplateComponent,
+    OverviewComponent,
     MasterDataComponent,
     TradeOfferComponent,
     TradeOverviewComponent,
