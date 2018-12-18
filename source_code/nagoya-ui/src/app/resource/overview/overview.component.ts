@@ -4,11 +4,11 @@ import {ResourceService} from '../../services/resource.service';
 import {GeneticResourceFilter} from '../../model/geneticResourceFilter';
 
 @Component({
-  selector: 'app-template',
-  templateUrl: './template.component.html',
-  styleUrls: ['./template.component.scss']
+  selector: 'app-overview',
+  templateUrl: './overview.component.html',
+  styleUrls: ['./overview.component.scss']
 })
-export class TemplateComponent implements OnInit, OnDestroy {
+export class OverviewComponent implements OnInit, OnDestroy {
 
   geneticResourceFilter = new GeneticResourceFilter();
   geneticResources: GeneticResource[];

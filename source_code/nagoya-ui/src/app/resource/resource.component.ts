@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-resource',
@@ -10,7 +11,7 @@ export class ResourceComponent implements OnInit {
 
   createNew = false;
 
-  constructor() {
+  constructor(public translate: TranslateService) {
   }
 
   ngOnInit() {

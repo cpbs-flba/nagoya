@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {UserService} from '../services/user.service';
 import {FormBuilder, FormGroup, FormGroupName, Validators} from '@angular/forms';
 import {MasterDataService} from '../services/master-data.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-master-data',
@@ -16,7 +17,8 @@ export class MasterDataComponent implements OnInit {
 
   constructor(private userService: UserService,
               private masterDataService: MasterDataService,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              public translate: TranslateService) {
   }
 
   ngOnInit() {

@@ -1,40 +1,40 @@
 <form [formGroup]="geneticResourceForm" novalidate fxLayout="column">
 
-  <h3>Beschreibung</h3>
+  <h3>{{'RESOURCE.CREATION.FORM.HEADER.DESCRIPTION'| translate}}</h3>
 
   <mat-form-field>
-    <input matInput type="text" formControlName="identifier" placeholder="identifier">
+    <input matInput type="text" formControlName="identifier" placeholder="{{'RESOURCE.CREATION.FORM.IDENTIFIER'| translate}}">
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput type="text" formControlName="description" placeholder="description">
+    <input matInput type="text" formControlName="description" placeholder="{{'RESOURCE.CREATION.FORM.DESCRIPTION'| translate}}">
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput type="text" formControlName="source" placeholder="source">
+    <input matInput type="text" formControlName="source" placeholder="{{'RESOURCE.CREATION.FORM.SOURCE'| translate}}">
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput type="text" formControlName="origin" placeholder="origin">
+    <input matInput type="text" formControlName="origin" placeholder="{{'RESOURCE.CREATION.FORM.ORIGIN'| translate}}">
   </mat-form-field>
   <mat-form-field>
-    <input matInput type="text" formControlName="hashSequence" placeholder="hash Sequence">
+    <input matInput type="text" formControlName="hashSequence" placeholder="{{'RESOURCE.CREATION.FORM.HASH_SEQUENCE'| translate}}">
   </mat-form-field>
 
-  <span class="visibilityRadioHint">Sichtbarkeit</span>
+  <span class="visibilityRadioHint">{{'RESOURCE.CREATION.FORM.VISIBILITY'| translate}}</span>
   <mat-radio-group formControlName="visibilityType" class="visibilityRadioGroup">
 
     <mat-radio-button [checked] *ngFor="let visibilityType of visibilityTypes" [value]="visibilityType"
                       class="visibilityRadioButton">
-      {{visibilityType.valueOf().toLowerCase()}}
+      {{'ENUM.VISIBILITY_TYPES'+visibilityType.valueOf() | translate}}
     </mat-radio-button>
   </mat-radio-group>
 
 
 
-<h3>Taxonomische Ordnung</h3>
+<h3>{{'RESOURCE.CREATION.FORM.HEADER.TAXONOMY'| translate}}</h3>
   <mat-form-field>
-    <input type="text" placeholder="Ordnung" matInput [matAutocomplete]="taxonomicOrder">
+    <input type="text" placeholder="{{'RESOURCE.CREATION.FORM.TAXONOMOY.ORDER'| translate}}" matInput [matAutocomplete]="taxonomicOrder">
     <mat-autocomplete #taxonomicOrder="matAutocomplete">
       <mat-option *ngFor="let order of orders" [value]="order">
         {{order}}
@@ -43,7 +43,7 @@
   </mat-form-field>
 
   <mat-form-field>
-    <input type="text" placeholder="Familie" matInput [matAutocomplete]="taxonomicFamily">
+    <input type="text" placeholder="{{'RESOURCE.CREATION.FORM.TAXONOMOY.FAMILY'| translate}}" matInput [matAutocomplete]="taxonomicFamily">
     <mat-autocomplete #taxonomicFamily="matAutocomplete">
       <mat-option *ngFor="let family of families" [value]="family">
         {{family}}
@@ -52,7 +52,7 @@
   </mat-form-field>
 
   <mat-form-field>
-    <input type="text" placeholder="Subfamilie" matInput [matAutocomplete]="taxonomicSubFamily">
+    <input type="text" placeholder="{{'RESOURCE.CREATION.FORM.TAXONOMOY.SUBFAMILY'| translate}}" matInput [matAutocomplete]="taxonomicSubFamily">
     <mat-autocomplete #taxonomicSubFamily="matAutocomplete">
       <mat-option *ngFor="let subFamily of subFamilies" [value]="subFamily">
         {{subFamily}}
@@ -64,7 +64,7 @@
   <div fxLayout="column">
     <div fxLayout="row">
       <div>
-        <h3>Dokumente</h3>
+        <h3>{{'RESOURCE.CREATION.FORM.HEADER.ATTACHMENT'| translate}}</h3>
       </div>
       <div fxFlex></div>
       <div>
@@ -90,32 +90,8 @@
     <br/>
   </div>
 
-
-
-
-  <!--<div>-->
-    <!--<mat-card *ngFor="let attachment of attachments" fxLayout="row">-->
-      <!--<div fxLayoutAlign="center center">-->
-        <!--{{attachment.name}}-->
-      <!--</div>-->
-      <!--<div fxFlex></div>-->
-      <!--<div>-->
-        <!--<button mat-button (click)="removeAttachment(attachment)"><mat-icon>delete</mat-icon></button>-->
-      <!--</div>-->
-    <!--</mat-card>-->
-    <!--<br />-->
-  <!--</div>-->
-  <!--<br />-->
-
-  <!--<input type="file" hidden #fileInput (change)="addAttachment($event)">-->
-
-  <!--<button mat-raised-button color="accent" (click)="fileInput.click()">-->
-    <!--ADD FILE-->
-  <!--</button>-->
-  <!--<br />-->
-
   <button type="submit" mat-raised-button color="accent" [disabled]="geneticResourceForm.invalid" (click)="onSubmit()">
-    <span>CREATE</span>
+    <span>{{'RESOURCE.CREATION.ACTION.CREATE'| translate}}</span>
   </button>
 
 

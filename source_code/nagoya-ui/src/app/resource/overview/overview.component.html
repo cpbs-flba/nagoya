@@ -1,0 +1,62 @@
+<h1 class="mat-h1">{{'RESOURCE.OVERVIEW.TITLE'|translate}}</h1>
+
+<div>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header class="searchPanel">{{'RESOURCE.OVERVIEW.SEARCH.TITLE'|translate}}
+    </mat-expansion-panel-header>
+    <div fxLayout="column">
+      <mat-form-field class="searchField">
+        <input matInput type="text" placeholder="{{'RESOURCE.OVERVIEW.SEARCH.FORM.IDENTIFIER'|translate}}"
+               [(ngModel)]="geneticResourceFilter.identifier">
+      </mat-form-field>
+      <mat-form-field class="searchField">
+        <input matInput type="text" placeholder="{{'RESOURCE.OVERVIEW.SEARCH.FORM.DESCRIPTION'|translate}}"
+               [(ngModel)]="geneticResourceFilter.description">
+      </mat-form-field>
+      <mat-form-field class="searchField">
+        <input matInput type="text" placeholder="{{'RESOURCE.OVERVIEW.SEARCH.FORM.ORIGIN'|translate}}"
+               [(ngModel)]="geneticResourceFilter.origin">
+      </mat-form-field>
+      <mat-form-field class="searchField">
+        <input matInput type="text" placeholder="{{'RESOURCE.OVERVIEW.SEARCH.FORM.SOURCE'|translate}}"
+               [(ngModel)]="geneticResourceFilter.source">
+      </mat-form-field>
+      <mat-form-field class="searchField">
+        <input matInput type="text" placeholder="{{'RESOURCE.OVERVIEW.SEARCH.FORM.HASH_SEQUENCE'|translate}}"
+               [(ngModel)]="geneticResourceFilter.hashSequence">
+      </mat-form-field>
+
+      <div fxLayout="row">
+        <div fxFlex></div>
+        <button mat-button (click)="search()">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</div>
+<br/>
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let resource of geneticResources">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{resource.identifier}}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{resource.origin}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div>
+      <div fxLayout="column">
+        <span class="descriptionTitle">{{'RESOURCE.OVERVIEW.LIST.DESCRIPTION'|translate}}</span>
+        <p>{{resource.description}}</p>
+        <span class="descriptionTitle">{{'RESOURCE.OVERVIEW.LIST.VISIBILITY'|translate}}</span>
+        <p>{{resource.visibilityType}}</p>
+        <span class="descriptionTitle">{{'RESOURCE.OVERVIEW.LIST.HASH_SEQUENCE'|translate}}</span>
+        <p>{{resource.hashSequence}}</p>
+        <span class="descriptionTitle">{{'RESOURCE.OVERVIEW.LIST.SOURCE'|translate}}</span>
+        <p>{{resource.source}}</p>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

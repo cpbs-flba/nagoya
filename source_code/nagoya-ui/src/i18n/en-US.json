@@ -118,5 +118,92 @@
     "TITLE": "Welcome!",
     "SUB_TITLE" : "You have successfully logged in",
     "CONTENT" : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"
+  },
+  "MASTER_DATA": {
+    "TITLE": "Your Master Data",
+    "DESCRIPTION": {
+      "FIRSTNAME": "Firstname",
+      "LASTNAME": "Lastname",
+      "NAME": "Name",
+      "COMMERCIAL_REGISTER_NUMBER": "Commercial Register Number",
+      "TAX_NUMBER": "Tax Number",
+      "EMAIL": "E-Mail",
+      "PASSWORD_CONFIRMATION": "confirm with Password"
+    },
+    "ACTION": {
+      "EDIT": "Edit",
+      "UPDATE": "Update"
+    }
+  },
+  "CHANGE_PASSWORD": {
+    "TITLE": "Password Change",
+    "SUB_TITLE": "Here you can change your password",
+    "FORM": {
+      "OLD_PASSWORD": "old Password",
+      "NEW_PASSWORD": "new Password",
+      "NEW_PASSWORD_CONFIRMATION": "new Password confirmation"
+    },
+    "ACTION": {
+      "UPDATE": "Update"
+    },
+    "ERROR": {
+      "NO_MATCH": "Passwords do not match"
+    }
+  },
+  "RESOURCE": {
+    "TITLE": "Genetic Resources",
+    "ACTION": {
+      "CREATE": "New Resource"
+    },
+    "CREATION": {
+      "FORM": {
+        "HEADER": {
+          "DESCRIPTION": "Description",
+          "TAXONOMY": "Taxonomic classification",
+          "ATTACHMENT": "Attachments"
+        },
+        "IDENTIFIER": "Identifier",
+        "DESCRIPTION": "Description",
+        "SOURCE": "Source",
+        "ORIGIN": "Origin",
+        "HASH_SEQUENCE": "Gen Sequence",
+        "VISIBILITY": "Visibility",
+        "TAXONOMOY": {
+          "ORDER": "Order",
+          "FAMILY": "Family",
+          "SUBFAMILY": "Subfamily"
+        }
+      },
+      "ACTION": {
+        "CREATE": "Create"
+      }
+    },
+    "OVERVIEW": {
+      "TITLE": "My genetic Resources",
+      "SEARCH": {
+        "TITLE": "Search",
+        "FORM": {
+          "IDENTIFIER": "Identifier",
+          "DESCRIPTION": "Description",
+          "SOURCE": "Source",
+          "ORIGIN": "Origin",
+          "HASH_SEQUENCE": "Gen Sequence"
+        }
+      },
+      "LIST": {
+        "DESCRIPTION": "Description",
+        "SOURCE": "Source",
+        "ORIGIN": "Origin",
+        "HASH_SEQUENCE": "Gen Sequence",
+        "VISIBILITY": "Visibility"
+      }
+    }
+  },
+  "ENUM": {
+    "VISIBILITY_TYPES": {
+      "PRIVATE": "Private",
+      "PUBLIC": "Public",
+      "GROUP": "Group"
+    }
   }
 }
