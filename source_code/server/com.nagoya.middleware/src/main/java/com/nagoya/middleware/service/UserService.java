@@ -220,7 +220,7 @@ public class UserService {
 	private String createSession(com.nagoya.model.dbo.person.Person person) {
 		// step 1: create new session
 		String sessionToken = DefaultIDGenerator.generateRandomID();
-		LOGGER.debug("Created token:\r\n" + sessionToken);
+		LOGGER.debug("Created token: " + sessionToken);
 		Key key = MacProvider.generateKey();
 		String privateKey = new String(Base64.getEncoder().encode(key.getEncoded()), StandardCharsets.UTF_8);
 
@@ -239,12 +239,12 @@ public class UserService {
 		onlineUser.setExpirationDate(deadline);
 		onlineUser.setPrivateKey(privateKey);
 		onlineUser.setSessionToken(sessionToken);
-		personDAO.removeOldSessions(person);
+//		personDAO.removeOldSessions(person);
 		personDAO.insert(onlineUser, true);
 
 		return jsonWebToken;
 	}
-	
+
 	public String updateSession(OnlineUser onlineUser) throws InvalidObjectException, ResourceOutOfDateException {
 		// step 1: create new session
 		String sessionToken = DefaultIDGenerator.generateRandomID();
@@ -389,7 +389,7 @@ public class UserService {
 		// validate the session token
 		OnlineUser onlineUser = validateSession(authorization);
 		com.nagoya.model.dbo.person.Person foundPerson = onlineUser.getPerson();
-		
+
 		// all updates must be confirmed via password confirmation
 		String actualPassword = foundPerson.getPassword();
 		String passwordConfirmation = personTO.getPasswordConfirmation();
@@ -416,7 +416,8 @@ public class UserService {
 		return result;
 	}
 
-	public void logout(String authorization) throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
+	public void logout(String authorization)
+			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
 		OnlineUser onlineUser = validateSession(authorization);
 		try {
 			personDAO.delete(onlineUser, true);

@@ -60,10 +60,9 @@ public class BasicDAOImpl<T> implements BasicDAO<T> {
 		try {
 			transaction = session.beginTransaction();
 			Long generatedId = (Long) session.save(dbo);
-			dbo.setId(generatedId);
 			session.flush();
-			session.clear();
 			transaction.commit();
+			dbo.setId(generatedId);
 			return dbo;
 		} catch (HibernateException e) {
 			if (transaction != null) {

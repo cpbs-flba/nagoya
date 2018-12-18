@@ -29,6 +29,18 @@
 			<version>2.11.1</version>
 		</dependency>
 
+		<!-- old logger for older libraries -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+
 		<!-- JUnit 5 -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>

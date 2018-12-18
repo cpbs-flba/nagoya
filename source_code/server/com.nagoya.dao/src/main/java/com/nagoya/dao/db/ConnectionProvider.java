@@ -19,7 +19,7 @@ public class ConnectionProvider {
 
 	private static ConnectionProvider instance;
 
-	private SessionFactory sessionFactory;
+	private static SessionFactory sessionFactory;
 
 	private ConnectionProvider() {
 		// A SessionFactory is set up once for an application!
@@ -34,14 +34,15 @@ public class ConnectionProvider {
 	}
 
 	public Session getSession() {
-		LOGGER.debug("Opening session.");
+		LOGGER.debug(Thread.currentThread().getId() + " - opening session.");
 		Session session = sessionFactory.openSession();
 		return session;
 	}
 
 	public void closeSession(Session session) {
-		LOGGER.debug("Closing session.");
+		LOGGER.debug(Thread.currentThread().getId() + " - closing session.");
 		if (session == null) {
+			LOGGER.warn("Session was NULL!");
 			return;
 		}
 		session.clear();

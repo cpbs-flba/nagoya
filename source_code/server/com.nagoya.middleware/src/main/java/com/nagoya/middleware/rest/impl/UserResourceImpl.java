@@ -19,7 +19,6 @@ import com.nagoya.dao.db.ConnectionProvider;
 import com.nagoya.middleware.rest.UserResource;
 import com.nagoya.middleware.service.UserService;
 import com.nagoya.middleware.util.DefaultReturnObject;
-import com.nagoya.model.dbo.person.PersonType;
 import com.nagoya.model.exception.BadRequestException;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.ForbiddenException;
@@ -91,7 +90,7 @@ public class UserResourceImpl implements UserResource {
 			session = ConnectionProvider.getInstance().getSession();
 			UserService userService = new UserService(session);
 			if (person != null) {
-				person.setPersonType(PersonType.LEGAL);
+				person.setPersonType(com.nagoya.model.to.person.PersonType.LEGAL);
 			}
 			userService.register(person, language);
 			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
@@ -125,7 +124,7 @@ public class UserResourceImpl implements UserResource {
 			session = ConnectionProvider.getInstance().getSession();
 			UserService userService = new UserService(session);
 			if (person != null) {
-				person.setPersonType(PersonType.NATURAL);
+				person.setPersonType(com.nagoya.model.to.person.PersonType.NATURAL);
 			}
 			userService.register(person, language);
 			ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);

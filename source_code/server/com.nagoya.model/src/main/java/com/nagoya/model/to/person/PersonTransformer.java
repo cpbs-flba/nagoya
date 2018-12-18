@@ -6,7 +6,6 @@ package com.nagoya.model.to.person;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.nagoya.model.dbo.person.PersonType;
 
 /**
  * @author flba
@@ -23,7 +22,7 @@ public final class PersonTransformer {
 			return null;
 		}
 		com.nagoya.model.to.person.Person result = null;
-		if (dbo.getPersonType().equals(PersonType.LEGAL)) {
+		if (dbo.getPersonType().equals(com.nagoya.model.dbo.person.PersonType.LEGAL)) {
 			result = new com.nagoya.model.to.person.PersonLegal();
 			getDTO((com.nagoya.model.to.person.PersonLegal) result, (com.nagoya.model.dbo.person.PersonLegal) dbo);
 		} else {
@@ -33,18 +32,18 @@ public final class PersonTransformer {
 
 		result.setEmail(dbo.getEmail());
 		result.setPassword(dbo.getPassword());
-		result.setPersonType(dbo.getPersonType());
 		result.setAddress(getDTO(dbo.getAddress()));
-		result.setKeys(getDTO(dbo.getKeys()));
+		Set<com.nagoya.model.to.person.PersonKeys> keysToAdd = getDTO(dbo.getKeys());
+		result.getKeys().addAll(keysToAdd);
 
 		return result;
 	}
 
 	public static Set<com.nagoya.model.to.person.PersonKeys> getDTO(Set<com.nagoya.model.dbo.person.PersonKeys> dbo) {
-		if (dbo == null) {
-			return null;
-		}
 		Set<com.nagoya.model.to.person.PersonKeys> result = new HashSet<com.nagoya.model.to.person.PersonKeys>();
+		if (dbo == null) {
+			return result;
+		}
 		for (com.nagoya.model.dbo.person.PersonKeys dbKey : dbo) {
 			com.nagoya.model.to.person.PersonKeys toAdd = new com.nagoya.model.to.person.PersonKeys();
 			toAdd.setPrivateKey(dbKey.getPrivateKey());
@@ -113,13 +112,13 @@ public final class PersonTransformer {
 			return null;
 		}
 
-		PersonType personType = dto.getPersonType();
+		com.nagoya.model.to.person.PersonType personType = dto.getPersonType();
 		if (personType == null) {
 			return dbo;
 		}
 		
 		if (dbo == null) {
-			if (personType.equals(PersonType.LEGAL)) {
+			if (personType.equals(com.nagoya.model.to.person.PersonType.LEGAL)) {
 				dbo = new com.nagoya.model.dbo.person.PersonLegal();
 			} else {
 				dbo = new com.nagoya.model.dbo.person.PersonNatural();
@@ -129,9 +128,8 @@ public final class PersonTransformer {
 		dbo.setEmail(dto.getEmail());
 		dbo.setPassword(dto.getPassword());
 		dbo.setAddress(getDBO(dbo.getAddress(), dto.getAddress()));
-		dbo.setPersonType(personType);
 		
-		if (personType.equals(PersonType.LEGAL)) {
+		if (personType.equals(com.nagoya.model.to.person.PersonType.LEGAL)) {
 			com.nagoya.model.to.person.PersonLegal legalTO = (com.nagoya.model.to.person.PersonLegal) dto;
 			com.nagoya.model.dbo.person.PersonLegal legal = (com.nagoya.model.dbo.person.PersonLegal) dbo;
 			legal.setCommercialRegisterNumber(legalTO.getCommercialRegisterNumber());

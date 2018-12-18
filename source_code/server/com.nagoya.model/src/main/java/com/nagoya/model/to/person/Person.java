@@ -9,7 +9,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nagoya.blockchain.api.Credentials;
-import com.nagoya.model.dbo.person.PersonType;
 
 /**
  * @author flba

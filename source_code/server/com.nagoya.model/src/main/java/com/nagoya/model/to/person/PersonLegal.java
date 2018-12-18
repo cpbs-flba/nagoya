@@ -1,7 +1,5 @@
 package com.nagoya.model.to.person;
 
-import com.nagoya.model.dbo.person.PersonType;
-
 public class PersonLegal extends Person {
 
 	private static final long serialVersionUID = 1L;

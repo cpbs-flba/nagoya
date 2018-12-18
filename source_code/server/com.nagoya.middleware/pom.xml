@@ -32,7 +32,8 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<!-- Blockchain API implementation -->
-		<!-- Theoretically this API could be extended with another implementation for another blockchain -->
+		<!-- Theoretically this API could be extended with another implementation 
+			for another blockchain -->
 		<dependency>
 			<groupId>com.nagoya</groupId>
 			<artifactId>com.nagoya.blockchain.impl</artifactId>
@@ -156,8 +157,6 @@
 			<version>${org.eclipse.jetty.version}</version>
 		</dependency>
 
-		
-		
 	</dependencies>
 
 	<build>
@@ -271,7 +270,7 @@
 				</executions>
 			</plugin>
 
-			
+
 		</plugins>
 	</build>
 
