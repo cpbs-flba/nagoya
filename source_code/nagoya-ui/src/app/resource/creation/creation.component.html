@@ -1,4 +1,7 @@
 <form [formGroup]="geneticResourceForm" novalidate fxLayout="column">
+
+  <h3>Beschreibung</h3>
+
   <mat-form-field>
     <input matInput type="text" formControlName="identifier" placeholder="identifier">
   </mat-form-field>
@@ -23,13 +26,13 @@
 
     <mat-radio-button [checked] *ngFor="let visibilityType of visibilityTypes" [value]="visibilityType"
                       class="visibilityRadioButton">
-      {{visibilityType.valueOf()}}
+      {{visibilityType.valueOf().toLowerCase()}}
     </mat-radio-button>
   </mat-radio-group>
 
 
 
-
+<h3>Taxonomische Ordnung</h3>
   <mat-form-field>
     <input type="text" placeholder="Ordnung" matInput [matAutocomplete]="taxonomicOrder">
     <mat-autocomplete #taxonomicOrder="matAutocomplete">
@@ -58,31 +61,58 @@
   </mat-form-field>
 
 
+  <div fxLayout="column">
+    <div fxLayout="row">
+      <div>
+        <h3>Dokumente</h3>
+      </div>
+      <div fxFlex></div>
+      <div>
+        <input type="file" hidden #fileInput (change)="addAttachment($event)">
 
+        <button mat-raised-button (click)="fileInput.click()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
 
-
-
-
-  <div>
-    <mat-card *ngFor="let attachment of attachments" fxLayout="row">
+    <div *ngFor="let attachment of attachments" fxLayout="row">
       <div fxLayoutAlign="center center">
         {{attachment.name}}
       </div>
       <div fxFlex></div>
       <div>
-        <button mat-button (click)="removeAttachment(attachment)"><mat-icon>delete</mat-icon></button>
+        <button mat-button (click)="removeAttachment(attachment)">
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
-    </mat-card>
-    <br />
+    </div>
+    <br/>
   </div>
-  <br />
 
-  <input type="file" hidden #fileInput (change)="addAttachment($event)">
 
-  <button mat-raised-button color="accent" (click)="fileInput.click()">
-    ADD FILE
-  </button>
-  <br />
+
+
+  <!--<div>-->
+    <!--<mat-card *ngFor="let attachment of attachments" fxLayout="row">-->
+      <!--<div fxLayoutAlign="center center">-->
+        <!--{{attachment.name}}-->
+      <!--</div>-->
+      <!--<div fxFlex></div>-->
+      <!--<div>-->
+        <!--<button mat-button (click)="removeAttachment(attachment)"><mat-icon>delete</mat-icon></button>-->
+      <!--</div>-->
+    <!--</mat-card>-->
+    <!--<br />-->
+  <!--</div>-->
+  <!--<br />-->
+
+  <!--<input type="file" hidden #fileInput (change)="addAttachment($event)">-->
+
+  <!--<button mat-raised-button color="accent" (click)="fileInput.click()">-->
+    <!--ADD FILE-->
+  <!--</button>-->
+  <!--<br />-->
 
   <button type="submit" mat-raised-button color="accent" [disabled]="geneticResourceForm.invalid" (click)="onSubmit()">
     <span>CREATE</span>

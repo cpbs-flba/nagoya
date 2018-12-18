@@ -1,75 +1,60 @@
 <h1 class="mat-h1">Meine genetischen Ressourcen</h1>
 
 <div>
-  <mat-form-field fxFlex>
-    <input matInput type="text" placeholder="Search Here" [(ngModel)]="value">
-    <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-      <mat-icon>close</mat-icon>
-    </button>
-    <button mat-button *ngIf="!value" matPrefix mat-icon-button>
-      <mat-icon>search</mat-icon>
-    </button>
-  </mat-form-field>
-</div>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>Suche</mat-expansion-panel-header>
+    <div fxLayout="column">
+      <!--<div>-->
+        <mat-form-field class="searchField">
+          <input matInput type="text" placeholder="Bezeichnung" [(ngModel)]="geneticResourceFilter.identifier">
+        </mat-form-field>
+      <!--</div>-->
 
+      <mat-form-field class="searchField">
+        <input matInput type="text" placeholder="Beschreibung" [(ngModel)]="geneticResourceFilter.description">
+      </mat-form-field>
+      <mat-form-field class="searchField">
+        <input matInput type="text" placeholder="Herkunft" [(ngModel)]="geneticResourceFilter.origin">
+      </mat-form-field>
+      <mat-form-field class="searchField">
+        <input matInput type="text" placeholder="Quelle" [(ngModel)]="geneticResourceFilter.source">
+      </mat-form-field>
+      <mat-form-field class="searchField">
+        <input matInput type="text" placeholder="Hash Sequenz" [(ngModel)]="geneticResourceFilter.hashSequence">
+      </mat-form-field>
+
+      <div fxLayout="row">
+        <div fxFlex></div>
+        <button mat-button (click)="search()">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-expansion-panel>
+  </div>
+<br />
 <mat-accordion>
-  <mat-expansion-panel>
+  <mat-expansion-panel *ngFor="let resource of geneticResources">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <!--<mat-icon>local_florist</mat-icon>-->
-        Sonnenblume
+        {{resource.identifier}}
       </mat-panel-title>
       <mat-panel-description>
-        Korbblütler
+        {{resource.origin}}
       </mat-panel-description>
     </mat-expansion-panel-header>
     <div>
-      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-      dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
-      kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-      sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-      voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-      sanctus est Lorem ipsum dolor sit amet.
-    </div>
-  </mat-expansion-panel>
+      <div fxLayout="column">
+        <span class="descriptionTitle">Beschreibung</span>
+        <p>{{resource.description}}</p>
+        <span class="descriptionTitle">Sichtbarkeit</span>
+        <p>{{resource.visibilityType}}</p>
+        <span class="descriptionTitle">Hashsequenz</span>
+        <p>{{resource.hashSequence}}</p>
+        <span class="descriptionTitle">Herkunftsland</span>
+        <p>{{resource.source}}</p>
 
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <!--<mat-icon>local_florist</mat-icon>-->
-        Sonnenblume
-      </mat-panel-title>
-      <mat-panel-description>
-        Korbblütler
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <div>
-      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-      dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
-      kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-      sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-      voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-      sanctus est Lorem ipsum dolor sit amet.
-    </div>
-  </mat-expansion-panel>
-
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <!--<mat-icon>local_florist</mat-icon>-->
-        Sonnenblume
-      </mat-panel-title>
-      <mat-panel-description>
-        Korbblütler
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <div>
-      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-      dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
-      kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-      sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-      voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-      sanctus est Lorem ipsum dolor sit amet.
+      </div>
     </div>
   </mat-expansion-panel>
 </mat-accordion>
