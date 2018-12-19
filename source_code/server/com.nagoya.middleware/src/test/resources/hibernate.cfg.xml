@@ -60,6 +60,7 @@
 		<property name="hibernate.c3p0.max_statements">50</property>
 
 		<!-- Annotated entity classes -->
+		<mapping class="com.nagoya.model.dbo.SimpleDBO" />
 		<mapping class="com.nagoya.model.dbo.DBO" />
 		<mapping class="com.nagoya.model.dbo.person.Address" />
 		<mapping class="com.nagoya.model.dbo.person.Person" />
