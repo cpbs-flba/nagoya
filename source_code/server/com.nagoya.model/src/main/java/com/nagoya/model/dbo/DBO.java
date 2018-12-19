@@ -3,13 +3,9 @@
  */
 package com.nagoya.model.dbo;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
@@ -21,15 +17,10 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @MappedSuperclass
-public abstract class DBO implements Serializable {
+public abstract class DBO extends SimpleDBO {
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
+	
 	@Version
 	@Column(name = "rev")
 	private Long revision;
@@ -45,20 +36,6 @@ public abstract class DBO implements Serializable {
 
 	@Column(name = "modification_user")
 	private String modificationUser;
-
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	/**
 	 * @return the revision

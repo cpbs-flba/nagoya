@@ -1,6 +1,7 @@
 package com.nagoya.dao.base;
 
 import com.nagoya.model.dbo.DBO;
+import com.nagoya.model.dbo.SimpleDBO;
 import com.nagoya.model.exception.InvalidObjectException;
 import com.nagoya.model.exception.NonUniqueResultException;
 import com.nagoya.model.exception.ResourceOutOfDateException;
@@ -14,7 +15,7 @@ public interface BasicDAO<T> {
 	 * @param createTransaction
 	 * @return
 	 */
-	public DBO insert(DBO dbo, boolean createTransaction);
+	public SimpleDBO insert(SimpleDBO dbo, boolean createTransaction);
 
 	/**
 	 * Searches for the respective object. If it is not found, null is returned. If
@@ -25,7 +26,7 @@ public interface BasicDAO<T> {
 	 * @return
 	 * @throws NonUniqueResultException
 	 */
-	public DBO find(long id, final Class<T> type) throws NonUniqueResultException;
+	public SimpleDBO find(long id, final Class<T> type) throws NonUniqueResultException;
 
 	/**
 	 * 
@@ -34,7 +35,7 @@ public interface BasicDAO<T> {
 	 * @param createTransaction
 	 * @return
 	 */
-	public DBO update(DBO dbo, boolean createTransaction)
+	public SimpleDBO update(SimpleDBO dbo, boolean createTransaction)
 			throws InvalidObjectException, ResourceOutOfDateException;
 
 	/**
@@ -47,7 +48,7 @@ public interface BasicDAO<T> {
 	 * @throws InvalidObjectException
 	 * @throws NonUniqueResultException
 	 */
-	public boolean delete(DBO dbo, boolean createTransaction)
+	public boolean delete(SimpleDBO dbo, boolean createTransaction)
 			throws InvalidObjectException;
 
 }

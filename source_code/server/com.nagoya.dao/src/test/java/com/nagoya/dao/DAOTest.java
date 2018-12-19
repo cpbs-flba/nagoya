@@ -31,6 +31,8 @@ public class DAOTest {
 			session.createNativeQuery("DELETE FROM tgenetic_resource").executeUpdate();
 			session.createNativeQuery("DELETE FROM tgenetic_resource_aud").executeUpdate();
 			
+			session.createNativeQuery("DELETE FROM tgenetic_resource_taxonomy").executeUpdate();
+			
 			session.createNativeQuery("DELETE FROM tgenetic_resource_file").executeUpdate();
 			
 			session.createNativeQuery("DELETE FROM tperson_group").executeUpdate();
