@@ -26,40 +26,39 @@
 
     <mat-radio-button [checked] *ngFor="let visibilityType of visibilityTypes" [value]="visibilityType"
                       class="visibilityRadioButton">
-      {{'ENUM.VISIBILITY_TYPES'+visibilityType.valueOf() | translate}}
+      {{'ENUM.VISIBILITY_TYPES.'+visibilityType.valueOf() | translate}}
     </mat-radio-button>
   </mat-radio-group>
 
 
 
 <h3>{{'RESOURCE.CREATION.FORM.HEADER.TAXONOMY'| translate}}</h3>
-  <mat-form-field>
-    <input type="text" placeholder="{{'RESOURCE.CREATION.FORM.TAXONOMOY.ORDER'| translate}}" matInput [matAutocomplete]="taxonomicOrder">
-    <mat-autocomplete #taxonomicOrder="matAutocomplete">
-      <mat-option *ngFor="let order of orders" [value]="order">
-        {{order}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+  <!--<mat-form-field>-->
+    <!--<input type="text" placeholder="{{'RESOURCE.CREATION.FORM.TAXONOMOY.ORDER'| translate}}" matInput [matAutocomplete]="taxonomicOrder">-->
+    <!--<mat-autocomplete #taxonomicOrder="matAutocomplete">-->
+      <!--<mat-option *ngFor="let order of orders" [value]="order">-->
+        <!--{{order}}-->
+      <!--</mat-option>-->
+    <!--</mat-autocomplete>-->
+  <!--</mat-form-field>-->
 
-  <mat-form-field>
-    <input type="text" placeholder="{{'RESOURCE.CREATION.FORM.TAXONOMOY.FAMILY'| translate}}" matInput [matAutocomplete]="taxonomicFamily">
-    <mat-autocomplete #taxonomicFamily="matAutocomplete">
-      <mat-option *ngFor="let family of families" [value]="family">
-        {{family}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+  <!--<mat-form-field>-->
+    <!--<input type="text" placeholder="{{'RESOURCE.CREATION.FORM.TAXONOMOY.FAMILY'| translate}}" matInput [matAutocomplete]="taxonomicFamily">-->
+    <!--<mat-autocomplete #taxonomicFamily="matAutocomplete">-->
+      <!--<mat-option *ngFor="let family of families" [value]="family">-->
+        <!--{{family}}-->
+      <!--</mat-option>-->
+    <!--</mat-autocomplete>-->
+  <!--</mat-form-field>-->
 
-  <mat-form-field>
-    <input type="text" placeholder="{{'RESOURCE.CREATION.FORM.TAXONOMOY.SUBFAMILY'| translate}}" matInput [matAutocomplete]="taxonomicSubFamily">
-    <mat-autocomplete #taxonomicSubFamily="matAutocomplete">
-      <mat-option *ngFor="let subFamily of subFamilies" [value]="subFamily">
-        {{subFamily}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
-
+  <!--<mat-form-field>-->
+    <!--<input type="text" placeholder="{{'RESOURCE.CREATION.FORM.TAXONOMOY.SUBFAMILY'| translate}}" matInput [matAutocomplete]="taxonomicSubFamily">-->
+    <!--<mat-autocomplete #taxonomicSubFamily="matAutocomplete">-->
+      <!--<mat-option *ngFor="let subFamily of subFamilies" [value]="subFamily">-->
+        <!--{{subFamily}}-->
+      <!--</mat-option>-->
+    <!--</mat-autocomplete>-->
+  <!--</mat-form-field>-->
 
   <div fxLayout="column">
     <div fxLayout="row">

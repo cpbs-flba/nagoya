@@ -6,6 +6,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {GeneticResource} from '../../model/geneticResource';
 import {ResourceFile} from '../../model/resourceFile';
 import {TranslateService} from '@ngx-translate/core';
+import {Taxonomy} from '../../model/taxonomy';
 
 
 @Component({
@@ -56,7 +57,19 @@ export class CreationComponent implements OnInit {
       source: ['', Validators.required],
       origin: ['', Validators.required],
       hashSequence: [''],
-      visibilityType: ['', Validators.required]
+      visibilityType: ['', Validators.required],
+      // taxonomy: this.formBuilder.group({
+      //   kingdom: [''],
+      //   phylum: [''],
+      //   clazz: [''],
+      //   order: [''],
+      //   family: [''],
+      //   subFamily: [''],
+      //   superTribe: [''],
+      //   tribe: [''],
+      //   genus: [''],
+      //   species: [''],
+      // })
     });
   }
 

@@ -1,5 +1,6 @@
 import {VisibilityType} from './visibilityType';
 import {ResourceFile} from './resourceFile';
+import {Taxonomy} from './taxonomy';
 
 export class GeneticResource  {
   identifier: string;
@@ -9,5 +10,6 @@ export class GeneticResource  {
   hashSequence?: string;
   files?: ResourceFile[];
   visibilityType: VisibilityType;
+  taxonomy?: Taxonomy;
 }
 

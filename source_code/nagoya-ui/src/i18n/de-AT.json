@@ -169,9 +169,16 @@
         "HASH_SEQUENCE": "Gen Sequenz",
         "VISIBILITY": "Sichtbarkeit",
         "TAXONOMOY": {
+          "KINGDOM": "Reich",
+          "PHYLUM": "Stamm",
+          "CLAZZ": "Klasse",
           "ORDER": "Ordnung",
           "FAMILY": "Familie",
-          "SUBFAMILY": "Subfamilie"
+          "SUBFAMILY": "Unter-Familie",
+          "SUPERTRIBE": "Ober-Tribus",
+          "TRIBE": "Tribus",
+          "GENUS": "Gattung",
+          "SPECIES": "Art"
         }
       },
       "ACTION": {
