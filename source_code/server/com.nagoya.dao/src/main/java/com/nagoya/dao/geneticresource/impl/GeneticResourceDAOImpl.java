@@ -17,9 +17,12 @@ import org.hibernate.Session;
 
 import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.dao.geneticresource.GeneticResourceDAO;
+import com.nagoya.dao.util.DefaultDBOFiller;
 import com.nagoya.dao.util.StringUtil;
+import com.nagoya.model.dbo.DBO;
 import com.nagoya.model.dbo.person.Person;
 import com.nagoya.model.dbo.resource.GeneticResource;
+import com.nagoya.model.dbo.resource.Taxonomy;
 import com.nagoya.model.dbo.resource.VisibilityType;
 import com.nagoya.model.to.resource.filter.GeneticResourceFilter;
 
@@ -33,6 +36,18 @@ public class GeneticResourceDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.re
 	public GeneticResourceDAOImpl(Session session) {
 		super(session);
 		this.session = session;
+	}
+	
+	@Override
+	public DBO insert(DBO dbo, boolean createTransaction) {
+		if (dbo instanceof GeneticResource) {
+			GeneticResource geneticResource = (GeneticResource) dbo;
+			Taxonomy taxonomy = geneticResource.getTaxonomy();
+			if (taxonomy != null) {
+				DefaultDBOFiller.fillDefaultDataObjectValues(taxonomy);
+			}
+		}
+		return super.insert(dbo, createTransaction);
 	}
 
 	@Override

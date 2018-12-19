@@ -71,6 +71,7 @@
 		<mapping class="com.nagoya.model.dbo.person.group.PersonGroup" />
 		<mapping class="com.nagoya.model.dbo.resource.GeneticResource" />
 		<mapping class="com.nagoya.model.dbo.resource.ResourceFile" />
+		<mapping class="com.nagoya.model.dbo.resource.Taxonomy" />
 
 	</session-factory>
 

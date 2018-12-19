@@ -24,6 +24,7 @@ public class GeneticResource implements Serializable {
 	private String source;
 	private String hashSequence;
 	private VisibilityType visibilityType;
+	private Taxonomy taxonomy;
 	private Set<ResourceFile> files = new HashSet<ResourceFile>();
 
 	/**
@@ -136,6 +137,20 @@ public class GeneticResource implements Serializable {
 	 */
 	public void setFiles(Set<ResourceFile> files) {
 		this.files = files;
+	}
+
+	/**
+	 * @return the taxonomy
+	 */
+	public Taxonomy getTaxonomy() {
+		return taxonomy;
+	}
+
+	/**
+	 * @param taxonomy the taxonomy to set
+	 */
+	public void setTaxonomy(Taxonomy taxonomy) {
+		this.taxonomy = taxonomy;
 	}
 
 }

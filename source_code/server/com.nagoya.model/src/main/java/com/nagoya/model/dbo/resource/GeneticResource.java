@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -59,6 +60,11 @@ public class GeneticResource extends DBO {
 	@OneToOne
 	@JoinColumn(name = "person_id")
 	private Person owner;
+
+	@NotAudited
+	@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
+	@JoinColumn(name = "taxonomy_id")
+	private Taxonomy taxonomy;
 
 	/**
 	 * @return the identifier
@@ -170,6 +176,20 @@ public class GeneticResource extends DBO {
 	 */
 	public void setOwner(Person owner) {
 		this.owner = owner;
+	}
+
+	/**
+	 * @return the taxonomy
+	 */
+	public Taxonomy getTaxonomy() {
+		return taxonomy;
+	}
+
+	/**
+	 * @param taxonomy the taxonomy to set
+	 */
+	public void setTaxonomy(Taxonomy taxonomy) {
+		this.taxonomy = taxonomy;
 	}
 
 }

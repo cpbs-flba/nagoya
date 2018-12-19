@@ -1,4 +1,4 @@
-package com.nagoya.dao.person;
+package com.nagoya.dao.resource;
 
 import java.util.List;
 
@@ -16,6 +16,7 @@ import com.nagoya.model.dbo.person.PersonLegal;
 import com.nagoya.model.dbo.person.PersonType;
 import com.nagoya.model.dbo.resource.GeneticResource;
 import com.nagoya.model.dbo.resource.ResourceFile;
+import com.nagoya.model.dbo.resource.Taxonomy;
 import com.nagoya.model.dbo.resource.VisibilityType;
 import com.nagoya.model.exception.InvalidObjectException;
 import com.nagoya.model.exception.ResourceOutOfDateException;
@@ -75,6 +76,17 @@ public class GeneticResourceDAOTest extends DAOTest {
 		resource2.setOwner(legalPerson);
 		resource2.setVisibilityType(VisibilityType.PUBLIC);
 		resource2.setSource("Brasil");
+		Taxonomy taxonomy = new Taxonomy();
+		taxonomy.setKingdom("Plantae");
+		taxonomy.setPhylum("Coniferophyta");
+		taxonomy.setOrder("Asterales");
+		taxonomy.set_class("Chlorophyceae");
+		taxonomy.setFamily("Asteraceae");
+		taxonomy.setSubFamily("Asteroideae");
+		taxonomy.setGenus("Helianthus");
+		taxonomy.setTribe("Heliantheae");
+		taxonomy.setSpecies("Sonneblume");
+		resource2.setTaxonomy(taxonomy);
 		dao.insert(resource2, true);
 
 		GeneticResourceFilter filter = new GeneticResourceFilter();

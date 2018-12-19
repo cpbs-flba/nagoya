@@ -11,11 +11,13 @@ import java.util.Set;
  *
  */
 public final class GeneticResourceTransformer {
-	
+
 	private GeneticResourceTransformer() {
 		// noop
 	}
-	public static com.nagoya.model.dbo.resource.GeneticResource getDBO(com.nagoya.model.dbo.resource.GeneticResource dbo, com.nagoya.model.to.resource.GeneticResource dto) {
+
+	public static com.nagoya.model.dbo.resource.GeneticResource getDBO(
+			com.nagoya.model.dbo.resource.GeneticResource dbo, com.nagoya.model.to.resource.GeneticResource dto) {
 		if (dto == null) {
 			return null;
 		}
@@ -29,11 +31,13 @@ public final class GeneticResourceTransformer {
 		dbo.setSource(dto.getSource());
 		dbo.setVisibilityType(dto.getVisibilityType());
 		dbo.setIdentifier(dto.getIdentifier());
+		dbo.setTaxonomy(getDBO(dbo.getTaxonomy(), dto.getTaxonomy()));
 		dbo.getFiles().addAll(getDBO(dto.getFiles()));
 		return dbo;
 	}
-	
-	public static Set<com.nagoya.model.dbo.resource.ResourceFile> getDBO(Set<com.nagoya.model.to.resource.ResourceFile> dto) {
+
+	public static Set<com.nagoya.model.dbo.resource.ResourceFile> getDBO(
+			Set<com.nagoya.model.to.resource.ResourceFile> dto) {
 		if (dto == null) {
 			return null;
 		}
@@ -43,7 +47,49 @@ public final class GeneticResourceTransformer {
 		}
 		return result;
 	}
-	
+
+	public static com.nagoya.model.to.resource.Taxonomy getDTO(com.nagoya.model.to.resource.Taxonomy dto,
+			com.nagoya.model.dbo.resource.Taxonomy dbo) {
+		if (dbo == null) {
+			return null;
+		}
+		if (dto == null) {
+			dto = new com.nagoya.model.to.resource.Taxonomy();
+		}
+		dto.setKingdom(dbo.getKingdom());
+		dto.setPhylum(dbo.getPhylum());
+		dto.set_class(dbo.get_class());
+		dto.setOrder(dbo.getOrder());
+		dto.setFamily(dbo.getFamily());
+		dto.setSubFamily(dbo.getSubFamily());
+		dto.setSuperTribe(dbo.getSuperTribe());
+		dto.setTribe(dbo.getTribe());
+		dto.setGenus(dbo.getGenus());
+		dto.setSpecies(dbo.getSpecies());
+		return dto;
+	}
+
+	public static com.nagoya.model.dbo.resource.Taxonomy getDBO(com.nagoya.model.dbo.resource.Taxonomy dbo,
+			com.nagoya.model.to.resource.Taxonomy dto) {
+		if (dto == null) {
+			return null;
+		}
+		if (dbo == null) {
+			dbo = new com.nagoya.model.dbo.resource.Taxonomy();
+		}
+		dbo.setKingdom(dto.getKingdom());
+		dbo.setPhylum(dto.getPhylum());
+		dbo.set_class(dto.get_class());
+		dbo.setOrder(dto.getOrder());
+		dbo.setFamily(dto.getFamily());
+		dbo.setSubFamily(dto.getSubFamily());
+		dbo.setSuperTribe(dto.getSuperTribe());
+		dbo.setTribe(dto.getTribe());
+		dbo.setGenus(dto.getGenus());
+		dbo.setSpecies(dto.getSpecies());
+		return dbo;
+	}
+
 	public static com.nagoya.model.dbo.resource.ResourceFile getDBO(com.nagoya.model.to.resource.ResourceFile dto) {
 		if (dto == null) {
 			return null;
@@ -56,7 +102,8 @@ public final class GeneticResourceTransformer {
 		return result;
 	}
 
-	public static com.nagoya.model.to.resource.GeneticResource getDTO(com.nagoya.model.dbo.resource.GeneticResource dbo) {
+	public static com.nagoya.model.to.resource.GeneticResource getDTO(
+			com.nagoya.model.dbo.resource.GeneticResource dbo) {
 		if (dbo == null) {
 			return null;
 		}
@@ -69,11 +116,12 @@ public final class GeneticResourceTransformer {
 		result.setVisibilityType(dbo.getVisibilityType());
 		result.setIdentifier(dbo.getIdentifier());
 		result.setFiles(getDTO(dbo.getFiles()));
-		
+		result.setTaxonomy(getDTO(result.getTaxonomy(), dbo.getTaxonomy()));
 		return result;
 	}
-	
-	public static Set<com.nagoya.model.to.resource.ResourceFile> getDTO(Set<com.nagoya.model.dbo.resource.ResourceFile> dbo) {
+
+	public static Set<com.nagoya.model.to.resource.ResourceFile> getDTO(
+			Set<com.nagoya.model.dbo.resource.ResourceFile> dbo) {
 		if (dbo == null) {
 			return null;
 		}
@@ -83,7 +131,7 @@ public final class GeneticResourceTransformer {
 		}
 		return result;
 	}
-	
+
 	public static com.nagoya.model.to.resource.ResourceFile getDTO(com.nagoya.model.dbo.resource.ResourceFile dbo) {
 		if (dbo == null) {
 			return null;
