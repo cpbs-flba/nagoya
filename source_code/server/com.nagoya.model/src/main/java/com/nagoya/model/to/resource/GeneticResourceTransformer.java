@@ -58,7 +58,7 @@ public final class GeneticResourceTransformer {
 		}
 		dto.setKingdom(dbo.getKingdom());
 		dto.setPhylum(dbo.getPhylum());
-		dto.set_class(dbo.get_class());
+		dto.setClazz(dbo.get_class());
 		dto.setOrder(dbo.getOrder());
 		dto.setFamily(dbo.getFamily());
 		dto.setSubFamily(dbo.getSubFamily());
@@ -79,7 +79,7 @@ public final class GeneticResourceTransformer {
 		}
 		dbo.setKingdom(dto.getKingdom());
 		dbo.setPhylum(dto.getPhylum());
-		dbo.set_class(dto.get_class());
+		dbo.set_class(dto.getClazz());
 		dbo.setOrder(dto.getOrder());
 		dbo.setFamily(dto.getFamily());
 		dbo.setSubFamily(dto.getSubFamily());

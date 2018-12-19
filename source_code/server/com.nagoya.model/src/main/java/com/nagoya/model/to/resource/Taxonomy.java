@@ -23,7 +23,7 @@ public class Taxonomy implements Serializable {
 	private String phylum;
 
 	// Klasse
-	private String _class;
+	private String clazz;
 
 	// Ordnung
 	private String order;
@@ -77,15 +77,15 @@ public class Taxonomy implements Serializable {
 	/**
 	 * @return the _class
 	 */
-	public String get_class() {
-		return _class;
+	public String getClazz() {
+		return clazz;
 	}
 
 	/**
 	 * @param _class the _class to set
 	 */
-	public void set_class(String _class) {
-		this._class = _class;
+	public void setClazz(String clazz) {
+		this.clazz = clazz;
 	}
 
 	/**
