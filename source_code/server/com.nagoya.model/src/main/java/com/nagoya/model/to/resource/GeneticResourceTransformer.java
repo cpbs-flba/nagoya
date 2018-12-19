@@ -56,16 +56,10 @@ public final class GeneticResourceTransformer {
 		if (dto == null) {
 			dto = new com.nagoya.model.to.resource.Taxonomy();
 		}
-		dto.setKingdom(dbo.getKingdom());
-		dto.setPhylum(dbo.getPhylum());
-		dto.setClazz(dbo.get_class());
-		dto.setOrder(dbo.getOrder());
-		dto.setFamily(dbo.getFamily());
-		dto.setSubFamily(dbo.getSubFamily());
-		dto.setSuperTribe(dbo.getSuperTribe());
-		dto.setTribe(dbo.getTribe());
-		dto.setGenus(dbo.getGenus());
-		dto.setSpecies(dbo.getSpecies());
+		dto.setName(dbo.getName());
+		if (dbo.getParent() != null) {
+			dto.setParent(getDTO(dto.getParent(), dbo.getParent()));
+		}
 		return dto;
 	}
 
@@ -77,16 +71,10 @@ public final class GeneticResourceTransformer {
 		if (dbo == null) {
 			dbo = new com.nagoya.model.dbo.resource.Taxonomy();
 		}
-		dbo.setKingdom(dto.getKingdom());
-		dbo.setPhylum(dto.getPhylum());
-		dbo.set_class(dto.getClazz());
-		dbo.setOrder(dto.getOrder());
-		dbo.setFamily(dto.getFamily());
-		dbo.setSubFamily(dto.getSubFamily());
-		dbo.setSuperTribe(dto.getSuperTribe());
-		dbo.setTribe(dto.getTribe());
-		dbo.setGenus(dto.getGenus());
-		dbo.setSpecies(dto.getSpecies());
+		dbo.setName(dto.getName());
+		if (dto.getParent() != null) {
+			dbo.setParent(getDBO(dbo.getParent(), dto.getParent()));
+		}
 		return dbo;
 	}
 

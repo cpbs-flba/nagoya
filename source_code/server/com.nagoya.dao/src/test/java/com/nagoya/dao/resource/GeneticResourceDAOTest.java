@@ -76,19 +76,18 @@ public class GeneticResourceDAOTest extends DAOTest {
 		resource2.setOwner(legalPerson);
 		resource2.setVisibilityType(VisibilityType.PUBLIC);
 		resource2.setSource("Brasil");
+		
 		Taxonomy taxonomy = new Taxonomy();
-		taxonomy.setKingdom("Plantae");
-		taxonomy.setPhylum("Coniferophyta");
-		taxonomy.setOrder("Asterales");
-		taxonomy.set_class("Chlorophyceae");
-		taxonomy.setFamily("Asteraceae");
-		taxonomy.setSubFamily("Asteroideae");
-		taxonomy.setGenus("Helianthus");
-		taxonomy.setTribe("Heliantheae");
-		taxonomy.setSpecies("Sonneblume");
-		resource2.setTaxonomy(taxonomy);
+		taxonomy.setName("Plantae");
+		Taxonomy c1 = new Taxonomy();
+		c1.setName("Blumen");
+		c1.setParent(taxonomy);
+		Taxonomy c2 = new Taxonomy();
+		c2.setName("Sonnenblume");
+		c2.setParent(c1);
+		resource2.setTaxonomy(c2);
 		dao.insert(resource2, true);
-
+		
 		GeneticResourceFilter filter = new GeneticResourceFilter();
 		filter.setIdentifier("5");
 		List<GeneticResource> search = dao.search(filter, legalPerson, 20);

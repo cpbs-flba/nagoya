@@ -22,6 +22,7 @@ import org.hibernate.Transaction;
 import com.nagoya.dao.base.BasicDAO;
 import com.nagoya.dao.util.DefaultDBOFiller;
 import com.nagoya.model.dbo.DBO;
+import com.nagoya.model.dbo.SimpleDBO;
 import com.nagoya.model.exception.InvalidObjectException;
 import com.nagoya.model.exception.ResourceOutOfDateException;
 
@@ -45,7 +46,7 @@ public class BasicDAOImpl<T> implements BasicDAO<T> {
 	 * @see com.nagoya.dao.base.BasicDAO#insert(com.nagoya.model.dbo.DBO, boolean)
 	 */
 	@Override
-	public DBO insert(DBO dbo, boolean createTransaction) {
+	public SimpleDBO insert(SimpleDBO dbo, boolean createTransaction) {
 		LOGGER.trace("Inserting object into DB");
 		DefaultDBOFiller.fillDefaultDataObjectValues(dbo);
 
@@ -105,7 +106,7 @@ public class BasicDAOImpl<T> implements BasicDAO<T> {
 	 * @see com.nagoya.dao.base.BasicDAO#update(com.nagoya.model.dbo.DBO, boolean)
 	 */
 	@Override
-	public DBO update(DBO dbo, boolean createTransaction)
+	public SimpleDBO update(SimpleDBO dbo, boolean createTransaction)
 			throws InvalidObjectException, ResourceOutOfDateException {
 		if (dbo.getId() == null) {
 			throw new InvalidObjectException("Cannot update object who's ID is NULL.");
@@ -140,7 +141,7 @@ public class BasicDAOImpl<T> implements BasicDAO<T> {
 	 * @see com.nagoya.dao.base.BasicDAO#delete(com.nagoya.model.dbo.DBO, boolean)
 	 */
 	@Override
-	public boolean delete(DBO dbo, boolean createTransaction)
+	public boolean delete(SimpleDBO dbo, boolean createTransaction)
 			throws InvalidObjectException {
 		if (dbo.getId() == null) {
 			throw new InvalidObjectException("Cannot delete object who's ID is NULL.");

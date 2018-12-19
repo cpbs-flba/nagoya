@@ -383,45 +383,9 @@ DROP SEQUENCE IF EXISTS tgenetic_resource_taxonomy_seq;
 CREATE SEQUENCE tgenetic_resource_taxonomy_seq;
 CREATE TABLE tgenetic_resource_taxonomy (
   id 					BIGINT NOT NULL DEFAULT nextval ('tgenetic_resource_taxonomy_seq'),
-  kingdom 				TEXT NOT NULL,
-  phylum 				TEXT NOT NULL,
-  _class 				TEXT NOT NULL,
-  _order 				TEXT NOT NULL,
-  family 				TEXT NOT NULL,
-  sub_family 			TEXT NOT NULL,
-  super_tribe 			TEXT DEFAULT NULL,
-  tribe 				TEXT DEFAULT NULL,   
-  genus			 		TEXT DEFAULT NULL,
-  species			 	TEXT DEFAULT NULL,
-  creation_date 		TIMESTAMP(0) DEFAULT NULL,
-  creation_user 		TEXT DEFAULT NULL,
-  modification_date 	TIMESTAMP(0) DEFAULT NULL,
-  modification_user 	TEXT DEFAULT NULL,
+  parent_id 			BIGINT DEFAULT NULL,
+  name	 				TEXT NOT NULL,
   rev 					BIGINT DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS tgenetic_resource_taxonomy_aud;
-DROP SEQUENCE IF EXISTS tgenetic_resource_taxonomy_aud_seq;
-
-CREATE SEQUENCE tgenetic_resource_taxonomy_aud_seq;
-CREATE TABLE tgenetic_resource_taxonomy_aud (
-  id 					BIGINT NOT NULL DEFAULT nextval ('tgenetic_resource_taxonomy_aud_seq'),
-  kingdom 				TEXT NOT NULL,
-  phylum 				TEXT NOT NULL,
-  _class 				TEXT NOT NULL,
-  _order 				TEXT NOT NULL,
-  family 				TEXT NOT NULL,
-  sub_family 			TEXT NOT NULL,
-  super_tribe 			TEXT DEFAULT NULL,
-  tribe 				TEXT DEFAULT NULL,   
-  genus			 		TEXT DEFAULT NULL,
-  species			 	TEXT DEFAULT NULL,
-  creation_date 		TIMESTAMP(0) DEFAULT NULL,
-  creation_user 		TEXT DEFAULT NULL,
-  modification_date 	TIMESTAMP(0) DEFAULT NULL,
-  modification_user 	TEXT DEFAULT NULL,
-  rev 					BIGINT DEFAULT NULL,
-  revtype 				SMALLINT DEFAULT NULL,
-  PRIMARY KEY (id, rev)
-);
