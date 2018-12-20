@@ -28,6 +28,7 @@ import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.dbo.person.PersonKeys;
+import com.nagoya.model.dbo.resource.GeneticResourceTransfer;
 import com.nagoya.model.dbo.user.OnlineUser;
 import com.nagoya.model.dbo.user.RequestType;
 import com.nagoya.model.dbo.user.UserRequest;
@@ -210,6 +211,15 @@ public class UserService {
 			com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
 			person.setPassword(newEncryptedPassword);
 			personDAO.update(person, true);
+		}
+		
+		if (userRequest.getRequestType().equals(RequestType.GENETIC_RESOURCE_TRANSFER_ACCEPTANCE)) {
+			GeneticResourceTransfer geneticResourceTransfer = userRequest.getTransfer();
+			geneticResourceTransfer.setReceiverAcceptedTransfer(true);
+			personDAO.update(geneticResourceTransfer, true);
+			
+			// TODO: persist transfer in the blockchain
+			// TODO: send confirmation emails to both parties
 		}
 
 		personDAO.delete(userRequest, true);

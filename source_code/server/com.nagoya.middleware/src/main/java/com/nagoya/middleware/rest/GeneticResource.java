@@ -7,7 +7,7 @@
  * In no event shall the copyright owner or contributors be liable for any direct,
  * indirect, incidental, special, exemplary, or consequential damages.
  * 
- * Created by : flba
+ * Created by : Florin Bogdan Balint
  */
 
 package com.nagoya.middleware.rest;
@@ -45,7 +45,10 @@ public interface GeneticResource {
 	 * @return
 	 *         <ul>
 	 *         <li>204 No Content - if everything was okay</li>
-	 *         <li>409 Conflict - if the e-mail address is already registered</li>
+	 *         <li>400 Bad Request - in case the provided transfer object is missing
+	 *         or not okay</li>
+	 *         <li>401 Unauthorized - in case of a bad session token</li>
+	 *         <li>408 Request Timeout - if the session token has expired</li>
 	 *         <li>500 Internal server error - if something went terribly
 	 *         wrong.</li>
 	 *         </ul>
@@ -179,7 +182,7 @@ public interface GeneticResource {
 			@PathParam("resourceId") String resourceId, //
 			final com.nagoya.model.to.resource.GeneticResource geneticRessource, //
 			@Suspended final AsyncResponse asyncResponse);
-	
+
 	/**
 	 * Search for a genetic resources based on the specified filter.
 	 * 

@@ -1,6 +1,5 @@
 package com.nagoya.dao.base;
 
-import com.nagoya.model.dbo.DBO;
 import com.nagoya.model.dbo.SimpleDBO;
 import com.nagoya.model.exception.InvalidObjectException;
 import com.nagoya.model.exception.NonUniqueResultException;

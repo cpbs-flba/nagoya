@@ -72,6 +72,7 @@
 		<mapping class="com.nagoya.model.dbo.resource.GeneticResource" />
 		<mapping class="com.nagoya.model.dbo.resource.ResourceFile" />
 		<mapping class="com.nagoya.model.dbo.resource.Taxonomy" />
+		<mapping class="com.nagoya.model.dbo.resource.GeneticResourceTransfer" />
 
 	</session-factory>
 
