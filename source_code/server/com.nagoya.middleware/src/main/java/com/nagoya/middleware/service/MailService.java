@@ -180,4 +180,29 @@ public class MailService {
 
 		return content.substring(i1 + 7, i2);
 	}
+
+	public void sendConfirmationTransferCreation(com.nagoya.model.dbo.resource.GeneticResourceTransfer geneticResourceTransfer) {
+		String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_genetic_resource_transfer_creation_confirmation.html";
+		String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
+
+		String subject = getTitle(registrationMailText);
+		sendMail(geneticResourceTransfer.getSender().getEmail(), subject, registrationMailText);
+		
+	}
+
+	public void sendTransferAcceptancePending(String token, Date deadline, com.nagoya.model.dbo.resource.GeneticResourceTransfer geneticResourceTransfer) {
+		String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_genetic_resource_transfer_pending_acceptance.html";
+		String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
+
+		String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);
+		link += ServerPropertiesProvider.getString(ServerProperty.SERVER_MAIL_CONFIRMATION_PATH);
+		link += token;
+
+		registrationMailText = registrationMailText.replace("###link###", link);
+		registrationMailText = registrationMailText.replace("###deadline###", deadline.toString());
+
+		String subject = getTitle(registrationMailText);
+		sendMail(geneticResourceTransfer.getReceiver().getEmail(), subject, registrationMailText);
+		
+	}
 }

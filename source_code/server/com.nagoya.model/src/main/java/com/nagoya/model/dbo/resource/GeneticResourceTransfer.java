@@ -43,6 +43,9 @@ public class GeneticResourceTransfer extends DBO {
 	@Column(name = "receiver_accepted_transfer", nullable = false)
 	private boolean receiverAcceptedTransfer;
 
+	@Column(name = "persisted_in_blockchain", nullable = false)
+	private boolean persistedInBlockChain;
+
 	@NotAudited
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "tgenetic_resource_transfer_resources", //
@@ -73,6 +76,14 @@ public class GeneticResourceTransfer extends DBO {
 
 	public void setReceiverAcceptedTransfer(boolean receiverAcceptedTransfer) {
 		this.receiverAcceptedTransfer = receiverAcceptedTransfer;
+	}
+
+	public boolean isPersistedInBlockChain() {
+		return persistedInBlockChain;
+	}
+
+	public void setPersistedInBlockChain(boolean persistedInBlockChain) {
+		this.persistedInBlockChain = persistedInBlockChain;
 	}
 
 	public Set<GeneticResource> getGeneticResources() {

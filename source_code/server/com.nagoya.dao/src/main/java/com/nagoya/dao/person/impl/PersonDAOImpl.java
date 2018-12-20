@@ -1,5 +1,10 @@
 package com.nagoya.dao.person.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -7,8 +12,10 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -16,7 +23,11 @@ import org.hibernate.Transaction;
 
 import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.dao.person.PersonDAO;
+import com.nagoya.dao.util.StringUtil;
 import com.nagoya.model.dbo.person.Person;
+import com.nagoya.model.dbo.person.PersonKeys;
+import com.nagoya.model.dbo.person.PersonLegal;
+import com.nagoya.model.dbo.person.PersonNatural;
 import com.nagoya.model.dbo.user.OnlineUser;
 import com.nagoya.model.dbo.user.UserRequest;
 import com.nagoya.model.exception.ConflictException;
@@ -77,7 +88,10 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.nagoya.dao.person.PersonDAO#removeOldSessions(com.nagoya.model.dbo.person.Person)
+	 * 
+	 * @see
+	 * com.nagoya.dao.person.PersonDAO#removeOldSessions(com.nagoya.model.dbo.person
+	 * .Person)
 	 */
 	@Override
 	public void removeOldSessions(Person person) {
@@ -98,6 +112,7 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.nagoya.dao.person.PersonDAO#getOnlineUser(java.lang.String)
 	 */
 	@Override
@@ -176,6 +191,92 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 			}
 			throw e;
 		}
+	}
+
+	@Override
+	public List<PersonNatural> searchNatural(String filter, int maxResults) {
+		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+
+		// Create criteriaQuery
+		CriteriaQuery<PersonNatural> criteriaQuery = criteriaBuilder.createQuery(PersonNatural.class);
+
+		Root<PersonNatural> root = criteriaQuery.from(PersonNatural.class);
+
+		List<Predicate> blockPredicates = new ArrayList<Predicate>();
+
+		if (StringUtil.isNotNullOrBlank(filter)) {
+			Pattern pattern = Pattern.compile("\\w+");
+			Matcher matcher = pattern.matcher(filter);
+			while (matcher.find()) {
+				String singleWord = matcher.group();
+
+				Predicate p1 = criteriaBuilder.like(root.get("firstname"), "%" + singleWord + "%");
+				Predicate p2 = criteriaBuilder.like(root.get("lastname"), "%" + singleWord + "%");
+				Predicate p3 = criteriaBuilder.like(root.get("email"), "%" + singleWord + "%");
+				
+				SetJoin<PersonNatural, PersonKeys> children = root.joinSet("keys", JoinType.LEFT);
+				Predicate p4 = criteriaBuilder.equal(children.get("publicKey"), singleWord);
+
+				Predicate blockPredicate = criteriaBuilder.or(p1, p2, p3, p4);
+				blockPredicates.add(blockPredicate);
+			}
+		}
+		Predicate finalWordsPredicate = criteriaBuilder.and(blockPredicates.toArray(new Predicate[] {}));
+		criteriaQuery.select(root).where(finalWordsPredicate);
+
+		// set a default value
+		if (maxResults <= 0) {
+			maxResults = 20;
+		}
+		TypedQuery<PersonNatural> createdQuery = entityManager.createQuery(criteriaQuery);
+		List<PersonNatural> results = createdQuery.getResultList();
+		return results;
+
+	}
+	
+	@Override
+	public List<PersonLegal> searchLegal(String filter, int maxResults) {
+		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+
+		// Create criteriaQuery
+		CriteriaQuery<PersonLegal> criteriaQuery = criteriaBuilder.createQuery(PersonLegal.class);
+
+		Root<PersonLegal> root = criteriaQuery.from(PersonLegal.class);
+
+		List<Predicate> blockPredicates = new ArrayList<Predicate>();
+
+		if (StringUtil.isNotNullOrBlank(filter)) {
+			Pattern pattern = Pattern.compile("\\w+");
+			Matcher matcher = pattern.matcher(filter);
+			while (matcher.find()) {
+				String singleWord = matcher.group();
+
+				Predicate p1 = criteriaBuilder.like(root.get("name"), "%" + singleWord + "%");
+				Predicate p2 = criteriaBuilder.like(root.get("commercialRegisterNumber"), "%" + singleWord + "%");
+				Predicate p3 = criteriaBuilder.like(root.get("taxNumber"), "%" + singleWord + "%");
+				
+				SetJoin<PersonLegal, PersonKeys> children = root.joinSet("keys", JoinType.LEFT);
+				Predicate p4 = criteriaBuilder.equal(children.get("publicKey"), singleWord);
+
+				Predicate blockPredicate = criteriaBuilder.or(p1, p2, p3, p4);
+				blockPredicates.add(blockPredicate);
+			}
+		}
+		Predicate finalWordsPredicate = criteriaBuilder.and(blockPredicates.toArray(new Predicate[] {}));
+		criteriaQuery.select(root).where(finalWordsPredicate);
+
+		// set a default value
+		if (maxResults <= 0) {
+			maxResults = 20;
+		}
+		TypedQuery<PersonLegal> createdQuery = entityManager.createQuery(criteriaQuery);
+		List<PersonLegal> results = createdQuery.getResultList();
+		return results;
+
 	}
 
 }

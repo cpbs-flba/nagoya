@@ -122,7 +122,7 @@ public class GeneticResourceImpl implements GeneticResource {
 			session = ConnectionProvider.getInstance().getSession();
 			GeneticResourceService service = new GeneticResourceService(session);
 			DefaultReturnObject result = service.delete(authorization, resourceId);
-			ResponseBuilder responseBuilder = Response.ok(result.getEntity());
+			ResponseBuilder responseBuilder = Response.noContent();
 			Set<Entry<String,String>> entrySet = result.getHeader().entrySet();
 			for (Entry<String, String> entry : entrySet) {
 				responseBuilder.header(entry.getKey(), entry.getValue());

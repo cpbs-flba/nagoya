@@ -7,20 +7,36 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nagoya.model.to.person.Person;
-
 
 /**
  * @author Florin Bogdan Balint
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class GeneticResourceTransfer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private String transferId;
 	private Person sender;
 	private Person receiver;
 	private boolean receiverAcceptedTransfer;
 	private Set<GeneticResource> geneticResources = new HashSet<>();
+
+	/**
+	 * @return the transferId
+	 */
+	public String getTransferId() {
+		return transferId;
+	}
+
+	/**
+	 * @param transferId the transferId to set
+	 */
+	public void setTransferId(String transferId) {
+		this.transferId = transferId;
+	}
 
 	public Person getSender() {
 		return sender;

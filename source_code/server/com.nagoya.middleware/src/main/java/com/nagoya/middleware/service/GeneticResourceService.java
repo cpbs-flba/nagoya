@@ -15,7 +15,6 @@ import com.nagoya.dao.geneticresource.GeneticResourceDAO;
 import com.nagoya.dao.geneticresource.impl.GeneticResourceDAOImpl;
 import com.nagoya.dao.util.StringUtil;
 import com.nagoya.middleware.model.exception.NotFoundException;
-import com.nagoya.middleware.rest.UserResource;
 import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.dbo.resource.GeneticResource;
 import com.nagoya.model.dbo.resource.ResourceFile;
@@ -37,16 +36,15 @@ import com.nagoya.model.to.resource.filter.GeneticResourceFilter;
  * @author Florin Bogdan Balint
  *
  */
-public class GeneticResourceService {
+public class GeneticResourceService extends ResourceService {
 
 	private static final Logger LOGGER = LogManager.getLogger(GeneticResourceService.class);
 
-	private UserService userService;
 	private GeneticResourceDAO geneticResourceDAO;
 
 	public GeneticResourceService(Session session) {
+		super(session);
 		this.geneticResourceDAO = new GeneticResourceDAOImpl(session);
-		this.userService = new UserService(session);
 	}
 
 	public DefaultReturnObject create(String authorization,
@@ -54,7 +52,7 @@ public class GeneticResourceService {
 			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
 			InvalidObjectException, ResourceOutOfDateException, BadRequestException {
 		LOGGER.debug("Adding genetic resource");
-		OnlineUser onlineUser = userService.validateSession(authorization);
+		OnlineUser onlineUser = validateSession(authorization);
 
 		if (geneticRessource == null) {
 			throw new BadRequestException("Cannot execute create operation, when the object is null.");
@@ -64,21 +62,18 @@ public class GeneticResourceService {
 		dbo.setOwner(onlineUser.getPerson());
 		geneticResourceDAO.insert(dbo, true);
 
-		DefaultReturnObject result = new DefaultReturnObject();
+		// get the transfer object, but do not send all the data
 		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		// do not resend all the data, just the object
 		dto.getFiles().clear();
-		result.setEntity(dto);
-		String newToken = userService.updateSession(onlineUser);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+		
+		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
 		return result;
 	}
 
 	public DefaultReturnObject read(String authorization, String resourceId) throws NotAuthorizedException,
 			ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
 			InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = userService.validateSession(authorization);
+		OnlineUser onlineUser = validateSession(authorization);
 
 		if (StringUtil.isNullOrBlank(resourceId)) {
 			throw new BadRequestException("Resource ID is missing.");
@@ -100,12 +95,9 @@ public class GeneticResourceService {
 
 		isUserAuthorizedForRessource(onlineUser, dbo, false);
 
-		DefaultReturnObject result = new DefaultReturnObject();
 		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		result.setEntity(dto);
-		String newToken = userService.updateSession(onlineUser);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+		
+		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
 		return result;
 	}
 
@@ -133,7 +125,7 @@ public class GeneticResourceService {
 	public DefaultReturnObject delete(String authorization, String resourceId) throws NotAuthorizedException,
 			ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
 			InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = userService.validateSession(authorization);
+		OnlineUser onlineUser = validateSession(authorization);
 
 		if (StringUtil.isNullOrBlank(resourceId)) {
 			throw new BadRequestException("Resource ID is missing.");
@@ -157,12 +149,7 @@ public class GeneticResourceService {
 
 		geneticResourceDAO.delete(dbo, true);
 
-		DefaultReturnObject result = new DefaultReturnObject();
-		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		result.setEntity(dto);
-		String newToken = userService.updateSession(onlineUser);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+		DefaultReturnObject result = refreshSession(onlineUser, null, null);
 		return result;
 	}
 
@@ -170,7 +157,7 @@ public class GeneticResourceService {
 			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
 			NonUniqueResultException, BadRequestException, InvalidObjectException, ResourceOutOfDateException,
 			ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = userService.validateSession(authorization);
+		OnlineUser onlineUser = validateSession(authorization);
 
 		if (StringUtil.isNullOrBlank(resourceId) || StringUtil.isNullOrBlank(fileId)) {
 			throw new BadRequestException("Resource ID and/or File ID is missing.");
@@ -203,13 +190,8 @@ public class GeneticResourceService {
 
 		geneticResourceDAO.update(dbo, true);
 
-		DefaultReturnObject result = new DefaultReturnObject();
 		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		dto.getFiles().clear();
-		result.setEntity(dto);
-		String newToken = userService.updateSession(onlineUser);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
 		return result;
 	}
 
@@ -217,7 +199,7 @@ public class GeneticResourceService {
 			com.nagoya.model.to.resource.ResourceFile resourceFile) throws NotAuthorizedException, ConflictException,
 			TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
 			InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = userService.validateSession(authorization);
+		OnlineUser onlineUser = validateSession(authorization);
 
 		if (StringUtil.isNullOrBlank(resourceId) || resourceFile == null) {
 			throw new BadRequestException("Resource ID and/or File ID is missing.");
@@ -241,13 +223,8 @@ public class GeneticResourceService {
 		dbo.getFiles().add(dboResourceFile);
 		geneticResourceDAO.update(dbo, true);
 
-		DefaultReturnObject result = new DefaultReturnObject();
 		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		dto.getFiles().clear();
-		result.setEntity(dto);
-		String newToken = userService.updateSession(onlineUser);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
 		return result;
 	}
 
@@ -255,7 +232,7 @@ public class GeneticResourceService {
 			com.nagoya.model.to.resource.GeneticResource geneticResource) throws NotAuthorizedException,
 			ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
 			InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = userService.validateSession(authorization);
+		OnlineUser onlineUser = validateSession(authorization);
 
 		if (StringUtil.isNullOrBlank(resourceId) || geneticResource == null) {
 			throw new BadRequestException("Resource ID and/or File ID is missing.");
@@ -278,20 +255,15 @@ public class GeneticResourceService {
 		GeneticResource dboGeneticResource = GeneticResourceTransformer.getDBO(dbo, geneticResource);
 		geneticResourceDAO.update(dboGeneticResource, true);
 
-		DefaultReturnObject result = new DefaultReturnObject();
 		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		dto.getFiles().clear();
-		result.setEntity(dto);
-		String newToken = userService.updateSession(onlineUser);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
 		return result;
 	}
 
 	public DefaultReturnObject search(String authorization, GeneticResourceFilter geneticRessourceFilter)
 			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
 			InvalidObjectException, ResourceOutOfDateException {
-		OnlineUser onlineUser = userService.validateSession(authorization);
+		OnlineUser onlineUser = validateSession(authorization);
 
 		List<GeneticResource> dbos = geneticResourceDAO.search(geneticRessourceFilter, onlineUser.getPerson(), 50);
 
@@ -302,11 +274,7 @@ public class GeneticResourceService {
 			dtos.add(dto);
 		}
 
-		DefaultReturnObject result = new DefaultReturnObject();
-		result.setEntity(dtos);
-		String newToken = userService.updateSession(onlineUser);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+		DefaultReturnObject result = refreshSession(onlineUser, dtos, null);
 		return result;
 	}
 

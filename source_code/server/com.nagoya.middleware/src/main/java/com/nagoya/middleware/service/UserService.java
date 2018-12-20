@@ -3,31 +3,31 @@
  */
 package com.nagoya.middleware.service;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nagoya.common.crypto.DefaultPasswordEncryptionProvider;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.StringUtil;
 import com.nagoya.middleware.rest.UserResource;
-import com.nagoya.middleware.service.blockchain.BlockchainHelper;
 import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.dbo.person.PersonKeys;
+import com.nagoya.model.dbo.person.PersonLegal;
+import com.nagoya.model.dbo.person.PersonNatural;
 import com.nagoya.model.dbo.resource.GeneticResourceTransfer;
 import com.nagoya.model.dbo.user.OnlineUser;
 import com.nagoya.model.dbo.user.RequestType;
@@ -53,16 +53,17 @@ import io.jsonwebtoken.impl.crypto.MacProvider;
  * @author flba
  *
  */
-public class UserService {
+public class UserService extends ResourceService {
 
 	private static final Logger LOGGER = LogManager.getLogger(UserService.class);
 
-	private BlockchainHelper blockchainHelper;
+//	private BlockchainHelper blockchainHelper;
 	private PersonDAO personDAO;
 
 	public UserService(Session session) {
+		super(session);
 		this.personDAO = new PersonDAOImpl(session);
-		this.blockchainHelper = new BlockchainHelper();
+//		this.blockchainHelper = new BlockchainHelper();
 	}
 
 	public DefaultReturnObject login(Person person)
@@ -212,12 +213,12 @@ public class UserService {
 			person.setPassword(newEncryptedPassword);
 			personDAO.update(person, true);
 		}
-		
+
 		if (userRequest.getRequestType().equals(RequestType.GENETIC_RESOURCE_TRANSFER_ACCEPTANCE)) {
 			GeneticResourceTransfer geneticResourceTransfer = userRequest.getTransfer();
 			geneticResourceTransfer.setReceiverAcceptedTransfer(true);
 			personDAO.update(geneticResourceTransfer, true);
-			
+
 			// TODO: persist transfer in the blockchain
 			// TODO: send confirmation emails to both parties
 		}
@@ -249,33 +250,8 @@ public class UserService {
 		onlineUser.setExpirationDate(deadline);
 		onlineUser.setPrivateKey(privateKey);
 		onlineUser.setSessionToken(sessionToken);
-//		personDAO.removeOldSessions(person);
+		personDAO.removeOldSessions(person);
 		personDAO.insert(onlineUser, true);
-
-		return jsonWebToken;
-	}
-
-	public String updateSession(OnlineUser onlineUser) throws InvalidObjectException, ResourceOutOfDateException {
-		// step 1: create new session
-		String sessionToken = DefaultIDGenerator.generateRandomID();
-		LOGGER.debug("Created token:\r\n" + sessionToken);
-		Key key = MacProvider.generateKey();
-		String privateKey = new String(Base64.getEncoder().encode(key.getEncoded()), StandardCharsets.UTF_8);
-
-		// append the deadline to the token
-		Date deadline = DefaultDateProvider.getDeadline(10);
-		long time = deadline.getTime();
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("deadline", time);
-
-		String jsonWebToken = Jwts.builder().setClaims(claims).setSubject(sessionToken)
-				.signWith(SignatureAlgorithm.HS512, key).compact();
-
-		// persist
-		onlineUser.setExpirationDate(deadline);
-		onlineUser.setPrivateKey(privateKey);
-		onlineUser.setSessionToken(sessionToken);
-		personDAO.update(onlineUser, true);
 
 		return jsonWebToken;
 	}
@@ -289,26 +265,6 @@ public class UserService {
 			return subject;
 		} catch (Exception e) {
 			throw new BadRequestException("Signature not ok.");
-		}
-	}
-
-	public static String extractSessionToken(String jsonWebToken) throws InvalidTokenException {
-		if (StringUtil.isNullOrBlank(jsonWebToken)) {
-			throw new InvalidTokenException("Invalid token");
-		}
-		if (jsonWebToken.indexOf(".") < 1 || jsonWebToken.lastIndexOf(".") < 1) {
-			throw new InvalidTokenException("Invalid token");
-		}
-		String token = jsonWebToken.substring(jsonWebToken.indexOf(".") + 1, jsonWebToken.lastIndexOf("."));
-		byte[] decode = Base64.getDecoder().decode(token);
-		String json = new String(decode);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			JsonNode actualObj = mapper.readTree(json);
-			String sessionToken = actualObj.get("sub").asText();
-			return sessionToken;
-		} catch (IOException e) {
-			throw new InvalidTokenException("Invalid token");
 		}
 	}
 
@@ -364,35 +320,6 @@ public class UserService {
 		return result;
 	}
 
-	public OnlineUser validateSession(String jsonWebToken)
-			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
-		if (StringUtil.isNullOrBlank(jsonWebToken)) {
-			throw new NotAuthorizedException();
-		}
-
-		String sessionToken = extractSessionToken(jsonWebToken);
-		OnlineUser onlineUser = personDAO.getOnlineUser(sessionToken);
-		if (onlineUser == null) {
-			throw new NotAuthorizedException();
-		}
-
-		// if the session expired, remove the object
-		Date expirationDate = onlineUser.getExpirationDate();
-		Date currentDate = Calendar.getInstance().getTime();
-		if (currentDate.after(expirationDate)) {
-			try {
-				// always delete the old/expired session
-				personDAO.delete(onlineUser, true);
-			} catch (InvalidObjectException e) {
-				LOGGER.error(e, e);
-			}
-			// then throw an exception
-			throw new TimeoutException();
-		}
-
-		return onlineUser;
-	}
-
 	public DefaultReturnObject update(String authorization, String language, Person personTO)
 			throws NotAuthorizedException, ConflictException, TimeoutException, ForbiddenException,
 			InvalidObjectException, ResourceOutOfDateException, InvalidTokenException {
@@ -434,6 +361,32 @@ public class UserService {
 		} catch (InvalidObjectException e) {
 			LOGGER.debug("Could not delete a user session - maybe it was already deleted.");
 		}
+	}
+
+	public DefaultReturnObject search(String authorization, String personFilter)
+			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
+			InvalidObjectException, ResourceOutOfDateException, BadRequestException {
+		OnlineUser onlineUser = validateSession(authorization);
+		
+		if (StringUtil.isNullOrBlank(personFilter)) {
+			throw new BadRequestException("the filter must contain at least one character.");
+		}
+
+		List<com.nagoya.model.to.person.Person> resultsTO = new ArrayList<>();
+		List<PersonNatural> searchNatural = personDAO.searchNatural(personFilter, 10);
+		for (PersonNatural personDBO : searchNatural) {
+			Person dto = PersonTransformer.getDTO(personDBO);
+			resultsTO.add(dto);
+		}
+
+		List<PersonLegal> searchLegal = personDAO.searchLegal(personFilter, 10);
+		for (PersonLegal personDBO : searchLegal) {
+			Person dto = PersonTransformer.getDTO(personDBO);
+			resultsTO.add(dto);
+		}
+
+		DefaultReturnObject result = refreshSession(onlineUser, resultsTO, null);
+		return result;
 	}
 
 }

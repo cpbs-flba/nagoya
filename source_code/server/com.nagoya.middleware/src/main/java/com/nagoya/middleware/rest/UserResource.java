@@ -41,6 +41,8 @@ import com.nagoya.model.to.person.PersonNatural;
 public interface UserResource {
 
 	public static final String QUERY_PARAM_TOKEN = "token";
+	
+	public static final String QUERY_PARAM_FILTER = "filter";
 
 	public static final String HEADER_AUTHORIZATION = "Authorization";
 
@@ -227,6 +229,22 @@ public interface UserResource {
 	@Produces({ MediaType.APPLICATION_JSON + DEFAULT_RESPONSE_ENCODING })
 	@ManagedAsync
 	public void confirm(final Person person, @QueryParam(QUERY_PARAM_TOKEN) String token,
+			@Suspended final AsyncResponse asyncResponse);
+	
+	/**
+	 * Search for a person based on the specified filter.
+	 * 
+	 * @param authorization
+	 * @param filter
+	 * @param asyncResponse
+	 */
+	@GET
+	@Path("/search")
+	@Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+	@Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+	@ManagedAsync
+	public void search(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+			@QueryParam(QUERY_PARAM_FILTER) String filter, //
 			@Suspended final AsyncResponse asyncResponse);
 
 }

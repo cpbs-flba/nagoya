@@ -54,6 +54,42 @@ public class UserITTest extends RestBaseTest {
 	}
 
 	@Test
+	@DisplayName("simple search")
+	public void simpleSearchTest() throws Exception {
+		// insert some dummy data
+		insertDummyLegalPerson();
+
+		String targetUrl = serverURL + "/users/login";
+		LOGGER.debug("Sending request POST: " + targetUrl);
+
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target(targetUrl);
+
+		com.nagoya.model.to.person.PersonLegal personTO = new com.nagoya.model.to.person.PersonLegal();
+		personTO.setEmail("test@test.com1");
+		personTO.setPassword("test@test.com1");
+		Entity<com.nagoya.model.to.person.PersonLegal> entity = Entity.entity(personTO, MediaType.APPLICATION_JSON);
+
+		Response response = target.request(MediaType.APPLICATION_JSON).post(entity);
+		String authHeader = response.getHeaderString("Authorization");
+		int status = response.getStatus();
+		response.close();
+		Assert.assertEquals(200, status);
+
+		targetUrl = serverURL + "/users/search?filter=test";
+		target = client.target(targetUrl);
+		response = target.request(MediaType.APPLICATION_JSON).header("Authorization", authHeader).get();
+		status = response.getStatus();
+		Assert.assertEquals(200, status);
+
+		String body = response.readEntity(String.class);
+		LOGGER.debug("Received response: \r\n" + body);
+		Assert.assertNotNull(body);
+
+		response.close();
+	}
+
+	@Test
 	@DisplayName("parallel login requests")
 	public void parallelLoginTest() throws Exception {
 		// insert some dummy data
@@ -73,7 +109,7 @@ public class UserITTest extends RestBaseTest {
 			// wait
 		}
 	}
-	
+
 	@Test
 	@DisplayName("sequential login requests")
 	public void sequentialLoginTest() throws Exception {
@@ -89,7 +125,7 @@ public class UserITTest extends RestBaseTest {
 
 	private void insertDummyLegalPerson() {
 		// save the legal person
-		
+
 		BasicDAO<com.nagoya.model.dbo.person.PersonLegal> personDAO = new BasicDAOImpl<com.nagoya.model.dbo.person.PersonLegal>(
 				getSession());
 		for (int i = 0; i < 20; i++) {
