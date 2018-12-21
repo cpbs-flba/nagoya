@@ -198,5 +198,37 @@ public interface GeneticResource {
 	public void search(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
 			final com.nagoya.model.to.resource.filter.GeneticResourceFilter geneticRessourceFilter, //
 			@Suspended final AsyncResponse asyncResponse);
+	
+	/**
+	 * Retrieves all root level taxonomies.
+	 * 
+	 * @param authorization
+	 * @param geneticRessourceFilter
+	 * @param asyncResponse
+	 */
+	@GET
+	@Path("/search/taxonomy")
+	@Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+	@Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+	@ManagedAsync
+	public void searchForTaxonomy(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+			@Suspended final AsyncResponse asyncResponse);
+	
+	/**
+	 * Search for a genetic resources based on the specified taxonomy.
+	 * 
+	 * @param authorization
+	 * @param geneticRessourceFilter
+	 * @param asyncResponse
+	 */
+	@GET
+	@Path("/search/taxonomy/{parentId}")
+	@Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+	@Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+	@ManagedAsync
+	public void searchForTaxonomyForParent(//
+			@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+			@PathParam("parentId") String parentId, //
+			@Suspended final AsyncResponse asyncResponse);
 
 }

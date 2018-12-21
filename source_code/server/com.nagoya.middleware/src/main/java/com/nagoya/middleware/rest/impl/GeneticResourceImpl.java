@@ -308,4 +308,70 @@ public class GeneticResourceImpl implements GeneticResource {
 		asyncResponse.resume(response);
 		
 	}
+
+	@Override
+	public void searchForTaxonomy(String authorization, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			GeneticResourceService service = new GeneticResourceService(session);
+			DefaultReturnObject result = service.searchForTaxonomyRootLevel(authorization);
+			ResponseBuilder responseBuilder = Response.ok(result.getEntity());
+			Set<Entry<String,String>> entrySet = result.getHeader().entrySet();
+			for (Entry<String, String> entry : entrySet) {
+				responseBuilder.header(entry.getKey(), entry.getValue());
+			}
+			response = responseBuilder.build();
+		} catch (NotAuthorizedException e) {
+			LOGGER.error(e, e);
+			response = Response.status(Status.UNAUTHORIZED).build();
+		} catch (TimeoutException e) {
+			LOGGER.error(e, e);
+			response = Response.status(Status.REQUEST_TIMEOUT).build();
+		} catch (Exception e) {
+			LOGGER.error(e);
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+	}
+
+	@Override
+	public void searchForTaxonomyForParent(String authorization, String parentId, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			GeneticResourceService service = new GeneticResourceService(session);
+			DefaultReturnObject result = service.searchForTaxonomyLevel(authorization, parentId);
+			ResponseBuilder responseBuilder = Response.ok(result.getEntity());
+			Set<Entry<String,String>> entrySet = result.getHeader().entrySet();
+			for (Entry<String, String> entry : entrySet) {
+				responseBuilder.header(entry.getKey(), entry.getValue());
+			}
+			response = responseBuilder.build();
+		} catch (BadRequestException e) {
+			LOGGER.error(e, e);
+			response = Response.status(Status.BAD_REQUEST).build();
+		} catch (NotAuthorizedException e) {
+			LOGGER.error(e, e);
+			response = Response.status(Status.UNAUTHORIZED).build();
+		} catch (TimeoutException e) {
+			LOGGER.error(e, e);
+			response = Response.status(Status.REQUEST_TIMEOUT).build();
+		} catch (Exception e) {
+			LOGGER.error(e);
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+		
+	}
 }

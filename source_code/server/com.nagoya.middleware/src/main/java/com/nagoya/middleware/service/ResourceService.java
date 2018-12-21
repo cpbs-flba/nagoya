@@ -123,7 +123,7 @@ public abstract class ResourceService {
 	public String updateSession(OnlineUser onlineUser) throws InvalidObjectException, ResourceOutOfDateException {
 		// step 1: create new session
 		String sessionToken = DefaultIDGenerator.generateRandomID();
-		LOGGER.debug("Created token:\r\n" + sessionToken);
+		LOGGER.debug("Created token: " + sessionToken);
 		Key key = MacProvider.generateKey();
 		String privateKey = new String(Base64.getEncoder().encode(key.getEncoded()), StandardCharsets.UTF_8);
 

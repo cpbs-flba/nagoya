@@ -18,6 +18,7 @@ import com.nagoya.middleware.model.exception.NotFoundException;
 import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.dbo.resource.GeneticResource;
 import com.nagoya.model.dbo.resource.ResourceFile;
+import com.nagoya.model.dbo.resource.Taxonomy;
 import com.nagoya.model.dbo.resource.VisibilityType;
 import com.nagoya.model.dbo.user.OnlineUser;
 import com.nagoya.model.exception.BadRequestException;
@@ -65,7 +66,7 @@ public class GeneticResourceService extends ResourceService {
 		// get the transfer object, but do not send all the data
 		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
 		dto.getFiles().clear();
-		
+
 		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
 		return result;
 	}
@@ -96,7 +97,7 @@ public class GeneticResourceService extends ResourceService {
 		isUserAuthorizedForRessource(onlineUser, dbo, false);
 
 		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		
+
 		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
 		return result;
 	}
@@ -271,6 +272,47 @@ public class GeneticResourceService extends ResourceService {
 		for (GeneticResource dbo : dbos) {
 			com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
 			dto.getFiles().clear();
+			dtos.add(dto);
+		}
+
+		DefaultReturnObject result = refreshSession(onlineUser, dtos, null);
+		return result;
+	}
+
+	public DefaultReturnObject searchForTaxonomyRootLevel(String authorization)
+			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
+			InvalidObjectException, ResourceOutOfDateException {
+		OnlineUser onlineUser = validateSession(authorization);
+
+		List<com.nagoya.model.to.resource.Taxonomy> dtos = new ArrayList<>();
+		List<Taxonomy> taxonomyRootLevel = geneticResourceDAO.getTaxonomyRootLevel();
+		for (Taxonomy taxonomyDBO : taxonomyRootLevel) {
+			com.nagoya.model.to.resource.Taxonomy dto = GeneticResourceTransformer.getDTO(null, taxonomyDBO);
+			dtos.add(dto);
+		}
+
+		DefaultReturnObject result = refreshSession(onlineUser, dtos, null);
+		return result;
+	}
+
+	public DefaultReturnObject searchForTaxonomyLevel(String authorization, String parentId) throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException, ResourceOutOfDateException, BadRequestException {
+		OnlineUser onlineUser = validateSession(authorization);
+
+		if (StringUtil.isNullOrBlank(parentId)) {
+			throw new BadRequestException("Parent ID must be specified");
+		}
+		
+		long parsedId = 0;
+		try {
+			parsedId = Long.parseLong(parentId);
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("Parent ID must be a valid long number");
+		}
+		
+		List<com.nagoya.model.to.resource.Taxonomy> dtos = new ArrayList<>();
+		List<Taxonomy> taxonomyRootLevel = geneticResourceDAO.getTaxonomyChildren(parsedId);
+		for (Taxonomy taxonomyDBO : taxonomyRootLevel) {
+			com.nagoya.model.to.resource.Taxonomy dto = GeneticResourceTransformer.getDTO(null, taxonomyDBO);
 			dtos.add(dto);
 		}
 

@@ -118,5 +118,78 @@ public class GeneticResourceDAOTest extends DAOTest {
 		Assert.assertEquals(1, search4.size());
 
 	}
+	
+	@Test
+	@DisplayName("Search taxonomy root level")
+	public void testTaxonomyParentSearch() {
+		GeneticResourceDAO dao = new GeneticResourceDAOImpl(session);
+
+		// insert test data
+		Taxonomy taxonomy = new Taxonomy();
+		taxonomy.setName("Plantae");
+		
+		Taxonomy c1 = new Taxonomy();
+		c1.setName("Blumen");
+		c1.setParent(taxonomy);
+		
+		Taxonomy c2 = new Taxonomy();
+		c2.setName("Sonnenblume");
+		c2.setParent(c1);
+		dao.insert(taxonomy, true);
+		
+		Taxonomy taxonomy2 = new Taxonomy();
+		taxonomy2.setName("Algae");
+		
+		Taxonomy c11 = new Taxonomy();
+		c11.setName("Blumen2");
+		c11.setParent(taxonomy2);
+		
+		Taxonomy c22 = new Taxonomy();
+		c22.setName("Sonnenblume2");
+		c22.setParent(c11);
+		
+		dao.insert(taxonomy2, true);
+		
+		List<Taxonomy> taxonomyRootLevel = dao.getTaxonomyRootLevel();
+		Assert.assertEquals(2, taxonomyRootLevel.size());
+	}
+	
+	@Test
+	@DisplayName("Search taxonomy children for parent")
+	public void testTaxonomyChildrenSearch() {
+		GeneticResourceDAO dao = new GeneticResourceDAOImpl(session);
+
+		// insert test data 1
+		Taxonomy taxonomy = new Taxonomy();
+		taxonomy.setName("Plantae");
+		
+		Taxonomy c1 = new Taxonomy();
+		c1.setName("Blumen");
+		c1.setParent(taxonomy);
+		
+		Taxonomy c2 = new Taxonomy();
+		c2.setName("Sonnenblume");
+		c2.setParent(c1);
+		dao.insert(c2, true);
+		
+		// test data 2
+		Taxonomy taxonomy2 = new Taxonomy();
+		taxonomy2.setName("Algae");
+		
+		Taxonomy c11 = new Taxonomy();
+		c11.setName("Blumen2");
+		c11.setParent(taxonomy2);
+		
+		Taxonomy c22 = new Taxonomy();
+		c22.setName("Sonnenblume2");
+		c22.setParent(c11);
+		dao.insert(c22, true);
+		
+		// verify
+		List<Taxonomy> taxonomyRootLevel = dao.getTaxonomyChildren(taxonomy.getId());
+		Assert.assertEquals(1, taxonomyRootLevel.size());
+		Assert.assertEquals(c1.getName(), taxonomyRootLevel.get(0).getName());
+		
+	}
 
 }

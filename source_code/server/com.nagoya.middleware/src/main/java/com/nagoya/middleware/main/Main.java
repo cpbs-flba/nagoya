@@ -30,12 +30,13 @@ public class Main extends Microservice {
 	public static void main(String args[]) throws Exception {
 		LOGGER.debug("Starting program.");
 
-		// add the REST resources here
-		getResourceConfig().register(UserResourceImpl.class);
-		getResourceConfig().register(GeneticResourceImpl.class);
-		getResourceConfig().register(GeneticResourceTransferResourceImpl.class);
-
 		Main main = new Main();
+		
+		// add the REST resources here
+		main.getResourceConfig().register(UserResourceImpl.class);
+		main.getResourceConfig().register(GeneticResourceImpl.class);
+		main.getResourceConfig().register(GeneticResourceTransferResourceImpl.class);
+		
 		main.runServer(args);
 	}
 

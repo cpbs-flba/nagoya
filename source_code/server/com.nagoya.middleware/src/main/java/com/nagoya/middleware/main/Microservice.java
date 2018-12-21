@@ -62,14 +62,14 @@ public abstract class Microservice {
     private static final String   SECURITY_HANDLER_REALM = "myrealm";
     private static final String   ROLE_USER              = "user";
 
-    private static ResourceConfig resourceConfig         = new ResourceConfig();
+    private ResourceConfig resourceConfig         = new ResourceConfig();
 
     /**
      * Returns the current resource configuration for the web application. Use this to extend and add your own web services.
      * 
      * @return
      */
-    public static ResourceConfig getResourceConfig() {
+    public ResourceConfig getResourceConfig() {
         return resourceConfig;
     }
 

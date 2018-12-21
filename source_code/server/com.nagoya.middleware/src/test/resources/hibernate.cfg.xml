@@ -11,7 +11,7 @@
 		<property name="hibernate.show_sql">false</property>
 
 		<!-- junit connection propterties -->
-		<property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/nagoyatdb1</property>
+		<property name="hibernate.connection.url">jdbc:postgresql://dev2:5432/nagoyatdb1</property>
 		<property name="hibernate.connection.username">unagoyatest</property>
 		<property name="hibernate.connection.password">Nagoya2018</property>
 		<!-- connection driver -->
