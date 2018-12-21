@@ -18,6 +18,7 @@ public class DAOTest {
 
 		try {
 			transaction = session.beginTransaction();
+			
 			session.createNativeQuery("DELETE FROM taddress").executeUpdate();
 			session.createNativeQuery("DELETE FROM taddress_aud").executeUpdate();
 
@@ -32,13 +33,18 @@ public class DAOTest {
 
 			session.createNativeQuery("DELETE FROM tgenetic_resource").executeUpdate();
 			session.createNativeQuery("DELETE FROM tgenetic_resource_aud").executeUpdate();
-
+			
+			session.createNativeQuery("DELETE FROM tgenetic_resource_taxonomy").executeUpdate();
+			
 			session.createNativeQuery("DELETE FROM tgenetic_resource_file").executeUpdate();
-
+			
 			session.createNativeQuery("DELETE FROM tperson_group").executeUpdate();
 			session.createNativeQuery("DELETE FROM tperson_group_aud").executeUpdate();
 			
-			session.createNativeQuery("DELETE FROM tonline_user").executeUpdate();
+			session.createNativeQuery("DELETE FROM tgenetic_resource_transfer").executeUpdate();
+			session.createNativeQuery("DELETE FROM tgenetic_resource_transfer_aud").executeUpdate();
+
+			session.createNativeQuery("DELETE FROM tgenetic_resource_transfer_resources").executeUpdate();
 
 			transaction.commit();
 		} catch (Exception e) {

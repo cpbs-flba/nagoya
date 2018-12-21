@@ -1,9 +1,6 @@
 
 package com.nagoya.middleware.test.it;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -20,45 +17,27 @@ import org.junit.jupiter.api.Test;
 import com.nagoya.common.crypto.DefaultPasswordEncryptionProvider;
 import com.nagoya.dao.base.BasicDAO;
 import com.nagoya.dao.base.impl.BasicDAOImpl;
+import com.nagoya.dao.geneticresource.GeneticResourceDAO;
+import com.nagoya.dao.geneticresource.impl.GeneticResourceDAOImpl;
 import com.nagoya.middleware.test.base.RestBaseTest;
+import com.nagoya.model.dbo.resource.Taxonomy;
 
 /**
  * @author flba
  *
  */
-public class UserITTest extends RestBaseTest {
+public class TaxonomyITTest extends RestBaseTest {
 
-	private static final Logger LOGGER = LogManager.getLogger(UserITTest.class);
-
-	@Test
-	@DisplayName("simple login")
-	public void simpleLoginTest() throws Exception {
-		// insert some dummy data
-		insertDummyLegalPerson();
-
-		String targetUrl = serverURL + "/users/login";
-		LOGGER.debug("Sending request POST: " + targetUrl);
-
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(targetUrl);
-
-		com.nagoya.model.to.person.PersonLegal personTO = new com.nagoya.model.to.person.PersonLegal();
-		personTO.setEmail("test@test.com1");
-		personTO.setPassword("test@test.com1");
-		Entity<com.nagoya.model.to.person.PersonLegal> entity = Entity.entity(personTO, MediaType.APPLICATION_JSON);
-
-		Response response = target.request(MediaType.APPLICATION_JSON).post(entity);
-		int status = response.getStatus();
-		response.close();
-		Assert.assertEquals(200, status);
-	}
+	private static final Logger LOGGER = LogManager.getLogger(TaxonomyITTest.class);
 
 	@Test
-	@DisplayName("simple search")
-	public void simpleSearchTest() throws Exception {
+	@DisplayName("taxonomy root level search")
+	public void simpleTaxonomySearchTest() throws Exception {
 		// insert some dummy data
 		insertDummyLegalPerson();
+		insertTestTaxonomy();
 
+		// first login
 		String targetUrl = serverURL + "/users/login";
 		LOGGER.debug("Sending request POST: " + targetUrl);
 
@@ -76,7 +55,8 @@ public class UserITTest extends RestBaseTest {
 		response.close();
 		Assert.assertEquals(200, status);
 
-		targetUrl = serverURL + "/users/search?filter=test";
+		// now search for taxonomy
+		targetUrl = serverURL + "/genetics/search/taxonomy";
 		target = client.target(targetUrl);
 		response = target.request(MediaType.APPLICATION_JSON).header("Authorization", authHeader).get();
 		status = response.getStatus();
@@ -90,37 +70,42 @@ public class UserITTest extends RestBaseTest {
 	}
 
 	@Test
-	@DisplayName("parallel login requests")
-	public void parallelLoginTest() throws Exception {
+	@DisplayName("taxonomy 2nd level search")
+	public void secondLevelTaxonomySearchTest() throws Exception {
 		// insert some dummy data
 		insertDummyLegalPerson();
+		long insertTestTaxonomy = insertTestTaxonomy();
 
-		final String targetUrl = serverURL + "/users/login";
+		// first login
+		String targetUrl = serverURL + "/users/login";
+		LOGGER.debug("Sending request POST: " + targetUrl);
 
-		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target(targetUrl);
 
-		for (int i = 0; i < 20; i++) {
-			executorService.execute(new LoginThread(targetUrl, 1));
-		}
+		com.nagoya.model.to.person.PersonLegal personTO = new com.nagoya.model.to.person.PersonLegal();
+		personTO.setEmail("test@test.com1");
+		personTO.setPassword("test@test.com1");
+		Entity<com.nagoya.model.to.person.PersonLegal> entity = Entity.entity(personTO, MediaType.APPLICATION_JSON);
 
-		LOGGER.debug("Shutting down threads.");
-		executorService.shutdown();
-		while (!executorService.isTerminated()) {
-			// wait
-		}
-	}
+		Response response = target.request(MediaType.APPLICATION_JSON).post(entity);
+		String authHeader = response.getHeaderString("Authorization");
+		int status = response.getStatus();
+		response.close();
+		Assert.assertEquals(200, status);
 
-	@Test
-	@DisplayName("sequential login requests")
-	public void sequentialLoginTest() throws Exception {
-		// insert some dummy data
-		insertDummyLegalPerson();
+		// now search for taxonomy
+		targetUrl = serverURL + "/genetics/search/taxonomy/" + insertTestTaxonomy;
+		target = client.target(targetUrl);
+		response = target.request(MediaType.APPLICATION_JSON).header("Authorization", authHeader).get();
+		status = response.getStatus();
+		Assert.assertEquals(200, status);
 
-		final String targetUrl = serverURL + "/users/login";
+		String body = response.readEntity(String.class);
+		LOGGER.debug("Received response: \r\n" + body);
+		Assert.assertNotNull(body);
 
-		for (int i = 0; i < 10; i++) {
-			new LoginThread(targetUrl, i).run();
-		}
+		response.close();
 	}
 
 	private void insertDummyLegalPerson() {
@@ -139,6 +124,35 @@ public class UserITTest extends RestBaseTest {
 			pl.setCommercialRegisterNumber("test");
 			personDAO.insert(pl, true);
 		}
+	}
+
+	private long insertTestTaxonomy() {
+		GeneticResourceDAO dao = new GeneticResourceDAOImpl(getSession());
+		Taxonomy taxonomy = new Taxonomy();
+		taxonomy.setName("Plantae");
+
+		Taxonomy c1 = new Taxonomy();
+		c1.setName("Blumen");
+		c1.setParent(taxonomy);
+
+		Taxonomy c2 = new Taxonomy();
+		c2.setName("Sonnenblume");
+		c2.setParent(c1);
+		dao.insert(c2, true);
+
+		Taxonomy taxonomy2 = new Taxonomy();
+		taxonomy2.setName("Algae");
+
+		Taxonomy c11 = new Taxonomy();
+		c11.setName("Blumen2");
+		c11.setParent(taxonomy2);
+
+		Taxonomy c22 = new Taxonomy();
+		c22.setName("Sonnenblume2");
+		c22.setParent(c11);
+		dao.insert(c22, true);
+
+		return taxonomy.getId();
 	}
 
 }

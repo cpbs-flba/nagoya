@@ -56,6 +56,7 @@ public final class GeneticResourceTransformer {
 		if (dto == null) {
 			dto = new com.nagoya.model.to.resource.Taxonomy();
 		}
+		dto.setId(dbo.getId().toString());
 		dto.setName(dbo.getName());
 		if (dbo.getParent() != null) {
 			dto.setParent(getDTO(dto.getParent(), dbo.getParent()));

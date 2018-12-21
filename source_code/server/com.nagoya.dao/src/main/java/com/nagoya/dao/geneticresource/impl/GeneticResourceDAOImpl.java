@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,6 +22,7 @@ import com.nagoya.dao.geneticresource.GeneticResourceDAO;
 import com.nagoya.dao.util.StringUtil;
 import com.nagoya.model.dbo.person.Person;
 import com.nagoya.model.dbo.resource.GeneticResource;
+import com.nagoya.model.dbo.resource.Taxonomy;
 import com.nagoya.model.dbo.resource.VisibilityType;
 import com.nagoya.model.to.resource.filter.GeneticResourceFilter;
 
@@ -100,6 +103,71 @@ public class GeneticResourceDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.re
 		createdQuery.setMaxResults(maxResults);
 		List<GeneticResource> resultList = createdQuery.getResultList();
 		return resultList;
+	}
+
+	@Override
+	public List<Taxonomy> getTaxonomyRootLevel() {
+		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+
+		// Create criteriaQuery
+		CriteriaQuery<Taxonomy> criteriaQuery = criteriaBuilder.createQuery(Taxonomy.class);
+
+		Root<Taxonomy> root = criteriaQuery.from(Taxonomy.class);
+		Predicate condition = criteriaBuilder.isNull(root.get("parent"));
+		criteriaQuery.select(root).where(condition);
+
+		TypedQuery<Taxonomy> createdQuery = entityManager.createQuery(criteriaQuery);
+		List<Taxonomy> resultList = createdQuery.getResultList();
+		return resultList;
+	}
+
+	@Override
+	public List<Taxonomy> getTaxonomyChildren(long parentId) {
+		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+
+		Taxonomy parentTaxonomy = findTaxonomy(parentId);
+		if (parentTaxonomy == null) {
+			return new ArrayList<>();
+		}
+		
+		// Create criteriaQuery
+		CriteriaQuery<Taxonomy> criteriaQuery = criteriaBuilder.createQuery(Taxonomy.class);
+
+		Root<Taxonomy> root = criteriaQuery.from(Taxonomy.class);
+		Predicate condition = criteriaBuilder.equal(root.get("parent"), parentTaxonomy);
+		criteriaQuery.select(root).where(condition);
+
+		TypedQuery<Taxonomy> createdQuery = entityManager.createQuery(criteriaQuery);
+		List<Taxonomy> resultList = createdQuery.getResultList();
+		return resultList;
+	}
+	
+	
+	private Taxonomy findTaxonomy(long id) throws NonUniqueResultException {
+		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+
+		// Create criteriaQuery
+		CriteriaQuery<Taxonomy> criteriaQuery = criteriaBuilder.createQuery(Taxonomy.class);
+
+		Root<Taxonomy> root = criteriaQuery.from(Taxonomy.class);
+		Predicate condition = criteriaBuilder.equal(root.get("id"), id);
+		criteriaQuery.select(root).where(condition);
+
+		TypedQuery<?> createdQuery = entityManager.createQuery(criteriaQuery);
+		try {
+			Taxonomy singleResult = (Taxonomy) createdQuery.getSingleResult();
+			return singleResult;
+		} catch (NonUniqueResultException e) {
+			throw new NonUniqueResultException(e.getMessage());
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 }
