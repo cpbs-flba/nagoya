@@ -22,6 +22,7 @@ import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.exception.BadRequestException;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.ForbiddenException;
+import com.nagoya.model.exception.InvalidTokenException;
 import com.nagoya.model.exception.NotAuthorizedException;
 import com.nagoya.model.exception.TimeoutException;
 import com.nagoya.model.to.person.Person;
@@ -336,6 +337,44 @@ public class UserResourceImpl implements UserResource {
 			response = Response.status(Status.NO_CONTENT).build();
 		} catch (Exception e) {
 			LOGGER.error(e, e);
+			response = Response.serverError().build();
+		} finally {
+			if (session != null) {
+				ConnectionProvider.getInstance().closeSession(session);
+			}
+		}
+		asyncResponse.resume(response);
+		
+	}
+
+	@Override
+	public void search(String authorization, String filter, AsyncResponse asyncResponse) {
+		Response response = null;
+		Session session = null;
+		try {
+			session = ConnectionProvider.getInstance().getSession();
+			UserService service = new UserService(session);
+			DefaultReturnObject result = service.search(authorization, filter);
+			ResponseBuilder responseBuilder = Response.ok(result.getEntity());
+			Set<Entry<String,String>> entrySet = result.getHeader().entrySet();
+			for (Entry<String, String> entry : entrySet) {
+				responseBuilder.header(entry.getKey(), entry.getValue());
+			}
+			response = responseBuilder.build();
+		} catch (BadRequestException e) {
+			LOGGER.error(e, e);
+			response = Response.status(Status.BAD_REQUEST).build();
+		} catch (InvalidTokenException e) {
+			LOGGER.error(e, e);
+			response = Response.status(Status.UNAUTHORIZED).build();
+		} catch (NotAuthorizedException e) {
+			LOGGER.error(e, e);
+			response = Response.status(Status.UNAUTHORIZED).build();
+		} catch (TimeoutException e) {
+			LOGGER.error(e, e);
+			response = Response.status(Status.REQUEST_TIMEOUT).build();
+		} catch (Exception e) {
+			LOGGER.error(e);
 			response = Response.serverError().build();
 		} finally {
 			if (session != null) {

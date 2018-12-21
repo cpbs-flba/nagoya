@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nagoya.middleware.rest.impl.GeneticResourceImpl;
+import com.nagoya.middleware.rest.impl.GeneticResourceTransferResourceImpl;
 import com.nagoya.middleware.rest.impl.UserResourceImpl;
 
 /**
@@ -29,11 +30,13 @@ public class Main extends Microservice {
 	public static void main(String args[]) throws Exception {
 		LOGGER.debug("Starting program.");
 
-		// add the REST resources here
-		getResourceConfig().register(UserResourceImpl.class);
-		getResourceConfig().register(GeneticResourceImpl.class);
-
 		Main main = new Main();
+		
+		// add the REST resources here
+		main.getResourceConfig().register(UserResourceImpl.class);
+		main.getResourceConfig().register(GeneticResourceImpl.class);
+		main.getResourceConfig().register(GeneticResourceTransferResourceImpl.class);
+		
 		main.runServer(args);
 	}
 

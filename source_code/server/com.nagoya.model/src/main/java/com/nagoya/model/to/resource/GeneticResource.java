@@ -7,12 +7,14 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nagoya.model.dbo.resource.VisibilityType;
 
 /**
  * @author Florin Bogdan Balint
  *
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class GeneticResource implements Serializable {
 
 	private static final long serialVersionUID = 1L;

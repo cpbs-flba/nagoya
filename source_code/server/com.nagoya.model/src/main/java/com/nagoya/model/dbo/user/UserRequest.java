@@ -9,6 +9,7 @@ import javax.persistence.OneToOne;
 
 import com.nagoya.model.dbo.DBO;
 import com.nagoya.model.dbo.person.Person;
+import com.nagoya.model.dbo.resource.GeneticResourceTransfer;
 
 @Entity(name = "tuser_request")
 public class UserRequest extends DBO {
@@ -18,6 +19,10 @@ public class UserRequest extends DBO {
 	@OneToOne
 	@JoinColumn(name = "person_id")
 	private Person person;
+
+	@OneToOne(optional = true)
+	@JoinColumn(name = "genetic_resource_transfer_id")
+	private GeneticResourceTransfer transfer;
 
 	@Column(name = "token", nullable = false)
 	private String token;
@@ -84,6 +89,19 @@ public class UserRequest extends DBO {
 		this.expirationDate = expirationDate;
 	}
 
+	/**
+	 * @return the transfer
+	 */
+	public GeneticResourceTransfer getTransfer() {
+		return transfer;
+	}
 
+	/**
+	 * @param transfer the transfer to set
+	 */
+	public void setTransfer(GeneticResourceTransfer transfer) {
+		this.transfer = transfer;
+	}
 
+	
 }
