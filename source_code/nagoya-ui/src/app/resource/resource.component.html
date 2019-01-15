@@ -15,11 +15,11 @@
     </div>
     <br/>
     <div class="creationForm">
-      <app-creation *ngIf="createNew" [(createNew)]="createNew"></app-creation>
+      <app-creation *ngIf="createNew" [(createNew)]="createNew" (resourceSubmitted)="reloadResources($event)"></app-creation>
     </div>
     <mat-divider></mat-divider>
   </div>
   <br/>
-  <app-overview></app-overview>
+  <app-overview [reloadChanges]="reloadChanges"></app-overview>
   <br/>
 </div>
