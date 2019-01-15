@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package com.nagoya.middleware.service;
 
 import java.util.ArrayList;
@@ -39,285 +40,278 @@ import com.nagoya.model.to.resource.filter.GeneticResourceFilter;
  */
 public class GeneticResourceService extends ResourceService {
 
-	private static final Logger LOGGER = LogManager.getLogger(GeneticResourceService.class);
+    private static final Logger LOGGER = LogManager.getLogger(GeneticResourceService.class);
 
-	private GeneticResourceDAO geneticResourceDAO;
+    private GeneticResourceDAO  geneticResourceDAO;
 
-	public GeneticResourceService(Session session) {
-		super(session);
-		this.geneticResourceDAO = new GeneticResourceDAOImpl(session);
-	}
+    public GeneticResourceService(Session session) {
+        super(session);
+        this.geneticResourceDAO = new GeneticResourceDAOImpl(session);
+    }
 
-	public DefaultReturnObject create(String authorization,
-			com.nagoya.model.to.resource.GeneticResource geneticRessource)
-			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
-			InvalidObjectException, ResourceOutOfDateException, BadRequestException {
-		LOGGER.debug("Adding genetic resource");
-		OnlineUser onlineUser = validateSession(authorization);
+    public DefaultReturnObject create(String authorization, com.nagoya.model.to.resource.GeneticResource geneticRessource)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException, ResourceOutOfDateException,
+        BadRequestException {
+        LOGGER.debug("Adding genetic resource");
+        OnlineUser onlineUser = validateSession(authorization);
 
-		if (geneticRessource == null) {
-			throw new BadRequestException("Cannot execute create operation, when the object is null.");
-		}
+        if (geneticRessource == null) {
+            throw new BadRequestException("Cannot execute create operation, when the object is null.");
+        }
 
-		GeneticResource dbo = GeneticResourceTransformer.getDBO(null, geneticRessource);
-		dbo.setOwner(onlineUser.getPerson());
-		geneticResourceDAO.insert(dbo, true);
+        GeneticResource dbo = GeneticResourceTransformer.getDBO(null, geneticRessource);
+        dbo.setOwner(onlineUser.getPerson());
+        geneticResourceDAO.insert(dbo, true);
 
-		// get the transfer object, but do not send all the data
-		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		dto.getFiles().clear();
+        // get the transfer object, but do not send all the data
+        com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
+        dto.getFiles().clear();
 
-		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
-		return result;
-	}
+        DefaultReturnObject result = refreshSession(onlineUser, dto, null);
+        return result;
+    }
 
-	public DefaultReturnObject read(String authorization, String resourceId) throws NotAuthorizedException,
-			ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
-			InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = validateSession(authorization);
+    public DefaultReturnObject read(String authorization, String resourceId)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
+        InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
+        OnlineUser onlineUser = validateSession(authorization);
 
-		if (StringUtil.isNullOrBlank(resourceId)) {
-			throw new BadRequestException("Resource ID is missing.");
-		}
-		// verify the file id
-		Long resourceIdAsLong = null;
-		try {
-			resourceIdAsLong = Long.parseLong(resourceId);
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("Resource ID and/or File ID is invalid.");
-		}
+        if (StringUtil.isNullOrBlank(resourceId)) {
+            throw new BadRequestException("Resource ID is missing.");
+        }
+        // verify the file id
+        Long resourceIdAsLong = null;
+        try {
+            resourceIdAsLong = Long.parseLong(resourceId);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Resource ID and/or File ID is invalid.");
+        }
 
-		GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong,
-				com.nagoya.model.dbo.resource.GeneticResource.class);
+        GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResource.class);
 
-		if (dbo == null) {
-			throw new NotFoundException();
-		}
+        if (dbo == null) {
+            throw new NotFoundException();
+        }
 
-		isUserAuthorizedForRessource(onlineUser, dbo, false);
+        isUserAuthorizedForRessource(onlineUser, dbo, false);
 
-		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
+        com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
 
-		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
-		return result;
-	}
+        DefaultReturnObject result = refreshSession(onlineUser, dto, null);
+        return result;
+    }
 
-	private void isUserAuthorizedForRessource(OnlineUser onlineUser, GeneticResource dbo, boolean writeOperation)
-			throws ForbiddenException {
-		boolean authorized = false;
-		// if the user is the owner
-		if (dbo.getOwner().getId().equals(onlineUser.getPerson().getId())) {
-			authorized = true;
-		}
-		// if the user is in the correct group
-		if (dbo.getVisibilityType().equals(VisibilityType.PUBLIC)) {
-			authorized = true;
-		}
-		// if the user is in the correct group
-		if (dbo.getVisibilityType().equals(VisibilityType.GROUP) && !writeOperation) {
-			// Verify if a user is in the group
-			authorized = true;
-		}
-		if (!authorized) {
-			throw new ForbiddenException("Access denied");
-		}
-	}
+    private void isUserAuthorizedForRessource(OnlineUser onlineUser, GeneticResource dbo, boolean writeOperation)
+        throws ForbiddenException {
+        boolean authorized = false;
+        // if the user is the owner
+        if (dbo.getOwner().getId().equals(onlineUser.getPerson().getId())) {
+            authorized = true;
+        }
+        // if the user is in the correct group
+        if (dbo.getVisibilityType().equals(VisibilityType.PUBLIC)) {
+            authorized = true;
+        }
+        // if the user is in the correct group
+        if (dbo.getVisibilityType().equals(VisibilityType.GROUP) && !writeOperation) {
+            // Verify if a user is in the group
+            authorized = true;
+        }
+        if (!authorized) {
+            throw new ForbiddenException("Access denied");
+        }
+    }
 
-	public DefaultReturnObject delete(String authorization, String resourceId) throws NotAuthorizedException,
-			ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
-			InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = validateSession(authorization);
+    public DefaultReturnObject delete(String authorization, String resourceId)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
+        InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
+        OnlineUser onlineUser = validateSession(authorization);
 
-		if (StringUtil.isNullOrBlank(resourceId)) {
-			throw new BadRequestException("Resource ID is missing.");
-		}
+        if (StringUtil.isNullOrBlank(resourceId)) {
+            throw new BadRequestException("Resource ID is missing.");
+        }
 
-		// verify the file id
-		Long resourceIdAsLong = null;
-		try {
-			resourceIdAsLong = Long.parseLong(resourceId);
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("Resource ID and/or File ID is invalid.");
-		}
-		GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong,
-				com.nagoya.model.dbo.resource.GeneticResource.class);
+        // verify the file id
+        Long resourceIdAsLong = null;
+        try {
+            resourceIdAsLong = Long.parseLong(resourceId);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Resource ID and/or File ID is invalid.");
+        }
+        GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResource.class);
 
-		if (dbo == null) {
-			throw new NotFoundException();
-		}
+        if (dbo == null) {
+            throw new NotFoundException();
+        }
 
-		isUserAuthorizedForRessource(onlineUser, dbo, true);
+        isUserAuthorizedForRessource(onlineUser, dbo, true);
 
-		geneticResourceDAO.delete(dbo, true);
+        geneticResourceDAO.delete(dbo, true);
 
-		DefaultReturnObject result = refreshSession(onlineUser, null, null);
-		return result;
-	}
+        DefaultReturnObject result = refreshSession(onlineUser, null, null);
+        return result;
+    }
 
-	public DefaultReturnObject delete(String authorization, String resourceId, String fileId)
-			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
-			NonUniqueResultException, BadRequestException, InvalidObjectException, ResourceOutOfDateException,
-			ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = validateSession(authorization);
+    public DefaultReturnObject delete(String authorization, String resourceId, String fileId)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
+        InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
+        OnlineUser onlineUser = validateSession(authorization);
 
-		if (StringUtil.isNullOrBlank(resourceId) || StringUtil.isNullOrBlank(fileId)) {
-			throw new BadRequestException("Resource ID and/or File ID is missing.");
-		}
-		Long resourceIdAsLong = null;
-		Long fileIdAsLong = null;
-		try {
-			resourceIdAsLong = Long.parseLong(resourceId);
-			fileIdAsLong = Long.parseLong(fileId);
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("Resource ID and/or File ID is invalid.");
-		}
-		GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong,
-				com.nagoya.model.dbo.resource.GeneticResource.class);
+        if (StringUtil.isNullOrBlank(resourceId) || StringUtil.isNullOrBlank(fileId)) {
+            throw new BadRequestException("Resource ID and/or File ID is missing.");
+        }
+        Long resourceIdAsLong = null;
+        Long fileIdAsLong = null;
+        try {
+            resourceIdAsLong = Long.parseLong(resourceId);
+            fileIdAsLong = Long.parseLong(fileId);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Resource ID and/or File ID is invalid.");
+        }
+        GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResource.class);
 
-		if (dbo == null) {
-			throw new NotFoundException();
-		}
+        if (dbo == null) {
+            throw new NotFoundException();
+        }
 
-		isUserAuthorizedForRessource(onlineUser, dbo, true);
+        isUserAuthorizedForRessource(onlineUser, dbo, true);
 
-		// search through the files and delete it
-		Iterator<ResourceFile> iterator = dbo.getFiles().iterator();
-		while (iterator.hasNext()) {
-			ResourceFile rf = iterator.next();
-			if (rf.getId().equals(fileIdAsLong)) {
-				iterator.remove();
-			}
-		}
+        // search through the files and delete it
+        Iterator<ResourceFile> iterator = dbo.getFiles().iterator();
+        while (iterator.hasNext()) {
+            ResourceFile rf = iterator.next();
+            if (rf.getId().equals(fileIdAsLong)) {
+                iterator.remove();
+            }
+        }
 
-		geneticResourceDAO.update(dbo, true);
+        geneticResourceDAO.update(dbo, true);
 
-		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
-		return result;
-	}
+        com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
+        DefaultReturnObject result = refreshSession(onlineUser, dto, null);
+        return result;
+    }
 
-	public DefaultReturnObject addResourceFile(String authorization, String resourceId,
-			com.nagoya.model.to.resource.ResourceFile resourceFile) throws NotAuthorizedException, ConflictException,
-			TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
-			InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = validateSession(authorization);
+    public DefaultReturnObject addResourceFile(String authorization, String resourceId, com.nagoya.model.to.resource.ResourceFile resourceFile)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
+        InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
+        OnlineUser onlineUser = validateSession(authorization);
 
-		if (StringUtil.isNullOrBlank(resourceId) || resourceFile == null) {
-			throw new BadRequestException("Resource ID and/or File ID is missing.");
-		}
-		Long resourceIdAsLong = null;
-		try {
-			resourceIdAsLong = Long.parseLong(resourceId);
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("Resource ID and/or File ID is invalid.");
-		}
-		GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong,
-				com.nagoya.model.dbo.resource.GeneticResource.class);
+        if (StringUtil.isNullOrBlank(resourceId) || resourceFile == null) {
+            throw new BadRequestException("Resource ID and/or File ID is missing.");
+        }
+        Long resourceIdAsLong = null;
+        try {
+            resourceIdAsLong = Long.parseLong(resourceId);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Resource ID and/or File ID is invalid.");
+        }
+        GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResource.class);
 
-		if (dbo == null) {
-			throw new NotFoundException();
-		}
+        if (dbo == null) {
+            throw new NotFoundException();
+        }
 
-		isUserAuthorizedForRessource(onlineUser, dbo, true);
+        isUserAuthorizedForRessource(onlineUser, dbo, true);
 
-		ResourceFile dboResourceFile = GeneticResourceTransformer.getDBO(resourceFile);
-		dbo.getFiles().add(dboResourceFile);
-		geneticResourceDAO.update(dbo, true);
+        ResourceFile dboResourceFile = GeneticResourceTransformer.getDBO(resourceFile);
+        dbo.getFiles().add(dboResourceFile);
+        geneticResourceDAO.update(dbo, true);
 
-		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
-		return result;
-	}
+        com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
+        DefaultReturnObject result = refreshSession(onlineUser, dto, null);
+        return result;
+    }
 
-	public DefaultReturnObject update(String authorization, String resourceId,
-			com.nagoya.model.to.resource.GeneticResource geneticResource) throws NotAuthorizedException,
-			ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
-			InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
-		OnlineUser onlineUser = validateSession(authorization);
+    public DefaultReturnObject update(String authorization, String resourceId, com.nagoya.model.to.resource.GeneticResource geneticResource)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, NonUniqueResultException, BadRequestException,
+        InvalidObjectException, ResourceOutOfDateException, ForbiddenException, NotFoundException {
+        OnlineUser onlineUser = validateSession(authorization);
 
-		if (StringUtil.isNullOrBlank(resourceId) || geneticResource == null) {
-			throw new BadRequestException("Resource ID and/or File ID is missing.");
-		}
-		Long resourceIdAsLong = null;
-		try {
-			resourceIdAsLong = Long.parseLong(resourceId);
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("Resource ID and/or File ID is invalid.");
-		}
-		GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong,
-				com.nagoya.model.dbo.resource.GeneticResource.class);
+        if (StringUtil.isNullOrBlank(resourceId) || geneticResource == null) {
+            throw new BadRequestException("Resource ID and/or File ID is missing.");
+        }
+        Long resourceIdAsLong = null;
+        try {
+            resourceIdAsLong = Long.parseLong(resourceId);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Resource ID and/or File ID is invalid.");
+        }
+        GeneticResource dbo = (GeneticResource) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResource.class);
 
-		if (dbo == null) {
-			throw new NotFoundException();
-		}
+        if (dbo == null) {
+            throw new NotFoundException();
+        }
 
-		isUserAuthorizedForRessource(onlineUser, dbo, true);
+        isUserAuthorizedForRessource(onlineUser, dbo, true);
 
-		GeneticResource dboGeneticResource = GeneticResourceTransformer.getDBO(dbo, geneticResource);
-		geneticResourceDAO.update(dboGeneticResource, true);
+        GeneticResource dboGeneticResource = GeneticResourceTransformer.getDBO(dbo, geneticResource);
+        geneticResourceDAO.update(dboGeneticResource, true);
 
-		com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-		DefaultReturnObject result = refreshSession(onlineUser, dto, null);
-		return result;
-	}
+        com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
+        DefaultReturnObject result = refreshSession(onlineUser, dto, null);
+        return result;
+    }
 
-	public DefaultReturnObject search(String authorization, GeneticResourceFilter geneticRessourceFilter)
-			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
-			InvalidObjectException, ResourceOutOfDateException {
-		OnlineUser onlineUser = validateSession(authorization);
+    public DefaultReturnObject search(String authorization, GeneticResourceFilter geneticRessourceFilter)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException,
+        ResourceOutOfDateException {
+        OnlineUser onlineUser = validateSession(authorization);
 
-		List<GeneticResource> dbos = geneticResourceDAO.search(geneticRessourceFilter, onlineUser.getPerson(), 50);
+        List<GeneticResource> dbos = geneticResourceDAO.search(geneticRessourceFilter, onlineUser.getPerson(), 50);
 
-		List<com.nagoya.model.to.resource.GeneticResource> dtos = new ArrayList<>();
-		for (GeneticResource dbo : dbos) {
-			com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
-			dto.getFiles().clear();
-			dtos.add(dto);
-		}
+        List<com.nagoya.model.to.resource.GeneticResource> dtos = new ArrayList<>();
+        for (GeneticResource dbo : dbos) {
+            com.nagoya.model.to.resource.GeneticResource dto = GeneticResourceTransformer.getDTO(dbo);
+            dto.getFiles().clear();
+            dtos.add(dto);
+        }
 
-		DefaultReturnObject result = refreshSession(onlineUser, dtos, null);
-		return result;
-	}
+        DefaultReturnObject result = refreshSession(onlineUser, dtos, null);
+        return result;
+    }
 
-	public DefaultReturnObject searchForTaxonomyRootLevel(String authorization)
-			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
-			InvalidObjectException, ResourceOutOfDateException {
-		OnlineUser onlineUser = validateSession(authorization);
+    public DefaultReturnObject searchForTaxonomyRootLevel(String authorization)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException,
+        ResourceOutOfDateException {
+        validateSession(authorization);
 
-		List<com.nagoya.model.to.resource.Taxonomy> dtos = new ArrayList<>();
-		List<Taxonomy> taxonomyRootLevel = geneticResourceDAO.getTaxonomyRootLevel();
-		for (Taxonomy taxonomyDBO : taxonomyRootLevel) {
-			com.nagoya.model.to.resource.Taxonomy dto = GeneticResourceTransformer.getDTO(null, taxonomyDBO);
-			dtos.add(dto);
-		}
+        List<com.nagoya.model.to.resource.Taxonomy> dtos = new ArrayList<>();
+        List<Taxonomy> taxonomyRootLevel = geneticResourceDAO.getTaxonomyRootLevel();
+        for (Taxonomy taxonomyDBO : taxonomyRootLevel) {
+            com.nagoya.model.to.resource.Taxonomy dto = GeneticResourceTransformer.getDTO(null, taxonomyDBO);
+            dtos.add(dto);
+        }
 
-		DefaultReturnObject result = refreshSession(onlineUser, dtos, null);
-		return result;
-	}
+        DefaultReturnObject result = buildDefaultReturnObject(authorization, dtos, null);
+        return result;
+    }
 
-	public DefaultReturnObject searchForTaxonomyLevel(String authorization, String parentId) throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException, ResourceOutOfDateException, BadRequestException {
-		OnlineUser onlineUser = validateSession(authorization);
+    public DefaultReturnObject searchForTaxonomyLevel(String authorization, String parentId)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException, ResourceOutOfDateException,
+        BadRequestException {
+        validateSession(authorization);
 
-		if (StringUtil.isNullOrBlank(parentId)) {
-			throw new BadRequestException("Parent ID must be specified");
-		}
-		
-		long parsedId = 0;
-		try {
-			parsedId = Long.parseLong(parentId);
-		} catch (NumberFormatException e) {
-			throw new BadRequestException("Parent ID must be a valid long number");
-		}
-		
-		List<com.nagoya.model.to.resource.Taxonomy> dtos = new ArrayList<>();
-		List<Taxonomy> taxonomyRootLevel = geneticResourceDAO.getTaxonomyChildren(parsedId);
-		for (Taxonomy taxonomyDBO : taxonomyRootLevel) {
-			com.nagoya.model.to.resource.Taxonomy dto = GeneticResourceTransformer.getDTO(null, taxonomyDBO);
-			dtos.add(dto);
-		}
+        if (StringUtil.isNullOrBlank(parentId)) {
+            throw new BadRequestException("Parent ID must be specified");
+        }
 
-		DefaultReturnObject result = refreshSession(onlineUser, dtos, null);
-		return result;
-	}
+        long parsedId = 0;
+        try {
+            parsedId = Long.parseLong(parentId);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Parent ID must be a valid long number");
+        }
+
+        List<com.nagoya.model.to.resource.Taxonomy> dtos = new ArrayList<>();
+        List<Taxonomy> taxonomyRootLevel = geneticResourceDAO.getTaxonomyChildren(parsedId);
+        for (Taxonomy taxonomyDBO : taxonomyRootLevel) {
+            com.nagoya.model.to.resource.Taxonomy dto = GeneticResourceTransformer.getDTO(null, taxonomyDBO);
+            dtos.add(dto);
+        }
+
+        DefaultReturnObject result = buildDefaultReturnObject(authorization, dtos, null);
+        return result;
+    }
 
 }
