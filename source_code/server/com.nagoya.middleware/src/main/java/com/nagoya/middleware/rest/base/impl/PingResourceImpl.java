@@ -10,7 +10,7 @@
  * Created by : flba
  */
 
-package com.nagoya.middleware.rest.impl;
+package com.nagoya.middleware.rest.base.impl;
 
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import com.nagoya.dao.db.ConnectionProvider;
-import com.nagoya.middleware.rest.PingResource;
+import com.nagoya.middleware.rest.base.PingResource;
 
 /**
  * @author flba

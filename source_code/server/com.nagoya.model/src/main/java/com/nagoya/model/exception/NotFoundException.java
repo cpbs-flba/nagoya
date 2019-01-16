@@ -10,7 +10,7 @@
  * Created by : flba
  */
 
-package com.nagoya.middleware.model.exception;
+package com.nagoya.model.exception;
 
 /**
  * @author flba

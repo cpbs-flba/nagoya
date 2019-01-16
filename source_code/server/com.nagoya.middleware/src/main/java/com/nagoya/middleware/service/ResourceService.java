@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.StringUtil;
-import com.nagoya.middleware.rest.UserResource;
+import com.nagoya.middleware.rest.bl.UserResource;
 import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;

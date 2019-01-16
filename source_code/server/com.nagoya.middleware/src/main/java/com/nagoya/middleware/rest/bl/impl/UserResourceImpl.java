@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.nagoya.middleware.rest.impl;
+package com.nagoya.middleware.rest.bl.impl;
 
 import java.util.Map.Entry;
 import java.util.Set;
@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import com.nagoya.dao.db.ConnectionProvider;
-import com.nagoya.middleware.rest.UserResource;
+import com.nagoya.middleware.rest.bl.UserResource;
 import com.nagoya.middleware.service.UserService;
 import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.exception.BadRequestException;

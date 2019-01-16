@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package com.nagoya.model.dbo.user;
 
 /**
@@ -9,10 +10,10 @@ package com.nagoya.model.dbo.user;
  */
 public enum RequestType {
 
-	GENETIC_RESOURCE_TRANSFER_ACCEPTANCE, //
+    CONTRACT_ACCEPTANCE, //
 
-	REGISTRATION, //
-	PASSWORD_RECOVERY, //
-	ACCOUNT_REMOVAL
-	
+    REGISTRATION, //
+    PASSWORD_RECOVERY, //
+    ACCOUNT_REMOVAL
+
 }

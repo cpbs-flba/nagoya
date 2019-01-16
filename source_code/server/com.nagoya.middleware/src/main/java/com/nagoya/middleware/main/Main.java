@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2004 - 2018 CPB Software AG
+ * (C) Copyright 2004 - 2019 CPB Software AG
  * 1020 Wien, Vorgartenstrasse 206c
  * All rights reserved.
  * 
@@ -15,9 +15,9 @@ package com.nagoya.middleware.main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nagoya.middleware.rest.impl.GeneticResourceImpl;
-import com.nagoya.middleware.rest.impl.GeneticResourceTransferResourceImpl;
-import com.nagoya.middleware.rest.impl.UserResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.ContractResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.GeneticResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.UserResourceImpl;
 
 /**
  * @author flba
@@ -25,19 +25,20 @@ import com.nagoya.middleware.rest.impl.UserResourceImpl;
  */
 public class Main extends Microservice {
 
-	private static final Logger LOGGER = LogManager.getLogger(Main.class);
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-	public static void main(String args[]) throws Exception {
-		LOGGER.debug("Starting program.");
+    public static void main(String args[])
+        throws Exception {
+        LOGGER.debug("Starting program.");
 
-		Main main = new Main();
-		
-		// add the REST resources here
-		main.getResourceConfig().register(UserResourceImpl.class);
-		main.getResourceConfig().register(GeneticResourceImpl.class);
-		main.getResourceConfig().register(GeneticResourceTransferResourceImpl.class);
-		
-		main.runServer(args);
-	}
+        Main main = new Main();
+
+        // add the REST resources here
+        main.getResourceConfig().register(UserResourceImpl.class);
+        main.getResourceConfig().register(GeneticResourceImpl.class);
+        main.getResourceConfig().register(ContractResourceImpl.class);
+
+        main.runServer(args);
+    }
 
 }

@@ -196,7 +196,7 @@ CREATE TABLE tuser_request (
   request_type 						TEXT NOT NULL,
   token								TEXT NOT NULL,
   expiration_date					TIMESTAMP(0) NOT NULL,
-  genetic_resource_transfer_id 		BIGINT DEFAULT NULL,
+  contract_id				 		BIGINT DEFAULT NULL,
   creation_date 					TIMESTAMP(0) DEFAULT NULL,
   creation_user 					TEXT DEFAULT NULL,
   modification_date 				TIMESTAMP(0) DEFAULT NULL,
@@ -391,55 +391,80 @@ CREATE TABLE tgenetic_resource_taxonomy (
 );
 
 -- ----------------------------------------------
--- genetic_resource_transfer
+-- contract_resource
 -- ----------------------------------------------
-DROP TABLE IF EXISTS tgenetic_resource_transfer;
-DROP SEQUENCE IF EXISTS tgenetic_resource_transfer_seq;
+DROP TABLE IF EXISTS tcontract_resource;
+DROP SEQUENCE IF EXISTS tcontract_resource_seq;
 
-CREATE SEQUENCE tgenetic_resource_transfer_seq;
-CREATE TABLE tgenetic_resource_transfer (
-  id 							BIGINT NOT NULL DEFAULT nextval ('tgenetic_resource_transfer_seq'),
-  sender_id						BIGINT NOT NULL,
-  receiver_id					BIGINT NOT NULL,
-  receiver_accepted_transfer	BOOLEAN NOT NULL DEFAULT FALSE,
-  persisted_in_blockchain		BOOLEAN NOT NULL DEFAULT FALSE,
-  creation_date 				TIMESTAMP(0) DEFAULT NULL,
-  creation_user 				TEXT DEFAULT NULL,
-  modification_date 			TIMESTAMP(0) DEFAULT NULL,
-  modification_user 			TEXT DEFAULT NULL,
-  rev 							BIGINT DEFAULT NULL,
+CREATE SEQUENCE tcontract_resource_seq;
+CREATE TABLE tcontract_resource (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tcontract_resource_seq'),
+  contract_id			BIGINT DEFAULT NULL,
+  genetic_resource_id	BIGINT NOT NULL,
+  amount 				NUMERIC(30,5) NOT NULL,
+  measuring_unit		TEXT NOT NULL,   
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS tgenetic_resource_transfer_aud;
-DROP SEQUENCE IF EXISTS tgenetic_resource_transfer_aud_seq;
+DROP TABLE IF EXISTS tcontract_resource_aud;
+DROP SEQUENCE IF EXISTS tcontract_resource_aud_seq;
 
-CREATE SEQUENCE tgenetic_resource_transfer_aud_seq;
-CREATE TABLE tgenetic_resource_transfer_aud (
-  id 							BIGINT NOT NULL DEFAULT nextval ('tgenetic_resource_transfer_aud_seq'),
-  sender_id						BIGINT DEFAULT NULL,
-  receiver_id					BIGINT DEFAULT NULL,
-  receiver_accepted_transfer	BOOLEAN DEFAULT NULL,
-  persisted_in_blockchain		BOOLEAN DEFAULT FALSE,
-  creation_date 				TIMESTAMP(0) DEFAULT NULL,
-  creation_user 				TEXT DEFAULT NULL,
-  modification_date 			TIMESTAMP(0) DEFAULT NULL,
-  modification_user 			TEXT DEFAULT NULL,
-  rev 							BIGINT DEFAULT NULL,
-  revtype 						SMALLINT DEFAULT NULL,
+CREATE SEQUENCE tcontract_resource_aud_seq;
+CREATE TABLE tcontract_resource_aud (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tcontract_resource_aud_seq'),
+  contract_id			BIGINT DEFAULT NULL,
+  genetic_resource_id	BIGINT DEFAULT NULL,
+  amount 				NUMERIC(30,5) DEFAULT NULL,
+  measuring_unit		TEXT DEFAULT NULL,   
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  revtype 				SMALLINT DEFAULT NULL,
   PRIMARY KEY (id, rev)
 );
 
--- ----------------------------------------------
--- tgenetic_resource_transfer_resources
--- ----------------------------------------------
-DROP TABLE IF EXISTS tgenetic_resource_transfer_resources;
-DROP SEQUENCE IF EXISTS tgenetic_resource_transfer_resources_seq;
 
-CREATE SEQUENCE tgenetic_resource_transfer_resources_seq;
-CREATE TABLE tgenetic_resource_transfer_resources (
-  id 								BIGINT NOT NULL DEFAULT nextval ('tgenetic_resource_transfer_resources_seq'),
-  genetic_resource_id				BIGINT DEFAULT NULL,
-  genetic_resource_transfer_id		BIGINT DEFAULT NULL,
+-- ----------------------------------------------
+-- contract
+-- ----------------------------------------------
+DROP TABLE IF EXISTS tcontract;
+DROP SEQUENCE IF EXISTS tcontract_seq;
+
+CREATE SEQUENCE tcontract_seq;
+CREATE TABLE tcontract (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tcontract_seq'),
+  sender_id				BIGINT NOT NULL,
+  receiver_id			BIGINT NOT NULL,
+  status				TEXT NOT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
   PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS tcontract_aud;
+DROP SEQUENCE IF EXISTS tcontract_aud_seq;
+
+CREATE SEQUENCE tcontract_aud_seq;
+CREATE TABLE tcontract_aud (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tcontract_aud_seq'),
+  sender_id				BIGINT NOT NULL,
+  receiver_id			BIGINT NOT NULL,
+  status				TEXT DEFAULT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  revtype 				SMALLINT DEFAULT NULL,
+  PRIMARY KEY (id, rev)
 );

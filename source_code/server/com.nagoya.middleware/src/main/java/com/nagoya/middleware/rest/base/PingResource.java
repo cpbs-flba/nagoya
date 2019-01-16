@@ -10,7 +10,7 @@
  * Created by : flba
  */
 
-package com.nagoya.middleware.rest;
+package com.nagoya.middleware.rest.base;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2004 - 2018 CPB Software AG
+ * (C) Copyright 2004 - 2019 CPB Software AG
  * 1020 Wien, Vorgartenstrasse 206c
  * All rights reserved.
  * 
@@ -7,7 +7,7 @@
  * In no event shall the copyright owner or contributors be liable for any direct,
  * indirect, incidental, special, exemplary, or consequential damages.
  * 
- * Created by : flba
+ * Created by : Florin Bogdan Balint
  */
 
 package com.nagoya.middleware.main;
@@ -45,10 +45,10 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import com.nagoya.middleware.rest.ShutdownResource;
+import com.nagoya.middleware.rest.base.ShutdownResource;
+import com.nagoya.middleware.rest.base.impl.PingResourceImpl;
+import com.nagoya.middleware.rest.base.impl.ShutdownResourceImpl;
 import com.nagoya.middleware.rest.filter.CustomContainerResponseFilter;
-import com.nagoya.middleware.rest.impl.PingResourceImpl;
-import com.nagoya.middleware.rest.impl.ShutdownResourceImpl;
 
 /**
  * 
@@ -56,13 +56,13 @@ import com.nagoya.middleware.rest.impl.ShutdownResourceImpl;
  */
 public abstract class Microservice {
 
-    private static final Logger   LOGGER                 = LogManager.getLogger(Microservice.class);
+    private static final Logger LOGGER                 = LogManager.getLogger(Microservice.class);
 
-    private static final String   ADMIN_REALM            = "private";
-    private static final String   SECURITY_HANDLER_REALM = "myrealm";
-    private static final String   ROLE_USER              = "user";
+    private static final String ADMIN_REALM            = "private";
+    private static final String SECURITY_HANDLER_REALM = "myrealm";
+    private static final String ROLE_USER              = "user";
 
-    private ResourceConfig resourceConfig         = new ResourceConfig();
+    private ResourceConfig      resourceConfig         = new ResourceConfig();
 
     /**
      * Returns the current resource configuration for the web application. Use this to extend and add your own web services.

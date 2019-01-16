@@ -10,7 +10,7 @@
  * Created by : flba
  */
 
-package com.nagoya.middleware.rest.impl;
+package com.nagoya.middleware.rest.base.impl;
 
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nagoya.middleware.main.JettyStopper;
-import com.nagoya.middleware.rest.ShutdownResource;
+import com.nagoya.middleware.rest.base.ShutdownResource;
 
 /**
  * @author flba

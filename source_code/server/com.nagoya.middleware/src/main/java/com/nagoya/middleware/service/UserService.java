@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package com.nagoya.middleware.service;
 
 import java.nio.charset.StandardCharsets;
@@ -21,14 +22,15 @@ import com.nagoya.common.crypto.DefaultPasswordEncryptionProvider;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.StringUtil;
-import com.nagoya.middleware.rest.UserResource;
+import com.nagoya.middleware.rest.bl.UserResource;
 import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
+import com.nagoya.model.dbo.contract.Contract;
+import com.nagoya.model.dbo.contract.Status;
 import com.nagoya.model.dbo.person.PersonKeys;
 import com.nagoya.model.dbo.person.PersonLegal;
 import com.nagoya.model.dbo.person.PersonNatural;
-import com.nagoya.model.dbo.resource.GeneticResourceTransfer;
 import com.nagoya.model.dbo.user.OnlineUser;
 import com.nagoya.model.dbo.user.RequestType;
 import com.nagoya.model.dbo.user.UserRequest;
@@ -55,338 +57,341 @@ import io.jsonwebtoken.impl.crypto.MacProvider;
  */
 public class UserService extends ResourceService {
 
-	private static final Logger LOGGER = LogManager.getLogger(UserService.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserService.class);
 
-//	private BlockchainHelper blockchainHelper;
-	private PersonDAO personDAO;
+    // private BlockchainHelper blockchainHelper;
+    private PersonDAO           personDAO;
 
-	public UserService(Session session) {
-		super(session);
-		this.personDAO = new PersonDAOImpl(session);
-//		this.blockchainHelper = new BlockchainHelper();
-	}
+    public UserService(Session session) {
+        super(session);
+        this.personDAO = new PersonDAOImpl(session);
+        // this.blockchainHelper = new BlockchainHelper();
+    }
 
-	public DefaultReturnObject login(Person person)
-			throws NotAuthorizedException, BadRequestException, ConflictException, ForbiddenException {
-		validateCredentialsExist(person);
+    public DefaultReturnObject login(Person person)
+        throws NotAuthorizedException, BadRequestException, ConflictException, ForbiddenException {
+        validateCredentialsExist(person);
 
-		String email = person.getEmail();
+        String email = person.getEmail();
 
-		com.nagoya.model.dbo.person.Person existentPerson = personDAO.findPersonForEmail(email);
-		if (existentPerson == null) {
-			throw new NotAuthorizedException("Invalid email/password combination.");
-		}
+        com.nagoya.model.dbo.person.Person existentPerson = personDAO.findPersonForEmail(email);
+        if (existentPerson == null) {
+            throw new NotAuthorizedException("Invalid email/password combination.");
+        }
 
-		boolean passwordCorrect = DefaultPasswordEncryptionProvider.isPasswordCorrect(existentPerson.getPassword(),
-				person.getPassword());
-		if (!passwordCorrect) {
-			throw new NotAuthorizedException("Invalid email/password combination.");
-		}
+        boolean passwordCorrect = DefaultPasswordEncryptionProvider.isPasswordCorrect(existentPerson.getPassword(), person.getPassword());
+        if (!passwordCorrect) {
+            throw new NotAuthorizedException("Invalid email/password combination.");
+        }
 
-		boolean emailConfirmed = existentPerson.isEmailConfirmed();
-		if (!emailConfirmed) {
-			throw new ForbiddenException();
-		}
+        boolean emailConfirmed = existentPerson.isEmailConfirmed();
+        if (!emailConfirmed) {
+            throw new ForbiddenException();
+        }
 
-		// login was okay, return the user object
-		Person dto = PersonTransformer.getDTO(existentPerson);
-		// hide the password hash
-		dto.setPassword(null);
-		DefaultReturnObject result = new DefaultReturnObject();
-		result.setEntity(dto);
+        // login was okay, return the user object
+        Person dto = PersonTransformer.getDTO(existentPerson);
+        // hide the password hash
+        dto.setPassword(null);
+        DefaultReturnObject result = new DefaultReturnObject();
+        result.setEntity(dto);
 
-		// also set the JSON web token in the bearer authorization
-		String jsonWebToken = createSession(existentPerson);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + jsonWebToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+        // also set the JSON web token in the bearer authorization
+        String jsonWebToken = createSession(existentPerson);
+        String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + jsonWebToken;
+        result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
 
-		return result;
-	}
+        return result;
+    }
 
-	public void register(Person person, String language) throws BadRequestException, ConflictException {
-		validate(person);
-		com.nagoya.model.dbo.person.Person toRegister = PersonTransformer.getDBO(null, person);
+    public void register(Person person, String language)
+        throws BadRequestException, ConflictException {
+        validate(person);
+        com.nagoya.model.dbo.person.Person toRegister = PersonTransformer.getDBO(null, person);
 
-		// encrypt password
-		String plainPassword = toRegister.getPassword();
-		String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(plainPassword);
-		toRegister.setPassword(encryptPassword);
+        // encrypt password
+        String plainPassword = toRegister.getPassword();
+        String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(plainPassword);
+        toRegister.setPassword(encryptPassword);
 
-		// persist into the DB
-		com.nagoya.model.dbo.person.Person registered = personDAO.register(toRegister);
+        // persist into the DB
+        com.nagoya.model.dbo.person.Person registered = personDAO.register(toRegister);
 
-		UserRequest userRequest = new UserRequest();
-		userRequest.setPerson(registered);
-		userRequest.setRequestType(RequestType.REGISTRATION);
-		Date expirationDate = DefaultDateProvider.getDeadline24h();
-		userRequest.setExpirationDate(expirationDate);
-		String registrationToken = DefaultIDGenerator.generateRandomID();
-		userRequest.setToken(registrationToken);
-		personDAO.insert(userRequest, true);
+        UserRequest userRequest = new UserRequest();
+        userRequest.setPerson(registered);
+        userRequest.setRequestType(RequestType.REGISTRATION);
+        Date expirationDate = DefaultDateProvider.getDeadline24h();
+        userRequest.setExpirationDate(expirationDate);
+        String registrationToken = DefaultIDGenerator.generateRandomID();
+        userRequest.setToken(registrationToken);
+        personDAO.insert(userRequest, true);
 
-		// send confirmation e-mail
-		String email = person.getEmail();
-		MailService mailService = new MailService(language);
-		mailService.sendRegistratationMail(email, registrationToken, expirationDate);
-	}
+        // send confirmation e-mail
+        String email = person.getEmail();
+        MailService mailService = new MailService(language);
+        mailService.sendRegistratationMail(email, registrationToken, expirationDate);
+    }
 
-	public void resetPassword(Person person, String language) throws BadRequestException, ConflictException {
-		if (person == null) {
-			throw new BadRequestException();
-		}
-		String providedEmail = person.getEmail();
-		if (StringUtil.isNullOrBlank(providedEmail)) {
-			throw new BadRequestException();
-		}
-		com.nagoya.model.dbo.person.Person personForMail = personDAO.findPersonForEmail(providedEmail);
-		if (personForMail == null) {
-			return;
-		}
+    public void resetPassword(Person person, String language)
+        throws BadRequestException, ConflictException {
+        if (person == null) {
+            throw new BadRequestException();
+        }
+        String providedEmail = person.getEmail();
+        if (StringUtil.isNullOrBlank(providedEmail)) {
+            throw new BadRequestException();
+        }
+        com.nagoya.model.dbo.person.Person personForMail = personDAO.findPersonForEmail(providedEmail);
+        if (personForMail == null) {
+            return;
+        }
 
-		// we have a valid user
-		UserRequest userRequest = new UserRequest();
-		userRequest.setPerson(personForMail);
-		userRequest.setRequestType(RequestType.PASSWORD_RECOVERY);
-		Date expirationDate = DefaultDateProvider.getDeadline24h();
-		userRequest.setExpirationDate(expirationDate);
-		String token = DefaultIDGenerator.generateRandomID();
-		userRequest.setToken(token);
-		personDAO.insert(userRequest, true);
+        // we have a valid user
+        UserRequest userRequest = new UserRequest();
+        userRequest.setPerson(personForMail);
+        userRequest.setRequestType(RequestType.PASSWORD_RECOVERY);
+        Date expirationDate = DefaultDateProvider.getDeadline24h();
+        userRequest.setExpirationDate(expirationDate);
+        String token = DefaultIDGenerator.generateRandomID();
+        userRequest.setToken(token);
+        personDAO.insert(userRequest, true);
 
-		// send confirmation e-mail
-		String email = person.getEmail();
-		MailService mailService = new MailService(language);
-		mailService.sendPasswordResetMail(email, token, expirationDate);
-	}
+        // send confirmation e-mail
+        String email = person.getEmail();
+        MailService mailService = new MailService(language);
+        mailService.sendPasswordResetMail(email, token, expirationDate);
+    }
 
-	public DefaultReturnObject confirmRequest(String token, Person personTO) throws TimeoutException,
-			BadRequestException, ConflictException, InvalidObjectException, ResourceOutOfDateException {
-		if (StringUtil.isNullOrBlank(token)) {
-			throw new BadRequestException();
-		}
+    public DefaultReturnObject confirmRequest(String token, Person personTO)
+        throws TimeoutException, BadRequestException, ConflictException, InvalidObjectException, ResourceOutOfDateException {
+        if (StringUtil.isNullOrBlank(token)) {
+            throw new BadRequestException();
+        }
 
-		UserRequest userRequest = personDAO.findUserRequest(token);
-		if (userRequest == null) {
-			throw new BadRequestException();
-		}
+        UserRequest userRequest = personDAO.findUserRequest(token);
+        if (userRequest == null) {
+            throw new BadRequestException();
+        }
 
-		Date expirationDate = userRequest.getExpirationDate();
-		Date currentDate = Calendar.getInstance().getTime();
+        Date expirationDate = userRequest.getExpirationDate();
+        Date currentDate = Calendar.getInstance().getTime();
 
-		if (expirationDate.before(currentDate)) {
-			personDAO.delete(userRequest, true);
-			throw new TimeoutException();
-		}
+        if (expirationDate.before(currentDate)) {
+            personDAO.delete(userRequest, true);
+            throw new TimeoutException();
+        }
 
-		if (userRequest.getRequestType().equals(RequestType.REGISTRATION)) {
-			com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
-			// set the email confirmation flag
-			person.setEmailConfirmed(true);
+        if (userRequest.getRequestType().equals(RequestType.REGISTRATION)) {
+            com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
+            // set the email confirmation flag
+            person.setEmailConfirmed(true);
 
-			// TODO: generate keys and remove mockup
-			PersonKeys pk = new PersonKeys();
-			pk.setPublicKey("GfHq2tTVk9z4eXgyNEBphzvcS6BQfFPmp8U3Ah3V6G63rSd9MsP1PhMSdPsU");
-			pk.setPrivateKey("2mWNaEKEJrtB1rEvHsFx8aQXMJMRX8dFYUe9vrMnsBQW5vL79zphrCsZMfr9Fxb33U");
-			person.getKeys().add(pk);
-			personDAO.update(person, true);
+            // TODO: generate keys and remove mockup
+            PersonKeys pk = new PersonKeys();
+            pk.setPublicKey("GfHq2tTVk9z4eXgyNEBphzvcS6BQfFPmp8U3Ah3V6G63rSd9MsP1PhMSdPsU");
+            pk.setPrivateKey("2mWNaEKEJrtB1rEvHsFx8aQXMJMRX8dFYUe9vrMnsBQW5vL79zphrCsZMfr9Fxb33U");
+            person.getKeys().add(pk);
+            personDAO.update(person, true);
 
-			Person dto = PersonTransformer.getDTO(person);
-			// hide the password hash
-			dto.setPassword(null);
-			DefaultReturnObject result = new DefaultReturnObject();
-			result.setEntity(dto);
-			return result;
-		}
+            Person dto = PersonTransformer.getDTO(person);
+            // hide the password hash
+            dto.setPassword(null);
+            DefaultReturnObject result = new DefaultReturnObject();
+            result.setEntity(dto);
+            return result;
+        }
 
-		if (userRequest.getRequestType().equals(RequestType.ACCOUNT_REMOVAL)) {
-			com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
-			personDAO.delete(person);
-		}
+        if (userRequest.getRequestType().equals(RequestType.ACCOUNT_REMOVAL)) {
+            com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
+            personDAO.delete(person);
+        }
 
-		if (userRequest.getRequestType().equals(RequestType.PASSWORD_RECOVERY)) {
-			if (personTO == null) {
-				throw new BadRequestException();
-			}
-			String newPassword = personTO.getPassword();
-			String newEncryptedPassword = DefaultPasswordEncryptionProvider.encryptPassword(newPassword);
-			com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
-			person.setPassword(newEncryptedPassword);
-			personDAO.update(person, true);
-		}
+        if (userRequest.getRequestType().equals(RequestType.PASSWORD_RECOVERY)) {
+            if (personTO == null) {
+                throw new BadRequestException();
+            }
+            String newPassword = personTO.getPassword();
+            String newEncryptedPassword = DefaultPasswordEncryptionProvider.encryptPassword(newPassword);
+            com.nagoya.model.dbo.person.Person person = userRequest.getPerson();
+            person.setPassword(newEncryptedPassword);
+            personDAO.update(person, true);
+        }
 
-		if (userRequest.getRequestType().equals(RequestType.GENETIC_RESOURCE_TRANSFER_ACCEPTANCE)) {
-			GeneticResourceTransfer geneticResourceTransfer = userRequest.getTransfer();
-			geneticResourceTransfer.setReceiverAcceptedTransfer(true);
-			personDAO.update(geneticResourceTransfer, true);
+        if (userRequest.getRequestType().equals(RequestType.CONTRACT_ACCEPTANCE)) {
+            Contract contract = userRequest.getContract();
+            contract.setStatus(Status.ACCEPTED);
+            personDAO.update(contract, true);
 
-			// TODO: persist transfer in the blockchain
-			// TODO: send confirmation emails to both parties
-		}
+            // TODO: persist transfer in the blockchain
+            // TODO: send confirmation emails to both parties
+        }
 
-		personDAO.delete(userRequest, true);
+        personDAO.delete(userRequest, true);
 
-		return null;
-	}
+        return null;
+    }
 
-	private String createSession(com.nagoya.model.dbo.person.Person person) {
-		// step 1: create new session
-		String sessionToken = DefaultIDGenerator.generateRandomID();
-		LOGGER.debug("Created token: " + sessionToken);
-		Key key = MacProvider.generateKey();
-		String privateKey = new String(Base64.getEncoder().encode(key.getEncoded()), StandardCharsets.UTF_8);
+    private String createSession(com.nagoya.model.dbo.person.Person person) {
+        // step 1: create new session
+        String sessionToken = DefaultIDGenerator.generateRandomID();
+        LOGGER.debug("Created token: " + sessionToken);
+        Key key = MacProvider.generateKey();
+        String privateKey = new String(Base64.getEncoder().encode(key.getEncoded()), StandardCharsets.UTF_8);
 
-		// append the deadline to the token
-		Date deadline = DefaultDateProvider.getDeadline(10);
-		long time = deadline.getTime();
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("deadline", time);
+        // append the deadline to the token
+        Date deadline = DefaultDateProvider.getDeadline(10);
+        long time = deadline.getTime();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("deadline", time);
 
-		String jsonWebToken = Jwts.builder().setClaims(claims).setSubject(sessionToken)
-				.signWith(SignatureAlgorithm.HS512, key).compact();
+        String jsonWebToken = Jwts.builder().setClaims(claims).setSubject(sessionToken).signWith(SignatureAlgorithm.HS512, key).compact();
 
-		// persist
-		OnlineUser onlineUser = new OnlineUser();
-		onlineUser.setPerson(person);
-		onlineUser.setExpirationDate(deadline);
-		onlineUser.setPrivateKey(privateKey);
-		onlineUser.setSessionToken(sessionToken);
-		personDAO.removeOldSessions(person);
-		personDAO.insert(onlineUser, true);
+        // persist
+        OnlineUser onlineUser = new OnlineUser();
+        onlineUser.setPerson(person);
+        onlineUser.setExpirationDate(deadline);
+        onlineUser.setPrivateKey(privateKey);
+        onlineUser.setSessionToken(sessionToken);
+        personDAO.removeOldSessions(person);
+        personDAO.insert(onlineUser, true);
 
-		return jsonWebToken;
-	}
+        return jsonWebToken;
+    }
 
-	public static String checkSignature(String token, String privateKey) throws BadRequestException {
-		try {
-			byte[] privateKeyBytes = Base64.getDecoder().decode(privateKey);
-			Jws<Claims> parseClaimsJws = Jwts.parser().setSigningKey(privateKeyBytes).parseClaimsJws(token);
-			String subject = parseClaimsJws.getBody().getSubject();
-			LOGGER.debug("Extracted subject:\r\n" + subject);
-			return subject;
-		} catch (Exception e) {
-			throw new BadRequestException("Signature not ok.");
-		}
-	}
+    public static String checkSignature(String token, String privateKey)
+        throws BadRequestException {
+        try {
+            byte[] privateKeyBytes = Base64.getDecoder().decode(privateKey);
+            Jws<Claims> parseClaimsJws = Jwts.parser().setSigningKey(privateKeyBytes).parseClaimsJws(token);
+            String subject = parseClaimsJws.getBody().getSubject();
+            LOGGER.debug("Extracted subject:\r\n" + subject);
+            return subject;
+        } catch (Exception e) {
+            throw new BadRequestException("Signature not ok.");
+        }
+    }
 
-	private void validate(Person personTO) throws BadRequestException {
-		validateCredentialsExist(personTO);
+    private void validate(Person personTO)
+        throws BadRequestException {
+        validateCredentialsExist(personTO);
 
-		if (personTO.getPersonType() == null) {
-			throw new BadRequestException();
-		}
-	}
+        if (personTO.getPersonType() == null) {
+            throw new BadRequestException();
+        }
+    }
 
-	private void validateCredentialsExist(Person personTO) throws BadRequestException {
-		if (personTO == null) {
-			throw new BadRequestException();
-		}
+    private void validateCredentialsExist(Person personTO)
+        throws BadRequestException {
+        if (personTO == null) {
+            throw new BadRequestException();
+        }
 
-		String email = personTO.getEmail();
-		if (StringUtil.isNullOrBlank(email)) {
-			throw new BadRequestException();
-		}
+        String email = personTO.getEmail();
+        if (StringUtil.isNullOrBlank(email)) {
+            throw new BadRequestException();
+        }
 
-		String password = personTO.getPassword();
-		if (StringUtil.isNullOrBlank(password)) {
-			throw new BadRequestException();
-		}
-	}
+        String password = personTO.getPassword();
+        if (StringUtil.isNullOrBlank(password)) {
+            throw new BadRequestException();
+        }
+    }
 
-	public DefaultReturnObject delete(String authorization, String language)
-			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
-		OnlineUser onlineUser = validateSession(authorization);
-		com.nagoya.model.dbo.person.Person person = onlineUser.getPerson();
+    public DefaultReturnObject delete(String authorization, String language)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
+        OnlineUser onlineUser = validateSession(authorization);
+        com.nagoya.model.dbo.person.Person person = onlineUser.getPerson();
 
-		// we have a valid user
-		UserRequest userRequest = new UserRequest();
-		userRequest.setPerson(person);
-		userRequest.setRequestType(RequestType.ACCOUNT_REMOVAL);
-		Date expirationDate = DefaultDateProvider.getDeadline24h();
-		userRequest.setExpirationDate(expirationDate);
-		String token = DefaultIDGenerator.generateRandomID();
-		userRequest.setToken(token);
-		personDAO.insert(userRequest, true);
+        // we have a valid user
+        UserRequest userRequest = new UserRequest();
+        userRequest.setPerson(person);
+        userRequest.setRequestType(RequestType.ACCOUNT_REMOVAL);
+        Date expirationDate = DefaultDateProvider.getDeadline24h();
+        userRequest.setExpirationDate(expirationDate);
+        String token = DefaultIDGenerator.generateRandomID();
+        userRequest.setToken(token);
+        personDAO.insert(userRequest, true);
 
-		// send confirmation e-mail
-		String email = person.getEmail();
-		MailService mailService = new MailService(language);
-		mailService.sendDeleteAccountMail(email, token, expirationDate);
+        // send confirmation e-mail
+        String email = person.getEmail();
+        MailService mailService = new MailService(language);
+        mailService.sendDeleteAccountMail(email, token, expirationDate);
 
-		// also set the JSON web token in the bearer authorization
-		DefaultReturnObject result = new DefaultReturnObject();
-		String newToken = createSession(person);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
-		return result;
-	}
+        // also set the JSON web token in the bearer authorization
+        DefaultReturnObject result = new DefaultReturnObject();
+        String newToken = createSession(person);
+        String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
+        result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+        return result;
+    }
 
-	public DefaultReturnObject update(String authorization, String language, Person personTO)
-			throws NotAuthorizedException, ConflictException, TimeoutException, ForbiddenException,
-			InvalidObjectException, ResourceOutOfDateException, InvalidTokenException {
-		// validate the session token
-		OnlineUser onlineUser = validateSession(authorization);
-		com.nagoya.model.dbo.person.Person foundPerson = onlineUser.getPerson();
+    public DefaultReturnObject update(String authorization, String language, Person personTO)
+        throws NotAuthorizedException, ConflictException, TimeoutException, ForbiddenException, InvalidObjectException, ResourceOutOfDateException,
+        InvalidTokenException {
+        // validate the session token
+        OnlineUser onlineUser = validateSession(authorization);
+        com.nagoya.model.dbo.person.Person foundPerson = onlineUser.getPerson();
 
-		// all updates must be confirmed via password confirmation
-		String actualPassword = foundPerson.getPassword();
-		String passwordConfirmation = personTO.getPasswordConfirmation();
-		if (!DefaultPasswordEncryptionProvider.isPasswordCorrect(actualPassword, passwordConfirmation)) {
-			throw new ForbiddenException();
-		}
+        // all updates must be confirmed via password confirmation
+        String actualPassword = foundPerson.getPassword();
+        String passwordConfirmation = personTO.getPasswordConfirmation();
+        if (!DefaultPasswordEncryptionProvider.isPasswordCorrect(actualPassword, passwordConfirmation)) {
+            throw new ForbiddenException();
+        }
 
-		String newPassword = personTO.getPassword();
-		if (StringUtil.isNotNullOrBlank(newPassword)) {
-			String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(newPassword);
-			personTO.setPassword(encryptPassword);
-		} else {
-			personTO.setPassword(foundPerson.getPassword());
-		}
-		foundPerson = PersonTransformer.getDBO(foundPerson, personTO);
-		personDAO.update(foundPerson, true);
+        String newPassword = personTO.getPassword();
+        if (StringUtil.isNotNullOrBlank(newPassword)) {
+            String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(newPassword);
+            personTO.setPassword(encryptPassword);
+        } else {
+            personTO.setPassword(foundPerson.getPassword());
+        }
+        foundPerson = PersonTransformer.getDBO(foundPerson, personTO);
+        personDAO.update(foundPerson, true);
 
-		DefaultReturnObject result = new DefaultReturnObject();
-		Person dto = PersonTransformer.getDTO(foundPerson);
-		result.setEntity(dto);
-		String newToken = updateSession(onlineUser);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
-		return result;
-	}
+        DefaultReturnObject result = new DefaultReturnObject();
+        Person dto = PersonTransformer.getDTO(foundPerson);
+        result.setEntity(dto);
+        String newToken = updateSession(onlineUser);
+        String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newToken;
+        result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+        return result;
+    }
 
-	public void logout(String authorization)
-			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
-		OnlineUser onlineUser = validateSession(authorization);
-		try {
-			personDAO.delete(onlineUser, true);
-		} catch (InvalidObjectException e) {
-			LOGGER.debug("Could not delete a user session - maybe it was already deleted.");
-		}
-	}
+    public void logout(String authorization)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
+        OnlineUser onlineUser = validateSession(authorization);
+        try {
+            personDAO.delete(onlineUser, true);
+        } catch (InvalidObjectException e) {
+            LOGGER.debug("Could not delete a user session - maybe it was already deleted.");
+        }
+    }
 
-	public DefaultReturnObject search(String authorization, String personFilter)
-			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException,
-			InvalidObjectException, ResourceOutOfDateException, BadRequestException {
-		OnlineUser onlineUser = validateSession(authorization);
-		
-		if (StringUtil.isNullOrBlank(personFilter)) {
-			throw new BadRequestException("the filter must contain at least one character.");
-		}
+    public DefaultReturnObject search(String authorization, String personFilter)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException, ResourceOutOfDateException,
+        BadRequestException {
+        OnlineUser onlineUser = validateSession(authorization);
 
-		List<com.nagoya.model.to.person.Person> resultsTO = new ArrayList<>();
-		List<PersonNatural> searchNatural = personDAO.searchNatural(personFilter, 10);
-		for (PersonNatural personDBO : searchNatural) {
-			Person dto = PersonTransformer.getDTO(personDBO);
-			resultsTO.add(dto);
-		}
+        if (StringUtil.isNullOrBlank(personFilter)) {
+            throw new BadRequestException("the filter must contain at least one character.");
+        }
 
-		List<PersonLegal> searchLegal = personDAO.searchLegal(personFilter, 10);
-		for (PersonLegal personDBO : searchLegal) {
-			Person dto = PersonTransformer.getDTO(personDBO);
-			resultsTO.add(dto);
-		}
+        List<com.nagoya.model.to.person.Person> resultsTO = new ArrayList<>();
+        List<PersonNatural> searchNatural = personDAO.searchNatural(personFilter, 10);
+        for (PersonNatural personDBO : searchNatural) {
+            Person dto = PersonTransformer.getDTO(personDBO);
+            resultsTO.add(dto);
+        }
 
-		DefaultReturnObject result = refreshSession(onlineUser, resultsTO, null);
-		return result;
-	}
+        List<PersonLegal> searchLegal = personDAO.searchLegal(personFilter, 10);
+        for (PersonLegal personDBO : searchLegal) {
+            Person dto = PersonTransformer.getDTO(personDBO);
+            resultsTO.add(dto);
+        }
+
+        DefaultReturnObject result = refreshSession(onlineUser, resultsTO, null);
+        return result;
+    }
 
 }

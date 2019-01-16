@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package com.nagoya.middleware.service;
 
 import java.nio.charset.StandardCharsets;
@@ -33,176 +34,189 @@ import com.nagoya.middleware.util.FileReader;
  */
 public class MailService {
 
-	private static final String DEFAULT_LANGUAGE = "en";
-	private static final String DEFAULT_DIR = "mail/";
+    private static final String DEFAULT_LANGUAGE = "en";
+    private static final String DEFAULT_DIR      = "mail/";
 
-	private static final Logger LOGGER = LogManager.getLogger(MailService.class);
+    private static final Logger LOGGER           = LogManager.getLogger(MailService.class);
 
-	private String language;
+    private String              language;
 
-	public MailService(String language) {
-		this.language = DEFAULT_LANGUAGE;
-		setLanguage(language);
-	}
+    public MailService(String language) {
+        this.language = DEFAULT_LANGUAGE;
+        setLanguage(language);
+    }
 
-	private void setLanguage(String language) {
-		if (StringUtil.isNullOrBlank(language)) {
-			return;
-		}
-		// if we have just one character - no match possible
-		if (language.length() < 2) {
-			return;
-		}
-		// if we have more than one character - strip it to two
-		if (language.length() > 2) {
-			language = language.substring(1, 3);
-		}
-		// verify if it exists, if so set the new language
-		boolean existentLanguage = FileReader.directoryExists(DEFAULT_DIR + language);
-		if (existentLanguage) {
-			this.language = language;
-		}
-	}
+    private void setLanguage(String language) {
+        if (StringUtil.isNullOrBlank(language)) {
+            return;
+        }
+        // if we have just one character - no match possible
+        if (language.length() < 2) {
+            return;
+        }
+        // if we have more than one character - strip it to two
+        if (language.length() > 2) {
+            language = language.substring(1, 3);
+        }
+        // verify if it exists, if so set the new language
+        boolean existentLanguage = FileReader.directoryExists(DEFAULT_DIR + language);
+        if (existentLanguage) {
+            this.language = language;
+        }
+    }
 
-	public void sendMail(String destinationAddress, String subject, String content) {
-		final String username = EMailPropertiesProvider.getString(EMailMessageProperty.USERNAME);
-		final String password = EMailPropertiesProvider.getString(EMailMessageProperty.PASSWORD);
+    private boolean isTestMode() {
+        String property = System.getProperty("nagoya.test");
+        if (StringUtil.isNotNullOrBlank(property)) {
+            if (property.equals("true")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		Properties props = new Properties();
+    public void sendMail(String destinationAddress, String subject, String content) {
+        if (isTestMode()) {
+            return;
+        }
 
-		String host = EMailPropertiesProvider.getString(EMailMessageProperty.MAIL_SMTP_HOST);
+        final String username = EMailPropertiesProvider.getString(EMailMessageProperty.USERNAME);
+        final String password = EMailPropertiesProvider.getString(EMailMessageProperty.PASSWORD);
 
-		String auth = EMailPropertiesProvider.getString(EMailMessageProperty.MAIL_SMTP_AUTH);
-		if (StringUtil.isNotNullOrBlank(auth)) {
-			props.put("mail.smtp.ssl.trust", host);
-			props.put(EMailMessageProperty.MAIL_SMTP_AUTH.getProperty(), auth);
-		}
+        Properties props = new Properties();
 
-		String starttls = EMailPropertiesProvider.getString(EMailMessageProperty.MAIL_SMTP_STARTTLS_ENABLE);
-		if (StringUtil.isNotNullOrBlank(starttls)) {
-			props.put(EMailMessageProperty.MAIL_SMTP_STARTTLS_ENABLE.getProperty(), starttls);
-		}
+        String host = EMailPropertiesProvider.getString(EMailMessageProperty.MAIL_SMTP_HOST);
 
-		props.put(EMailMessageProperty.MAIL_SMTP_HOST.getProperty(), host);
-		props.put(EMailMessageProperty.MAIL_SMTP_PORT.getProperty(),
-				EMailPropertiesProvider.getString(EMailMessageProperty.MAIL_SMTP_PORT));
+        String auth = EMailPropertiesProvider.getString(EMailMessageProperty.MAIL_SMTP_AUTH);
+        if (StringUtil.isNotNullOrBlank(auth)) {
+            props.put("mail.smtp.ssl.trust", host);
+            props.put(EMailMessageProperty.MAIL_SMTP_AUTH.getProperty(), auth);
+        }
 
-		Session session = null;
-		if (StringUtil.isNotNullOrBlank(username) && StringUtil.isNotNullOrBlank(password)) {
-			session = Session.getInstance(props, new javax.mail.Authenticator() {
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(username, password);
-				}
-			});
-		} else {
-			session = Session.getDefaultInstance(props);
-		}
+        String starttls = EMailPropertiesProvider.getString(EMailMessageProperty.MAIL_SMTP_STARTTLS_ENABLE);
+        if (StringUtil.isNotNullOrBlank(starttls)) {
+            props.put(EMailMessageProperty.MAIL_SMTP_STARTTLS_ENABLE.getProperty(), starttls);
+        }
 
-		MimeMessage message = new MimeMessage(session);
-		try {
-			message.setFrom(new InternetAddress(EMailPropertiesProvider.getString(EMailMessageProperty.EMAIL)));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinationAddress));
-			message.setSubject(subject);
+        props.put(EMailMessageProperty.MAIL_SMTP_HOST.getProperty(), host);
+        props.put(EMailMessageProperty.MAIL_SMTP_PORT.getProperty(), EMailPropertiesProvider.getString(EMailMessageProperty.MAIL_SMTP_PORT));
 
-			Multipart multiPart = new MimeMultipart();
-			MimeBodyPart htmlPart = new MimeBodyPart();
-			htmlPart.setContent(content, "text/html; charset=UTF-8");
-			multiPart.addBodyPart(htmlPart);
-			message.setContent(multiPart);
+        Session session = null;
+        if (StringUtil.isNotNullOrBlank(username) && StringUtil.isNotNullOrBlank(password)) {
+            session = Session.getInstance(props, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+        } else {
+            session = Session.getDefaultInstance(props);
+        }
 
-			Transport.send(message);
+        MimeMessage message = new MimeMessage(session);
+        try {
+            message.setFrom(new InternetAddress(EMailPropertiesProvider.getString(EMailMessageProperty.EMAIL)));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinationAddress));
+            message.setSubject(subject);
 
-		} catch (AddressException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (MessagingException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-		}
+            Multipart multiPart = new MimeMultipart();
+            MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(content, "text/html; charset=UTF-8");
+            multiPart.addBodyPart(htmlPart);
+            message.setContent(multiPart);
 
-		LOGGER.debug("E-Mail sent successfully to: " + destinationAddress);
-	}
+            Transport.send(message);
 
-	public void sendRegistratationMail(String destinationAddress, String registrationToken, Date deadline) {
-		String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_registration.html";
-		String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
+        } catch (AddressException e) {
+            LOGGER.error(e.getMessage(), e);
+        } catch (MessagingException e) {
+            LOGGER.error(e.getMessage(), e);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
 
-		String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);
-		link += ServerPropertiesProvider.getString(ServerProperty.SERVER_MAIL_CONFIRMATION_PATH);
-		link += registrationToken;
+        LOGGER.debug("E-Mail sent successfully to: " + destinationAddress);
+    }
 
-		registrationMailText = registrationMailText.replace("###link###", link);
-		registrationMailText = registrationMailText.replace("###deadline###", deadline.toString());
+    public void sendRegistratationMail(String destinationAddress, String registrationToken, Date deadline) {
+        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_registration.html";
+        String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
 
-		String subject = getTitle(registrationMailText);
-		sendMail(destinationAddress, subject, registrationMailText);
-	}
+        String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);
+        link += ServerPropertiesProvider.getString(ServerProperty.SERVER_MAIL_CONFIRMATION_PATH);
+        link += registrationToken;
 
-	public void sendPasswordResetMail(String destinationAddress, String registrationToken, Date deadline) {
-		String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_pwreset.html";
-		String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
+        registrationMailText = registrationMailText.replace("###link###", link);
+        registrationMailText = registrationMailText.replace("###deadline###", deadline.toString());
 
-		String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);
-		link += ServerPropertiesProvider.getString(ServerProperty.SERVER_MAIL_CONFIRMATION_PATH);
-		link += registrationToken;
+        String subject = getTitle(registrationMailText);
+        sendMail(destinationAddress, subject, registrationMailText);
+    }
 
-		registrationMailText = registrationMailText.replace("###link###", link);
-		registrationMailText = registrationMailText.replace("###deadline###", deadline.toString());
+    public void sendPasswordResetMail(String destinationAddress, String registrationToken, Date deadline) {
+        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_pwreset.html";
+        String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
 
-		String subject = getTitle(registrationMailText);
-		sendMail(destinationAddress, subject, registrationMailText);
-	}
-	
-	public void sendDeleteAccountMail(String destinationAddress, String registrationToken, Date deadline) {
-		String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_deleteaccount.html";
-		String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
+        String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);
+        link += ServerPropertiesProvider.getString(ServerProperty.SERVER_MAIL_CONFIRMATION_PATH);
+        link += registrationToken;
 
-		String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);
-		link += ServerPropertiesProvider.getString(ServerProperty.SERVER_MAIL_CONFIRMATION_PATH);
-		link += registrationToken;
+        registrationMailText = registrationMailText.replace("###link###", link);
+        registrationMailText = registrationMailText.replace("###deadline###", deadline.toString());
 
-		registrationMailText = registrationMailText.replace("###link###", link);
-		registrationMailText = registrationMailText.replace("###deadline###", deadline.toString());
+        String subject = getTitle(registrationMailText);
+        sendMail(destinationAddress, subject, registrationMailText);
+    }
 
-		String subject = getTitle(registrationMailText);
-		sendMail(destinationAddress, subject, registrationMailText);
-	}
+    public void sendDeleteAccountMail(String destinationAddress, String registrationToken, Date deadline) {
+        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_deleteaccount.html";
+        String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
 
-	private String getTitle(String content) {
-		if (StringUtil.isNullOrBlank(content)) {
-			return null;
-		}
-		int i1 = content.indexOf("<title>");
-		int i2 = content.indexOf("</title>");
-		if (i1 == -1 || i2 == -1) {
-			return null;
-		}
+        String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);
+        link += ServerPropertiesProvider.getString(ServerProperty.SERVER_MAIL_CONFIRMATION_PATH);
+        link += registrationToken;
 
-		return content.substring(i1 + 7, i2);
-	}
+        registrationMailText = registrationMailText.replace("###link###", link);
+        registrationMailText = registrationMailText.replace("###deadline###", deadline.toString());
 
-	public void sendConfirmationTransferCreation(com.nagoya.model.dbo.resource.GeneticResourceTransfer geneticResourceTransfer) {
-		String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_genetic_resource_transfer_creation_confirmation.html";
-		String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
+        String subject = getTitle(registrationMailText);
+        sendMail(destinationAddress, subject, registrationMailText);
+    }
 
-		String subject = getTitle(registrationMailText);
-		sendMail(geneticResourceTransfer.getSender().getEmail(), subject, registrationMailText);
-		
-	}
+    private String getTitle(String content) {
+        if (StringUtil.isNullOrBlank(content)) {
+            return null;
+        }
+        int i1 = content.indexOf("<title>");
+        int i2 = content.indexOf("</title>");
+        if (i1 == -1 || i2 == -1) {
+            return null;
+        }
 
-	public void sendTransferAcceptancePending(String token, Date deadline, com.nagoya.model.dbo.resource.GeneticResourceTransfer geneticResourceTransfer) {
-		String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_genetic_resource_transfer_pending_acceptance.html";
-		String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
+        return content.substring(i1 + 7, i2);
+    }
 
-		String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);
-		link += ServerPropertiesProvider.getString(ServerProperty.SERVER_MAIL_CONFIRMATION_PATH);
-		link += token;
+    public void sendContractCreationConfirmation(String emailAddress) {
+        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_genetic_resource_transfer_creation_confirmation.html";
+        String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
 
-		registrationMailText = registrationMailText.replace("###link###", link);
-		registrationMailText = registrationMailText.replace("###deadline###", deadline.toString());
+        String subject = getTitle(registrationMailText);
+        sendMail(emailAddress, subject, registrationMailText);
 
-		String subject = getTitle(registrationMailText);
-		sendMail(geneticResourceTransfer.getReceiver().getEmail(), subject, registrationMailText);
-		
-	}
+    }
+
+    public void sendContractAcceptancePending(String token, Date deadline, String emailAddress) {
+        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_genetic_resource_transfer_pending_acceptance.html";
+        String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
+
+        String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);
+        link += ServerPropertiesProvider.getString(ServerProperty.SERVER_MAIL_CONFIRMATION_PATH);
+        link += token;
+
+        registrationMailText = registrationMailText.replace("###link###", link);
+        registrationMailText = registrationMailText.replace("###deadline###", deadline.toString());
+
+        String subject = getTitle(registrationMailText);
+        sendMail(emailAddress, subject, registrationMailText);
+
+    }
 }

@@ -10,7 +10,7 @@
  * Created by : flba
  */
 
-package com.nagoya.middleware.rest;
+package com.nagoya.middleware.rest.bl;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
