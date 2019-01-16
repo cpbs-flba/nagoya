@@ -15,9 +15,9 @@ package com.nagoya.middleware.main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nagoya.middleware.rest.bl.impl.ContractResourceImpl;
-import com.nagoya.middleware.rest.bl.impl.GeneticResourceImpl;
-import com.nagoya.middleware.rest.bl.impl.UserResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.ContractRESTResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.GeneticRESTResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.UserRESTResourceImpl;
 
 /**
  * @author flba
@@ -34,9 +34,9 @@ public class Main extends Microservice {
         Main main = new Main();
 
         // add the REST resources here
-        main.getResourceConfig().register(UserResourceImpl.class);
-        main.getResourceConfig().register(GeneticResourceImpl.class);
-        main.getResourceConfig().register(ContractResourceImpl.class);
+        main.getResourceConfig().register(UserRESTResourceImpl.class);
+        main.getResourceConfig().register(GeneticRESTResourceImpl.class);
+        main.getResourceConfig().register(ContractRESTResourceImpl.class);
 
         main.runServer(args);
     }

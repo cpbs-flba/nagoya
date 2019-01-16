@@ -9,9 +9,9 @@ import org.hibernate.Transaction;
 import com.nagoya.dao.db.ConnectionProvider;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
-import com.nagoya.model.dbo.person.Person;
-import com.nagoya.model.dbo.resource.GeneticResource;
-import com.nagoya.model.dbo.resource.ResourceFile;
+import com.nagoya.model.dbo.person.PersonDBO;
+import com.nagoya.model.dbo.resource.GeneticResourceDBO;
+import com.nagoya.model.dbo.resource.ResourceFileDBO;
 import com.nagoya.model.dbo.resource.VisibilityType;
 
 public class DAOTest {
@@ -64,21 +64,21 @@ public class DAOTest {
 
     }
 
-    public GeneticResource insertTestGeneticResource(Session session, Person owner, String idName) {
-        GeneticResource resource1 = new GeneticResource();
+    public GeneticResourceDBO insertTestGeneticResource(Session session, PersonDBO owner, String idName) {
+        GeneticResourceDBO resource1 = new GeneticResourceDBO();
         resource1.setIdentifier(idName);
         resource1.setDescription(idName);
         resource1.setOwner(owner);
         resource1.setVisibilityType(VisibilityType.PRIVATE);
         resource1.setSource("Brasil");
-        ResourceFile rf = new ResourceFile();
+        ResourceFileDBO rf = new ResourceFileDBO();
         rf.setContent("test".getBytes());
         rf.setName("sometext");
         rf.setType("txt");
         resource1.getFiles().add(rf);
 
         PersonDAO personDAO = new PersonDAOImpl(session);
-        return (GeneticResource) personDAO.insert(resource1, true);
+        return (GeneticResourceDBO) personDAO.insert(resource1, true);
     }
 
     public Session getSession() {

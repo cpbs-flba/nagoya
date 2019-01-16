@@ -27,10 +27,10 @@ public class LoginThread implements Runnable {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(targetUrl);
 
-		com.nagoya.model.to.person.PersonLegal personTO = new com.nagoya.model.to.person.PersonLegal();
+		com.nagoya.model.to.person.PersonLegalTO personTO = new com.nagoya.model.to.person.PersonLegalTO();
 		personTO.setEmail("test@test.com" + userId);
 		personTO.setPassword("test@test.com" + userId);
-		Entity<com.nagoya.model.to.person.PersonLegal> entity = Entity.entity(personTO, MediaType.APPLICATION_JSON);
+		Entity<com.nagoya.model.to.person.PersonLegalTO> entity = Entity.entity(personTO, MediaType.APPLICATION_JSON);
 
 		Response response = target.request(MediaType.APPLICATION_JSON).post(entity);
 		int status = response.getStatus();

@@ -16,12 +16,12 @@ import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.StringUtil;
 import com.nagoya.model.dbo.contract.Status;
-import com.nagoya.model.dto.contract.ContractResource;
 import com.nagoya.model.exception.BadRequestException;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.NonUniqueResultException;
-import com.nagoya.model.to.person.Person;
-import com.nagoya.model.to.resource.GeneticResource;
+import com.nagoya.model.to.contract.ContractResourceTO;
+import com.nagoya.model.to.person.PersonTO;
+import com.nagoya.model.to.resource.GeneticResourceTO;
 
 /**
  * @author flba
@@ -37,14 +37,14 @@ public class ContractFactory {
         this.geneticResourceDAO = new GeneticResourceDAOImpl(session);
     }
 
-    public com.nagoya.model.dbo.contract.Contract createDBOContract(com.nagoya.model.dbo.person.Person senderDBO,
-        com.nagoya.model.dto.contract.Contract contractTO)
+    public com.nagoya.model.dbo.contract.ContractDBO createDBOContract(com.nagoya.model.dbo.person.PersonDBO senderDBO,
+        com.nagoya.model.to.contract.ContractTO contractTO)
         throws BadRequestException, ConflictException, NonUniqueResultException {
-        com.nagoya.model.dbo.contract.Contract contractDBO = new com.nagoya.model.dbo.contract.Contract();
+        com.nagoya.model.dbo.contract.ContractDBO contractDBO = new com.nagoya.model.dbo.contract.ContractDBO();
 
         // now let's start with some basic validation
         // and retrieve the persons based on their e-mail addresses
-        Person receiver = contractTO.getReceiver();
+        PersonTO receiver = contractTO.getReceiver();
         if (receiver == null) {
             throw new BadRequestException("Sender/Receiver cannot be NULL.");
         }
@@ -55,7 +55,7 @@ public class ContractFactory {
             throw new BadRequestException("Sender-email or receiver-email cannot be NULL.");
         }
 
-        com.nagoya.model.dbo.person.Person receiverDBO = personDAO.findPersonForEmail(emailReceiver);
+        com.nagoya.model.dbo.person.PersonDBO receiverDBO = personDAO.findPersonForEmail(emailReceiver);
         if (senderDBO == null || receiverDBO == null) {
             throw new BadRequestException("Sender/Receiver could not be found.");
         }
@@ -63,13 +63,13 @@ public class ContractFactory {
         contractDBO.setSender(senderDBO);
         contractDBO.setReceiver(receiverDBO);
 
-        Set<com.nagoya.model.dbo.contract.ContractResource> contractResources = new HashSet<>();
+        Set<com.nagoya.model.dbo.contract.ContractResourceDBO> contractResources = new HashSet<>();
 
-        Set<ContractResource> contractResourcesDTO = contractTO.getContractResources();
+        Set<ContractResourceTO> contractResourcesDTO = contractTO.getContractResources();
         if (contractResourcesDTO.isEmpty()) {
             throw new BadRequestException("At least one contract resource must exist!");
         }
-        for (com.nagoya.model.dto.contract.ContractResource contractResourceTO : contractResourcesDTO) {
+        for (com.nagoya.model.to.contract.ContractResourceTO contractResourceTO : contractResourcesDTO) {
             double amount = contractResourceTO.getAmount();
             if (amount <= 0) {
                 throw new BadRequestException("Amount must not be greater than 0!");
@@ -80,12 +80,12 @@ public class ContractFactory {
                 throw new BadRequestException("A measuring unit must be provided (e.g., 'kg') !");
             }
 
-            GeneticResource geneticResource = contractResourceTO.getGeneticResource();
+            GeneticResourceTO geneticResource = contractResourceTO.getGeneticResource();
             Long geneticResourceId = geneticResource.getId();
-            com.nagoya.model.dbo.resource.GeneticResource dboResource = (com.nagoya.model.dbo.resource.GeneticResource) geneticResourceDAO
-                .find(geneticResourceId.longValue(), com.nagoya.model.dbo.resource.GeneticResource.class);
+            com.nagoya.model.dbo.resource.GeneticResourceDBO dboResource = (com.nagoya.model.dbo.resource.GeneticResourceDBO) geneticResourceDAO
+                .find(geneticResourceId.longValue(), com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
 
-            com.nagoya.model.dbo.contract.ContractResource toAdd = new com.nagoya.model.dbo.contract.ContractResource();
+            com.nagoya.model.dbo.contract.ContractResourceDBO toAdd = new com.nagoya.model.dbo.contract.ContractResourceDBO();
             toAdd.setGeneticResource(dboResource);
             toAdd.setMeasuringUnit(measuringUnit);
             toAdd.setAmount(new BigDecimal(amount));

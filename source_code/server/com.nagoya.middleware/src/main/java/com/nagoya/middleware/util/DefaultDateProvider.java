@@ -9,6 +9,8 @@
 
 package com.nagoya.middleware.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -28,7 +30,7 @@ public class DefaultDateProvider {
         Date dateTime = cal.getTime();
         return dateTime;
     }
-    
+
     /**
      * 
      * returns the standard deadline starting from now.
@@ -38,6 +40,26 @@ public class DefaultDateProvider {
         cal.add(Calendar.DAY_OF_YEAR, 1);
         Date dateTime = cal.getTime();
         return dateTime;
+    }
+
+    /**
+     * Retrieves the date from an ISO 8601 pattern with the following format: <br>
+     * yyyy-MM-dd'T'HH:mm:ss'Z' <br>
+     * Example: 2019-01-16T13:36:07Z
+     * 
+     * @param dateAsString
+     * @return java.util.Date date
+     */
+    public static Date getDateFromString(String dateAsString) {
+        String pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        try {
+            Date parsedDate = sdf.parse(dateAsString);
+            return parsedDate;
+        } catch (ParseException e) {
+            // either it works or not...
+        }
+        return null;
     }
 
 }

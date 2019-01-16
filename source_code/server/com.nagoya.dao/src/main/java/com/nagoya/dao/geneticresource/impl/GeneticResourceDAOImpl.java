@@ -20,13 +20,13 @@ import org.hibernate.Session;
 import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.dao.geneticresource.GeneticResourceDAO;
 import com.nagoya.dao.util.StringUtil;
-import com.nagoya.model.dbo.person.Person;
-import com.nagoya.model.dbo.resource.GeneticResource;
-import com.nagoya.model.dbo.resource.Taxonomy;
+import com.nagoya.model.dbo.person.PersonDBO;
+import com.nagoya.model.dbo.resource.GeneticResourceDBO;
+import com.nagoya.model.dbo.resource.TaxonomyDBO;
 import com.nagoya.model.dbo.resource.VisibilityType;
 import com.nagoya.model.to.resource.filter.GeneticResourceFilter;
 
-public class GeneticResourceDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.resource.GeneticResource>
+public class GeneticResourceDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.resource.GeneticResourceDBO>
 		implements GeneticResourceDAO {
 
 	private static final Logger LOGGER = LogManager.getLogger(GeneticResourceDAOImpl.class);
@@ -39,7 +39,7 @@ public class GeneticResourceDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.re
 	}
 
 	@Override
-	public List<GeneticResource> search(GeneticResourceFilter filter, Person owner, int maxResults) {
+	public List<GeneticResourceDBO> search(GeneticResourceFilter filter, PersonDBO owner, int maxResults) {
 		LOGGER.debug("Searching for genetic resource.");
 
 		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
@@ -47,8 +47,8 @@ public class GeneticResourceDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.re
 		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
 		// Create criteriaQuery
-		CriteriaQuery<GeneticResource> criteriaQuery = criteriaBuilder.createQuery(GeneticResource.class);
-		Root<GeneticResource> root = criteriaQuery.from(GeneticResource.class);
+		CriteriaQuery<GeneticResourceDBO> criteriaQuery = criteriaBuilder.createQuery(GeneticResourceDBO.class);
+		Root<GeneticResourceDBO> root = criteriaQuery.from(GeneticResourceDBO.class);
 		
 		// we have multiple filters that can be applied
 		List<Predicate> visibilityPredicates = new ArrayList<Predicate>();
@@ -99,69 +99,69 @@ public class GeneticResourceDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.re
 			maxResults = 20;
 		}
 
-		TypedQuery<GeneticResource> createdQuery = entityManager.createQuery(criteriaQuery);
+		TypedQuery<GeneticResourceDBO> createdQuery = entityManager.createQuery(criteriaQuery);
 		createdQuery.setMaxResults(maxResults);
-		List<GeneticResource> resultList = createdQuery.getResultList();
+		List<GeneticResourceDBO> resultList = createdQuery.getResultList();
 		return resultList;
 	}
 
 	@Override
-	public List<Taxonomy> getTaxonomyRootLevel() {
+	public List<TaxonomyDBO> getTaxonomyRootLevel() {
 		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
 		// Create criteriaQuery
-		CriteriaQuery<Taxonomy> criteriaQuery = criteriaBuilder.createQuery(Taxonomy.class);
+		CriteriaQuery<TaxonomyDBO> criteriaQuery = criteriaBuilder.createQuery(TaxonomyDBO.class);
 
-		Root<Taxonomy> root = criteriaQuery.from(Taxonomy.class);
+		Root<TaxonomyDBO> root = criteriaQuery.from(TaxonomyDBO.class);
 		Predicate condition = criteriaBuilder.isNull(root.get("parent"));
 		criteriaQuery.select(root).where(condition);
 
-		TypedQuery<Taxonomy> createdQuery = entityManager.createQuery(criteriaQuery);
-		List<Taxonomy> resultList = createdQuery.getResultList();
+		TypedQuery<TaxonomyDBO> createdQuery = entityManager.createQuery(criteriaQuery);
+		List<TaxonomyDBO> resultList = createdQuery.getResultList();
 		return resultList;
 	}
 
 	@Override
-	public List<Taxonomy> getTaxonomyChildren(long parentId) {
+	public List<TaxonomyDBO> getTaxonomyChildren(long parentId) {
 		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
-		Taxonomy parentTaxonomy = findTaxonomy(parentId);
+		TaxonomyDBO parentTaxonomy = findTaxonomy(parentId);
 		if (parentTaxonomy == null) {
 			return new ArrayList<>();
 		}
 		
 		// Create criteriaQuery
-		CriteriaQuery<Taxonomy> criteriaQuery = criteriaBuilder.createQuery(Taxonomy.class);
+		CriteriaQuery<TaxonomyDBO> criteriaQuery = criteriaBuilder.createQuery(TaxonomyDBO.class);
 
-		Root<Taxonomy> root = criteriaQuery.from(Taxonomy.class);
+		Root<TaxonomyDBO> root = criteriaQuery.from(TaxonomyDBO.class);
 		Predicate condition = criteriaBuilder.equal(root.get("parent"), parentTaxonomy);
 		criteriaQuery.select(root).where(condition);
 
-		TypedQuery<Taxonomy> createdQuery = entityManager.createQuery(criteriaQuery);
-		List<Taxonomy> resultList = createdQuery.getResultList();
+		TypedQuery<TaxonomyDBO> createdQuery = entityManager.createQuery(criteriaQuery);
+		List<TaxonomyDBO> resultList = createdQuery.getResultList();
 		return resultList;
 	}
 	
 	
-	private Taxonomy findTaxonomy(long id) throws NonUniqueResultException {
+	private TaxonomyDBO findTaxonomy(long id) throws NonUniqueResultException {
 		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
 		// Create criteriaQuery
-		CriteriaQuery<Taxonomy> criteriaQuery = criteriaBuilder.createQuery(Taxonomy.class);
+		CriteriaQuery<TaxonomyDBO> criteriaQuery = criteriaBuilder.createQuery(TaxonomyDBO.class);
 
-		Root<Taxonomy> root = criteriaQuery.from(Taxonomy.class);
+		Root<TaxonomyDBO> root = criteriaQuery.from(TaxonomyDBO.class);
 		Predicate condition = criteriaBuilder.equal(root.get("id"), id);
 		criteriaQuery.select(root).where(condition);
 
 		TypedQuery<?> createdQuery = entityManager.createQuery(criteriaQuery);
 		try {
-			Taxonomy singleResult = (Taxonomy) createdQuery.getSingleResult();
+			TaxonomyDBO singleResult = (TaxonomyDBO) createdQuery.getSingleResult();
 			return singleResult;
 		} catch (NonUniqueResultException e) {
 			throw new NonUniqueResultException(e.getMessage());

@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Test;
 import com.nagoya.dao.DAOTest;
 import com.nagoya.dao.geneticresource.GeneticResourceDAO;
 import com.nagoya.dao.geneticresource.impl.GeneticResourceDAOImpl;
-import com.nagoya.model.dbo.contract.Contract;
-import com.nagoya.model.dbo.contract.ContractResource;
+import com.nagoya.model.dbo.contract.ContractDBO;
+import com.nagoya.model.dbo.contract.ContractResourceDBO;
 import com.nagoya.model.dbo.contract.Status;
-import com.nagoya.model.dbo.person.Address;
-import com.nagoya.model.dbo.person.PersonLegal;
+import com.nagoya.model.dbo.person.AddressDBO;
+import com.nagoya.model.dbo.person.PersonLegalDBO;
 import com.nagoya.model.dbo.person.PersonType;
-import com.nagoya.model.dbo.resource.GeneticResource;
-import com.nagoya.model.dbo.resource.ResourceFile;
-import com.nagoya.model.dbo.resource.Taxonomy;
+import com.nagoya.model.dbo.resource.GeneticResourceDBO;
+import com.nagoya.model.dbo.resource.ResourceFileDBO;
+import com.nagoya.model.dbo.resource.TaxonomyDBO;
 import com.nagoya.model.dbo.resource.VisibilityType;
 import com.nagoya.model.exception.InvalidObjectException;
 import com.nagoya.model.exception.ResourceOutOfDateException;
@@ -41,14 +41,14 @@ public class GeneticResourceDAOTest extends DAOTest {
     @DisplayName("Test genetic resource: insert and search")
     public void searchGeneticResourceTest()
         throws InvalidObjectException, ResourceOutOfDateException {
-        Address address = new Address();
+        AddressDBO address = new AddressDBO();
         address.setStreet("s");
         address.setNumber("132");
         address.setZip("132");
         address.setCountry("Bla");
         address.setCity("A");
 
-        PersonLegal legalPerson = new PersonLegal();
+        PersonLegalDBO legalPerson = new PersonLegalDBO();
         legalPerson.setEmail("legal@legal.com");
         legalPerson.setPassword("secret");
         legalPerson.setAddress(address);
@@ -63,32 +63,32 @@ public class GeneticResourceDAOTest extends DAOTest {
         Assert.assertNotNull(address.getId());
         Assert.assertNotNull(legalPerson.getId());
 
-        GeneticResource resource1 = new GeneticResource();
+        GeneticResourceDBO resource1 = new GeneticResourceDBO();
         resource1.setIdentifier("i123x");
         resource1.setDescription("sonneblume1");
         resource1.setOwner(legalPerson);
         resource1.setVisibilityType(VisibilityType.PRIVATE);
         resource1.setSource("Brasil");
-        ResourceFile rf = new ResourceFile();
+        ResourceFileDBO rf = new ResourceFileDBO();
         rf.setContent("test".getBytes());
         rf.setName("sometext");
         rf.setType("txt");
         resource1.getFiles().add(rf);
         dao.insert(resource1, true);
 
-        GeneticResource resource2 = new GeneticResource();
+        GeneticResourceDBO resource2 = new GeneticResourceDBO();
         resource2.setIdentifier("a568x");
         resource2.setDescription("sonneblume2");
         resource2.setOwner(legalPerson);
         resource2.setVisibilityType(VisibilityType.PUBLIC);
         resource2.setSource("Brasil");
 
-        Taxonomy taxonomy = new Taxonomy();
+        TaxonomyDBO taxonomy = new TaxonomyDBO();
         taxonomy.setName("Plantae");
-        Taxonomy c1 = new Taxonomy();
+        TaxonomyDBO c1 = new TaxonomyDBO();
         c1.setName("Blumen");
         c1.setParent(taxonomy);
-        Taxonomy c2 = new Taxonomy();
+        TaxonomyDBO c2 = new TaxonomyDBO();
         c2.setName("Sonnenblume");
         c2.setParent(c1);
         resource2.setTaxonomy(c2);
@@ -96,21 +96,21 @@ public class GeneticResourceDAOTest extends DAOTest {
 
         GeneticResourceFilter filter = new GeneticResourceFilter();
         filter.setIdentifier("5");
-        List<GeneticResource> search = dao.search(filter, legalPerson, 20);
+        List<GeneticResourceDBO> search = dao.search(filter, legalPerson, 20);
         Assert.assertEquals(1, search.size());
 
         GeneticResourceFilter filter2 = new GeneticResourceFilter();
         filter2.setIdentifier("x");
-        List<GeneticResource> search2 = dao.search(filter2, legalPerson, 20);
+        List<GeneticResourceDBO> search2 = dao.search(filter2, legalPerson, 20);
         Assert.assertEquals(2, search2.size());
 
         GeneticResourceFilter filter3 = new GeneticResourceFilter();
         filter3.setIdentifier("3");
         filter3.setDescription("e");
-        List<GeneticResource> search3 = dao.search(filter3, legalPerson, 20);
+        List<GeneticResourceDBO> search3 = dao.search(filter3, legalPerson, 20);
         Assert.assertEquals(1, search3.size());
 
-        PersonLegal legalPerson2 = new PersonLegal();
+        PersonLegalDBO legalPerson2 = new PersonLegalDBO();
         legalPerson2.setEmail("legal@legal.com");
         legalPerson2.setPassword("secret");
         legalPerson2.setAddress(address);
@@ -120,15 +120,15 @@ public class GeneticResourceDAOTest extends DAOTest {
         legalPerson2.setPersonType(PersonType.LEGAL);
         dao.insert(legalPerson2, true);
 
-        List<GeneticResource> search4 = dao.search(null, legalPerson2, 20);
+        List<GeneticResourceDBO> search4 = dao.search(null, legalPerson2, 20);
         Assert.assertEquals(1, search4.size());
 
         // contract adding
-        Contract contract = new Contract();
+        ContractDBO contract = new ContractDBO();
         contract.setSender(legalPerson);
         contract.setReceiver(legalPerson2);
         contract.setStatus(Status.CREATED);
-        ContractResource contractResource = new ContractResource();
+        ContractResourceDBO contractResource = new ContractResourceDBO();
         contractResource.setGeneticResource(resource1);
         contractResource.setAmount(new BigDecimal(100));
         contractResource.setMeasuringUnit("kg");
@@ -144,32 +144,32 @@ public class GeneticResourceDAOTest extends DAOTest {
         GeneticResourceDAO dao = new GeneticResourceDAOImpl(session);
 
         // insert test data
-        Taxonomy taxonomy = new Taxonomy();
+        TaxonomyDBO taxonomy = new TaxonomyDBO();
         taxonomy.setName("Plantae");
 
-        Taxonomy c1 = new Taxonomy();
+        TaxonomyDBO c1 = new TaxonomyDBO();
         c1.setName("Blumen");
         c1.setParent(taxonomy);
 
-        Taxonomy c2 = new Taxonomy();
+        TaxonomyDBO c2 = new TaxonomyDBO();
         c2.setName("Sonnenblume");
         c2.setParent(c1);
         dao.insert(taxonomy, true);
 
-        Taxonomy taxonomy2 = new Taxonomy();
+        TaxonomyDBO taxonomy2 = new TaxonomyDBO();
         taxonomy2.setName("Algae");
 
-        Taxonomy c11 = new Taxonomy();
+        TaxonomyDBO c11 = new TaxonomyDBO();
         c11.setName("Blumen2");
         c11.setParent(taxonomy2);
 
-        Taxonomy c22 = new Taxonomy();
+        TaxonomyDBO c22 = new TaxonomyDBO();
         c22.setName("Sonnenblume2");
         c22.setParent(c11);
 
         dao.insert(taxonomy2, true);
 
-        List<Taxonomy> taxonomyRootLevel = dao.getTaxonomyRootLevel();
+        List<TaxonomyDBO> taxonomyRootLevel = dao.getTaxonomyRootLevel();
         Assert.assertEquals(2, taxonomyRootLevel.size());
     }
 
@@ -179,33 +179,33 @@ public class GeneticResourceDAOTest extends DAOTest {
         GeneticResourceDAO dao = new GeneticResourceDAOImpl(session);
 
         // insert test data 1
-        Taxonomy taxonomy = new Taxonomy();
+        TaxonomyDBO taxonomy = new TaxonomyDBO();
         taxonomy.setName("Plantae");
 
-        Taxonomy c1 = new Taxonomy();
+        TaxonomyDBO c1 = new TaxonomyDBO();
         c1.setName("Blumen");
         c1.setParent(taxonomy);
 
-        Taxonomy c2 = new Taxonomy();
+        TaxonomyDBO c2 = new TaxonomyDBO();
         c2.setName("Sonnenblume");
         c2.setParent(c1);
         dao.insert(c2, true);
 
         // test data 2
-        Taxonomy taxonomy2 = new Taxonomy();
+        TaxonomyDBO taxonomy2 = new TaxonomyDBO();
         taxonomy2.setName("Algae");
 
-        Taxonomy c11 = new Taxonomy();
+        TaxonomyDBO c11 = new TaxonomyDBO();
         c11.setName("Blumen2");
         c11.setParent(taxonomy2);
 
-        Taxonomy c22 = new Taxonomy();
+        TaxonomyDBO c22 = new TaxonomyDBO();
         c22.setName("Sonnenblume2");
         c22.setParent(c11);
         dao.insert(c22, true);
 
         // verify
-        List<Taxonomy> taxonomyRootLevel = dao.getTaxonomyChildren(taxonomy.getId());
+        List<TaxonomyDBO> taxonomyRootLevel = dao.getTaxonomyChildren(taxonomy.getId());
         Assert.assertEquals(1, taxonomyRootLevel.size());
         Assert.assertEquals(c1.getName(), taxonomyRootLevel.get(0).getName());
 

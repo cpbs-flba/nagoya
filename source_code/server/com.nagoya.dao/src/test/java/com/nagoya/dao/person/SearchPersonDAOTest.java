@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import com.nagoya.dao.DAOTest;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
-import com.nagoya.model.dbo.person.PersonKeys;
-import com.nagoya.model.dbo.person.PersonNatural;
+import com.nagoya.model.dbo.person.PersonKeysDBO;
+import com.nagoya.model.dbo.person.PersonNaturalDBO;
 
 public class SearchPersonDAOTest extends DAOTest {
 
@@ -32,7 +32,7 @@ public class SearchPersonDAOTest extends DAOTest {
 		PersonDAO dao = new PersonDAOImpl(session);
 		dao.insert(getNaturalTestPerson("test@test.com", "max", "mustermann"), true);
 
-		List<PersonNatural> searchNatural = dao.searchNatural("test@test.com", 10);
+		List<PersonNaturalDBO> searchNatural = dao.searchNatural("test@test.com", 10);
 		Assert.assertEquals(1, searchNatural.size());
 	}
 
@@ -43,19 +43,19 @@ public class SearchPersonDAOTest extends DAOTest {
 		// save the legal person
 		PersonDAO dao = new PersonDAOImpl(session);
 
-		PersonNatural n1 = getNaturalTestPerson("test1@test.com", "max", "mustermann");
-		PersonKeys k1 = new PersonKeys();
+		PersonNaturalDBO n1 = getNaturalTestPerson("test1@test.com", "max", "mustermann");
+		PersonKeysDBO k1 = new PersonKeysDBO();
 		k1.setPublicKey("pk1");
 		n1.getKeys().add(k1);
 		dao.insert(n1, true);
 
-		PersonNatural n2 = getNaturalTestPerson("test2@test.com", "maxi", "mustermann");
-		PersonKeys k2 = new PersonKeys();
+		PersonNaturalDBO n2 = getNaturalTestPerson("test2@test.com", "maxi", "mustermann");
+		PersonKeysDBO k2 = new PersonKeysDBO();
 		k2.setPublicKey("pk2");
 		n2.getKeys().add(k2);
 		dao.insert(n2, true);
 
-		List<PersonNatural> searchNatural = dao.searchNatural("test", 10);
+		List<PersonNaturalDBO> searchNatural = dao.searchNatural("test", 10);
 		Assert.assertEquals(2, searchNatural.size());
 
 		searchNatural = dao.searchNatural("test maxi", 10);
@@ -68,8 +68,8 @@ public class SearchPersonDAOTest extends DAOTest {
 		Assert.assertEquals(1, searchNatural.size());
 	}
 
-	private PersonNatural getNaturalTestPerson(String emailpw, String firstname, String lastname) {
-		PersonNatural p = new PersonNatural();
+	private PersonNaturalDBO getNaturalTestPerson(String emailpw, String firstname, String lastname) {
+		PersonNaturalDBO p = new PersonNaturalDBO();
 		p.setBirthdate(new Date());
 		p.setEmail(emailpw);
 		p.setPassword(emailpw);

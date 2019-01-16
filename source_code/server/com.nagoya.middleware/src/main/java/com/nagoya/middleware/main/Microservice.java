@@ -45,9 +45,9 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import com.nagoya.middleware.rest.base.ShutdownResource;
-import com.nagoya.middleware.rest.base.impl.PingResourceImpl;
-import com.nagoya.middleware.rest.base.impl.ShutdownResourceImpl;
+import com.nagoya.middleware.rest.base.ShutdownRESTResource;
+import com.nagoya.middleware.rest.base.impl.PingRESTResourceImpl;
+import com.nagoya.middleware.rest.base.impl.ShutdownRESTResourceImpl;
 import com.nagoya.middleware.rest.filter.CustomContainerResponseFilter;
 
 /**
@@ -80,8 +80,8 @@ public abstract class Microservice {
         resourceConfig.register(JacksonFeature.class);
         resourceConfig.register(CustomContainerResponseFilter.class);
         // register rest resources
-        resourceConfig.register(PingResourceImpl.class);
-        resourceConfig.register(ShutdownResourceImpl.class);
+        resourceConfig.register(PingRESTResourceImpl.class);
+        resourceConfig.register(ShutdownRESTResourceImpl.class);
 
         ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(resourceConfig));
 
@@ -180,7 +180,7 @@ public abstract class Microservice {
 
         ConstraintMapping cm = new ConstraintMapping();
         cm.setConstraint(constraint);
-        cm.setPathSpec("/" + ShutdownResource.SHUTDOWN_PATH);
+        cm.setPathSpec("/" + ShutdownRESTResource.SHUTDOWN_PATH);
 
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setAuthenticator(new BasicAuthenticator());

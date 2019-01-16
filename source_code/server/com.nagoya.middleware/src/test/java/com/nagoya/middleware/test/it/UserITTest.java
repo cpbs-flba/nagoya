@@ -42,10 +42,10 @@ public class UserITTest extends RestBaseTest {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(targetUrl);
 
-		com.nagoya.model.to.person.PersonLegal personTO = new com.nagoya.model.to.person.PersonLegal();
+		com.nagoya.model.to.person.PersonLegalTO personTO = new com.nagoya.model.to.person.PersonLegalTO();
 		personTO.setEmail("test@test.com1");
 		personTO.setPassword("test@test.com1");
-		Entity<com.nagoya.model.to.person.PersonLegal> entity = Entity.entity(personTO, MediaType.APPLICATION_JSON);
+		Entity<com.nagoya.model.to.person.PersonLegalTO> entity = Entity.entity(personTO, MediaType.APPLICATION_JSON);
 
 		Response response = target.request(MediaType.APPLICATION_JSON).post(entity);
 		int status = response.getStatus();
@@ -65,10 +65,10 @@ public class UserITTest extends RestBaseTest {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(targetUrl);
 
-		com.nagoya.model.to.person.PersonLegal personTO = new com.nagoya.model.to.person.PersonLegal();
+		com.nagoya.model.to.person.PersonLegalTO personTO = new com.nagoya.model.to.person.PersonLegalTO();
 		personTO.setEmail("test@test.com1");
 		personTO.setPassword("test@test.com1");
-		Entity<com.nagoya.model.to.person.PersonLegal> entity = Entity.entity(personTO, MediaType.APPLICATION_JSON);
+		Entity<com.nagoya.model.to.person.PersonLegalTO> entity = Entity.entity(personTO, MediaType.APPLICATION_JSON);
 
 		Response response = target.request(MediaType.APPLICATION_JSON).post(entity);
 		String authHeader = response.getHeaderString("Authorization");
@@ -126,11 +126,11 @@ public class UserITTest extends RestBaseTest {
 	private void insertDummyLegalPerson() {
 		// save the legal person
 
-		BasicDAO<com.nagoya.model.dbo.person.PersonLegal> personDAO = new BasicDAOImpl<com.nagoya.model.dbo.person.PersonLegal>(
+		BasicDAO<com.nagoya.model.dbo.person.PersonLegalDBO> personDAO = new BasicDAOImpl<com.nagoya.model.dbo.person.PersonLegalDBO>(
 				getSession());
 		for (int i = 0; i < 20; i++) {
 			// insert dummy data
-			com.nagoya.model.dbo.person.PersonLegal pl = new com.nagoya.model.dbo.person.PersonLegal();
+			com.nagoya.model.dbo.person.PersonLegalDBO pl = new com.nagoya.model.dbo.person.PersonLegalDBO();
 			pl.setEmail("test@test.com" + i);
 			pl.setPassword(DefaultPasswordEncryptionProvider.encryptPassword("test@test.com" + i));
 			pl.setEmailConfirmed(true);

@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.server.ManagedAsync;
 
-import com.nagoya.middleware.rest.bl.UserResource;
+import com.nagoya.middleware.rest.bl.UserRESTResource;
 
 /**
  * REST service for genetic resources.
@@ -44,7 +44,7 @@ public interface GeneticResource {
      * @param authorization
      * @param geneticRessource
      * @param asyncResponse
-     * @return
+     * @return one of the following status codes:
      *         <ul>
      *         <li>204 No Content - if everything was okay</li>
      *         <li>400 Bad Request - in case the provided transfer object is missing or not okay</li>
@@ -55,12 +55,12 @@ public interface GeneticResource {
      */
     @PUT
     @Path("/")
-    @Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
-    @Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
     public void create(//
-        @HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
-        final com.nagoya.model.to.resource.GeneticResource geneticRessource, //
+        @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
+        final com.nagoya.model.to.resource.GeneticResourceTO geneticRessource, //
         @Suspended final AsyncResponse asyncResponse);
 
     /**
@@ -69,7 +69,7 @@ public interface GeneticResource {
      * @param authorization
      * @param id
      * @param asyncResponse
-     * @return
+     * @return one of the following status codes:
      *         <ul>
      *         <li>204 No Content - if everything was okay</li>
      *         <li>409 Conflict - if the e-mail address is already registered</li>
@@ -78,10 +78,10 @@ public interface GeneticResource {
      */
     @GET
     @Path("/{resourceId}")
-    @Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
-    @Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
-    public void read(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+    public void read(@HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @PathParam("resourceId") String resourceId, //
         @Suspended final AsyncResponse asyncResponse);
 
@@ -91,7 +91,7 @@ public interface GeneticResource {
      * @param authorization
      * @param id
      * @param asyncResponse
-     * @return
+     * @return one of the following status codes:
      *         <ul>
      *         <li>204 No Content - if everything was okay</li>
      *         <li>409 Conflict - if the e-mail address is already registered</li>
@@ -100,10 +100,10 @@ public interface GeneticResource {
      */
     @DELETE
     @Path("/{resourceId}")
-    @Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
-    @Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
-    public void delete(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+    public void delete(@HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @PathParam("resourceId") String resourceId, //
         @Suspended final AsyncResponse asyncResponse);
 
@@ -113,7 +113,7 @@ public interface GeneticResource {
      * @param authorization
      * @param id
      * @param asyncResponse
-     * @return
+     * @return one of the following status codes:
      *         <ul>
      *         <li>204 No Content - if everything was okay</li>
      *         <li>409 Conflict - if the e-mail address is already registered</li>
@@ -122,10 +122,10 @@ public interface GeneticResource {
      */
     @DELETE
     @Path("/{resourceId}/{fileId}")
-    @Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
-    @Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
-    public void delete(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+    public void delete(@HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @PathParam("resourceId") String resourceId, //
         @PathParam("fileId") String fileId, //
         @Suspended final AsyncResponse asyncResponse);
@@ -136,7 +136,7 @@ public interface GeneticResource {
      * @param authorization
      * @param geneticRessource
      * @param asyncResponse
-     * @return
+     * @return one of the following status codes:
      *         <ul>
      *         <li>204 No Content - if everything was okay</li>
      *         <li>409 Conflict - if the e-mail address is already registered</li>
@@ -145,12 +145,12 @@ public interface GeneticResource {
      */
     @PUT
     @Path("/{resourceId}")
-    @Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
-    @Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
-    public void create(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+    public void create(@HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @PathParam("resourceId") String resourceId, //
-        final com.nagoya.model.to.resource.ResourceFile ressourceFile, //
+        final com.nagoya.model.to.resource.ResourceFileTO ressourceFile, //
         @Suspended final AsyncResponse asyncResponse);
 
     /**
@@ -160,7 +160,7 @@ public interface GeneticResource {
      * @param authorization
      * @param id
      * @param asyncResponse
-     * @return
+     * @return one of the following status codes:
      *         <ul>
      *         <li>204 No Content - if everything was okay</li>
      *         <li>409 Conflict - if the e-mail address is already registered</li>
@@ -169,12 +169,12 @@ public interface GeneticResource {
      */
     @POST
     @Path("/{resourceId}")
-    @Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
-    @Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
-    public void update(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+    public void update(@HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @PathParam("resourceId") String resourceId, //
-        final com.nagoya.model.to.resource.GeneticResource geneticRessource, //
+        final com.nagoya.model.to.resource.GeneticResourceTO geneticRessource, //
         @Suspended final AsyncResponse asyncResponse);
 
     /**
@@ -186,10 +186,10 @@ public interface GeneticResource {
      */
     @POST
     @Path("/search")
-    @Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
-    @Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
-    public void search(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+    public void search(@HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         final com.nagoya.model.to.resource.filter.GeneticResourceFilter geneticRessourceFilter, //
         @Suspended final AsyncResponse asyncResponse);
 
@@ -202,10 +202,10 @@ public interface GeneticResource {
      */
     @GET
     @Path("/search/taxonomy")
-    @Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
-    @Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
-    public void searchForTaxonomy(@HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+    public void searchForTaxonomy(@HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @Suspended final AsyncResponse asyncResponse);
 
     /**
@@ -217,11 +217,11 @@ public interface GeneticResource {
      */
     @GET
     @Path("/search/taxonomy/{parentId}")
-    @Consumes({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
-    @Produces({ MediaType.APPLICATION_JSON + UserResource.DEFAULT_RESPONSE_ENCODING })
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
     public void searchForTaxonomyForParent(//
-        @HeaderParam(UserResource.HEADER_AUTHORIZATION) String authorization, //
+        @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @PathParam("parentId") String parentId, //
         @Suspended final AsyncResponse asyncResponse);
 

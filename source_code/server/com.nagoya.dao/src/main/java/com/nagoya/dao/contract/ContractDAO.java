@@ -16,13 +16,13 @@ import java.util.Date;
 import java.util.List;
 
 import com.nagoya.dao.base.BasicDAO;
-import com.nagoya.model.dbo.person.Person;
+import com.nagoya.model.dbo.person.PersonDBO;
 
 /**
  * @author Florin Bogdan Balint
  *
  */
-public interface ContractDAO extends BasicDAO<com.nagoya.model.dbo.contract.Contract> {
+public interface ContractDAO extends BasicDAO<com.nagoya.model.dbo.contract.ContractDBO> {
 
     /**
      * Searches for all contracts, where the specified person is involved. Additional query parameters like periodFrom, periodUntil and status can be
@@ -34,7 +34,7 @@ public interface ContractDAO extends BasicDAO<com.nagoya.model.dbo.contract.Cont
      * @param status
      * @return
      */
-    public List<com.nagoya.model.dbo.contract.Contract> search(Person person, Date periodFrom, Date periodUntil,
+    public List<com.nagoya.model.dbo.contract.ContractDBO> search(PersonDBO person, Date periodFrom, Date periodUntil,
         com.nagoya.model.dbo.contract.Status status, int maxResults);
 
 }

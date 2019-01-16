@@ -15,13 +15,14 @@ import org.hibernate.Session;
 import com.nagoya.dao.contract.ContractDAO;
 import com.nagoya.dao.contract.impl.ContractDAOImpl;
 import com.nagoya.dao.util.StringUtil;
+import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
-import com.nagoya.model.dbo.contract.Contract;
+import com.nagoya.model.dbo.contract.ContractDBO;
 import com.nagoya.model.dbo.contract.Status;
-import com.nagoya.model.dbo.user.OnlineUser;
+import com.nagoya.model.dbo.user.OnlineUserDBO;
 import com.nagoya.model.dbo.user.RequestType;
-import com.nagoya.model.dbo.user.UserRequest;
+import com.nagoya.model.dbo.user.UserRequestDBO;
 import com.nagoya.model.exception.BadRequestException;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.ForbiddenException;
@@ -48,11 +49,11 @@ public class ContractResourceService extends ResourceService {
         this.contractDAO = new ContractDAOImpl(session);
     }
 
-    public DefaultReturnObject create(String authorization, String language, com.nagoya.model.dto.contract.Contract contractTO)
+    public DefaultReturnObject create(String authorization, String language, com.nagoya.model.to.contract.ContractTO contractTO)
         throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException, ResourceOutOfDateException,
         BadRequestException, NonUniqueResultException {
         LOGGER.debug("Adding genetic resource");
-        OnlineUser onlineUser = validateSession(authorization);
+        OnlineUserDBO onlineUser = validateSession(authorization);
 
         if (contractTO == null) {
             throw new BadRequestException("Cannot execute create operation, when the object is null.");
@@ -60,7 +61,7 @@ public class ContractResourceService extends ResourceService {
 
         ContractFactory contractFactory = new ContractFactory(session);
         // also inserts the contract into the DB
-        com.nagoya.model.dbo.contract.Contract contractDBO = contractFactory.createDBOContract(onlineUser.getPerson(), contractTO);
+        com.nagoya.model.dbo.contract.ContractDBO contractDBO = contractFactory.createDBOContract(onlineUser.getPerson(), contractTO);
 
         Calendar cal = Calendar.getInstance();
         // TODO: externalize to config
@@ -69,7 +70,7 @@ public class ContractResourceService extends ResourceService {
         Date expirationDate = cal.getTime();
         String token = DefaultIDGenerator.generateRandomID();
 
-        UserRequest userRequest = new UserRequest();
+        UserRequestDBO userRequest = new UserRequestDBO();
         userRequest.setRequestType(RequestType.CONTRACT_ACCEPTANCE);
         userRequest.setExpirationDate(expirationDate);
         userRequest.setToken(token);
@@ -90,7 +91,7 @@ public class ContractResourceService extends ResourceService {
     public DefaultReturnObject delete(String authorization, String contractId)
         throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, BadRequestException, InvalidObjectException,
         ResourceOutOfDateException, NonUniqueResultException, ForbiddenException {
-        OnlineUser onlineUser = validateSession(authorization);
+        OnlineUserDBO onlineUser = validateSession(authorization);
 
         if (StringUtil.isNullOrBlank(contractId)) {
             throw new BadRequestException("Contract ID must be specified");
@@ -103,7 +104,7 @@ public class ContractResourceService extends ResourceService {
             throw new BadRequestException("Contract ID must be a number");
         }
 
-        Contract contractToDelete = (Contract) contractDAO.find(contractIdLong, Contract.class);
+        ContractDBO contractToDelete = (ContractDBO) contractDAO.find(contractIdLong, ContractDBO.class);
         Status status = contractToDelete.getStatus();
         if (status.equals(Status.CREATED)) {
             contractDAO.delete(contractToDelete, true);
@@ -115,13 +116,26 @@ public class ContractResourceService extends ResourceService {
         return result;
     }
 
-    public DefaultReturnObject search(String authorization, String contractStatus, String dateFrom, String dateUntil)
+    public DefaultReturnObject search(String authorization, String contractStatus, String dateFromTO, String dateUntilTO)
         throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException,
         ResourceOutOfDateException {
-        OnlineUser onlineUser = validateSession(authorization);
+        OnlineUserDBO onlineUser = validateSession(authorization);
+
+        Date dateFromToFilter = DefaultDateProvider.getDateFromString(dateFromTO);
+        Date dateUntilToFilter = DefaultDateProvider.getDateFromString(dateUntilTO);
+        Status statusToFilter = null;
+
+        if (contractStatus != null) {
+            try {
+                statusToFilter = Status.valueOf(contractStatus);
+            } catch (Exception e) {
+                statusToFilter = null;
+            }
+
+        }
 
         LOGGER.debug("Searching for contracts");
-        List<Contract> results = contractDAO.search(onlineUser.getPerson(), null, null, null, 0);
+        List<ContractDBO> results = contractDAO.search(onlineUser.getPerson(), dateFromToFilter, dateUntilToFilter, statusToFilter, 0);
         LOGGER.debug("Results found: " + results.size());
 
         DefaultReturnObject result = refreshSession(onlineUser, null, null);

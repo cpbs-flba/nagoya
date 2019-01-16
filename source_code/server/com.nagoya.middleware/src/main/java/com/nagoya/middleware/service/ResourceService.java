@@ -22,11 +22,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.StringUtil;
-import com.nagoya.middleware.rest.bl.UserResource;
+import com.nagoya.middleware.rest.bl.UserRESTResource;
 import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
-import com.nagoya.model.dbo.user.OnlineUser;
+import com.nagoya.model.dbo.user.OnlineUserDBO;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.InvalidObjectException;
 import com.nagoya.model.exception.InvalidTokenException;
@@ -52,14 +52,14 @@ public abstract class ResourceService {
         this.personDAO = new PersonDAOImpl(session);
     }
 
-    public OnlineUser validateSession(String jsonWebToken)
+    public OnlineUserDBO validateSession(String jsonWebToken)
         throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
         if (StringUtil.isNullOrBlank(jsonWebToken)) {
             throw new NotAuthorizedException();
         }
 
         String sessionToken = extractSessionToken(jsonWebToken);
-        OnlineUser onlineUser = personDAO.getOnlineUser(sessionToken);
+        OnlineUserDBO onlineUser = personDAO.getOnlineUser(sessionToken);
         if (onlineUser == null) {
             throw new NotAuthorizedException();
         }
@@ -91,7 +91,7 @@ public abstract class ResourceService {
      * @throws InvalidObjectException
      * @throws ResourceOutOfDateException
      */
-    public DefaultReturnObject refreshSession(OnlineUser onlineUser, Object responseEntity, Map<String, String> header)
+    public DefaultReturnObject refreshSession(OnlineUserDBO onlineUser, Object responseEntity, Map<String, String> header)
         throws InvalidObjectException, ResourceOutOfDateException {
 
         DefaultReturnObject result = new DefaultReturnObject();
@@ -106,8 +106,8 @@ public abstract class ResourceService {
 
         // refresh the token and retrieve it
         String newJSONWebToken = updateSession(onlineUser);
-        String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newJSONWebToken;
-        result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+        String headerValue = UserRESTResource.HEADER_AUTHORIZATION_BEARER + newJSONWebToken;
+        result.getHeader().put(UserRESTResource.HEADER_AUTHORIZATION, headerValue);
 
         return result;
     }
@@ -126,10 +126,10 @@ public abstract class ResourceService {
 
         // check the 'Bearer ' string...
         // and add if necessary
-        if (!authorization.contains(UserResource.HEADER_AUTHORIZATION_BEARER)) {
-            authorization = UserResource.HEADER_AUTHORIZATION_BEARER + authorization;
+        if (!authorization.contains(UserRESTResource.HEADER_AUTHORIZATION_BEARER)) {
+            authorization = UserRESTResource.HEADER_AUTHORIZATION_BEARER + authorization;
         }
-        result.getHeader().put(UserResource.HEADER_AUTHORIZATION, authorization);
+        result.getHeader().put(UserRESTResource.HEADER_AUTHORIZATION, authorization);
 
         return result;
     }
@@ -142,7 +142,7 @@ public abstract class ResourceService {
      * @throws InvalidObjectException
      * @throws ResourceOutOfDateException
      */
-    public String updateSession(OnlineUser onlineUser)
+    public String updateSession(OnlineUserDBO onlineUser)
         throws InvalidObjectException, ResourceOutOfDateException {
         // step 1: create new session
         String sessionToken = DefaultIDGenerator.generateRandomID();

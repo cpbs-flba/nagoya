@@ -24,16 +24,16 @@ import org.hibernate.Transaction;
 import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.util.StringUtil;
-import com.nagoya.model.dbo.person.Person;
-import com.nagoya.model.dbo.person.PersonKeys;
-import com.nagoya.model.dbo.person.PersonLegal;
-import com.nagoya.model.dbo.person.PersonNatural;
-import com.nagoya.model.dbo.user.OnlineUser;
-import com.nagoya.model.dbo.user.UserRequest;
+import com.nagoya.model.dbo.person.PersonDBO;
+import com.nagoya.model.dbo.person.PersonKeysDBO;
+import com.nagoya.model.dbo.person.PersonLegalDBO;
+import com.nagoya.model.dbo.person.PersonNaturalDBO;
+import com.nagoya.model.dbo.user.OnlineUserDBO;
+import com.nagoya.model.dbo.user.UserRequestDBO;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.InvalidObjectException;
 
-public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
+public class PersonDAOImpl extends BasicDAOImpl<PersonDBO> implements PersonDAO {
 
 	private Session session;
 
@@ -48,12 +48,12 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 	 * @see com.nagoya.dao.person.PersonDAO#register(java.lang.String)
 	 */
 	@Override
-	public Person register(Person person) throws ConflictException {
-		Person existent = findPersonForEmail(person.getEmail());
+	public PersonDBO register(PersonDBO person) throws ConflictException {
+		PersonDBO existent = findPersonForEmail(person.getEmail());
 		if (existent != null) {
 			throw new ConflictException("E-mail already registered.");
 		}
-		Person inserted = (Person) this.insert(person, true);
+		PersonDBO inserted = (PersonDBO) this.insert(person, true);
 		return inserted;
 	}
 
@@ -63,21 +63,21 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 	 * @see com.nagoya.dao.person.PersonDAO#findPersonForEmail(java.lang.String)
 	 */
 	@Override
-	public Person findPersonForEmail(String email) throws ConflictException {
+	public PersonDBO findPersonForEmail(String email) throws ConflictException {
 		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
 		// Create criteriaQuery
-		CriteriaQuery<Person> criteriaQuery = criteriaBuilder.createQuery(Person.class);
+		CriteriaQuery<PersonDBO> criteriaQuery = criteriaBuilder.createQuery(PersonDBO.class);
 
-		Root<Person> root = criteriaQuery.from(Person.class);
+		Root<PersonDBO> root = criteriaQuery.from(PersonDBO.class);
 		Predicate condition = criteriaBuilder.equal(root.get("email"), email);
 		criteriaQuery.select(root).where(condition);
 
-		TypedQuery<Person> createdQuery = entityManager.createQuery(criteriaQuery);
+		TypedQuery<PersonDBO> createdQuery = entityManager.createQuery(criteriaQuery);
 		try {
-			Person singleResult = createdQuery.getSingleResult();
+			PersonDBO singleResult = createdQuery.getSingleResult();
 			return singleResult;
 		} catch (NoResultException e) {
 			return null;
@@ -94,7 +94,7 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 	 * .Person)
 	 */
 	@Override
-	public void removeOldSessions(Person person) {
+	public void removeOldSessions(PersonDBO person) {
 		String query = "DELETE FROM tonline_user WHERE person_id=" + person.getId();
 
 		Transaction transaction = null;
@@ -116,21 +116,21 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 	 * @see com.nagoya.dao.person.PersonDAO#getOnlineUser(java.lang.String)
 	 */
 	@Override
-	public OnlineUser getOnlineUser(String sessionToken) throws ConflictException {
+	public OnlineUserDBO getOnlineUser(String sessionToken) throws ConflictException {
 		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
 		// Create criteriaQuery
-		CriteriaQuery<OnlineUser> criteriaQuery = criteriaBuilder.createQuery(OnlineUser.class);
+		CriteriaQuery<OnlineUserDBO> criteriaQuery = criteriaBuilder.createQuery(OnlineUserDBO.class);
 
-		Root<OnlineUser> root = criteriaQuery.from(OnlineUser.class);
+		Root<OnlineUserDBO> root = criteriaQuery.from(OnlineUserDBO.class);
 		Predicate condition = criteriaBuilder.equal(root.get("sessionToken"), sessionToken);
 		criteriaQuery.select(root).where(condition);
 
-		TypedQuery<OnlineUser> createdQuery = entityManager.createQuery(criteriaQuery);
+		TypedQuery<OnlineUserDBO> createdQuery = entityManager.createQuery(criteriaQuery);
 		try {
-			OnlineUser singleResult = createdQuery.getSingleResult();
+			OnlineUserDBO singleResult = createdQuery.getSingleResult();
 			return singleResult;
 		} catch (NoResultException e) {
 			return null;
@@ -140,21 +140,21 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 	}
 
 	@Override
-	public UserRequest findUserRequest(String token) throws ConflictException {
+	public UserRequestDBO findUserRequest(String token) throws ConflictException {
 		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
 		// Create criteriaQuery
-		CriteriaQuery<UserRequest> criteriaQuery = criteriaBuilder.createQuery(UserRequest.class);
+		CriteriaQuery<UserRequestDBO> criteriaQuery = criteriaBuilder.createQuery(UserRequestDBO.class);
 
-		Root<UserRequest> root = criteriaQuery.from(UserRequest.class);
+		Root<UserRequestDBO> root = criteriaQuery.from(UserRequestDBO.class);
 		Predicate condition = criteriaBuilder.equal(root.get("token"), token);
 		criteriaQuery.select(root).where(condition);
 
-		TypedQuery<UserRequest> createdQuery = entityManager.createQuery(criteriaQuery);
+		TypedQuery<UserRequestDBO> createdQuery = entityManager.createQuery(criteriaQuery);
 		try {
-			UserRequest singleResult = createdQuery.getSingleResult();
+			UserRequestDBO singleResult = createdQuery.getSingleResult();
 			return singleResult;
 		} catch (NoResultException e) {
 			return null;
@@ -164,7 +164,7 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 	}
 
 	@Override
-	public void delete(Person person) throws InvalidObjectException {
+	public void delete(PersonDBO person) throws InvalidObjectException {
 		// first delete the person data normally
 		Long id = person.getId();
 		super.delete(person, true);
@@ -194,15 +194,15 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 	}
 
 	@Override
-	public List<PersonNatural> searchNatural(String filter, int maxResults) {
+	public List<PersonNaturalDBO> searchNatural(String filter, int maxResults) {
 		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
 		// Create criteriaQuery
-		CriteriaQuery<PersonNatural> criteriaQuery = criteriaBuilder.createQuery(PersonNatural.class);
+		CriteriaQuery<PersonNaturalDBO> criteriaQuery = criteriaBuilder.createQuery(PersonNaturalDBO.class);
 
-		Root<PersonNatural> root = criteriaQuery.from(PersonNatural.class);
+		Root<PersonNaturalDBO> root = criteriaQuery.from(PersonNaturalDBO.class);
 
 		List<Predicate> blockPredicates = new ArrayList<Predicate>();
 
@@ -216,7 +216,7 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 				Predicate p2 = criteriaBuilder.like(root.get("lastname"), "%" + singleWord + "%");
 				Predicate p3 = criteriaBuilder.like(root.get("email"), "%" + singleWord + "%");
 				
-				SetJoin<PersonNatural, PersonKeys> children = root.joinSet("keys", JoinType.LEFT);
+				SetJoin<PersonNaturalDBO, PersonKeysDBO> children = root.joinSet("keys", JoinType.LEFT);
 				Predicate p4 = criteriaBuilder.equal(children.get("publicKey"), singleWord);
 
 				Predicate blockPredicate = criteriaBuilder.or(p1, p2, p3, p4);
@@ -230,22 +230,22 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 		if (maxResults <= 0) {
 			maxResults = 20;
 		}
-		TypedQuery<PersonNatural> createdQuery = entityManager.createQuery(criteriaQuery);
-		List<PersonNatural> results = createdQuery.getResultList();
+		TypedQuery<PersonNaturalDBO> createdQuery = entityManager.createQuery(criteriaQuery);
+		List<PersonNaturalDBO> results = createdQuery.getResultList();
 		return results;
 
 	}
 	
 	@Override
-	public List<PersonLegal> searchLegal(String filter, int maxResults) {
+	public List<PersonLegalDBO> searchLegal(String filter, int maxResults) {
 		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
 		// Create criteriaQuery
-		CriteriaQuery<PersonLegal> criteriaQuery = criteriaBuilder.createQuery(PersonLegal.class);
+		CriteriaQuery<PersonLegalDBO> criteriaQuery = criteriaBuilder.createQuery(PersonLegalDBO.class);
 
-		Root<PersonLegal> root = criteriaQuery.from(PersonLegal.class);
+		Root<PersonLegalDBO> root = criteriaQuery.from(PersonLegalDBO.class);
 
 		List<Predicate> blockPredicates = new ArrayList<Predicate>();
 
@@ -259,7 +259,7 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 				Predicate p2 = criteriaBuilder.like(root.get("commercialRegisterNumber"), "%" + singleWord + "%");
 				Predicate p3 = criteriaBuilder.like(root.get("taxNumber"), "%" + singleWord + "%");
 				
-				SetJoin<PersonLegal, PersonKeys> children = root.joinSet("keys", JoinType.LEFT);
+				SetJoin<PersonLegalDBO, PersonKeysDBO> children = root.joinSet("keys", JoinType.LEFT);
 				Predicate p4 = criteriaBuilder.equal(children.get("publicKey"), singleWord);
 
 				Predicate blockPredicate = criteriaBuilder.or(p1, p2, p3, p4);
@@ -273,8 +273,8 @@ public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
 		if (maxResults <= 0) {
 			maxResults = 20;
 		}
-		TypedQuery<PersonLegal> createdQuery = entityManager.createQuery(criteriaQuery);
-		List<PersonLegal> results = createdQuery.getResultList();
+		TypedQuery<PersonLegalDBO> createdQuery = entityManager.createQuery(criteriaQuery);
+		List<PersonLegalDBO> results = createdQuery.getResultList();
 		return results;
 
 	}

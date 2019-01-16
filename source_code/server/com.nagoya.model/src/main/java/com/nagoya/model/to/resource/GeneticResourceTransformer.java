@@ -16,13 +16,13 @@ public final class GeneticResourceTransformer {
 		// noop
 	}
 
-	public static com.nagoya.model.dbo.resource.GeneticResource getDBO(
-			com.nagoya.model.dbo.resource.GeneticResource dbo, com.nagoya.model.to.resource.GeneticResource dto) {
+	public static com.nagoya.model.dbo.resource.GeneticResourceDBO getDBO(
+			com.nagoya.model.dbo.resource.GeneticResourceDBO dbo, com.nagoya.model.to.resource.GeneticResourceTO dto) {
 		if (dto == null) {
 			return null;
 		}
 		if (dbo == null) {
-			dbo = new com.nagoya.model.dbo.resource.GeneticResource();
+			dbo = new com.nagoya.model.dbo.resource.GeneticResourceDBO();
 		}
 		dbo.setId(dto.getId());
 		dbo.setDescription(dto.getDescription());
@@ -36,25 +36,25 @@ public final class GeneticResourceTransformer {
 		return dbo;
 	}
 
-	public static Set<com.nagoya.model.dbo.resource.ResourceFile> getDBO(
-			Set<com.nagoya.model.to.resource.ResourceFile> dto) {
+	public static Set<com.nagoya.model.dbo.resource.ResourceFileDBO> getDBO(
+			Set<com.nagoya.model.to.resource.ResourceFileTO> dto) {
 		if (dto == null) {
 			return null;
 		}
-		Set<com.nagoya.model.dbo.resource.ResourceFile> result = new HashSet<>();
-		for (com.nagoya.model.to.resource.ResourceFile resourceFile : dto) {
+		Set<com.nagoya.model.dbo.resource.ResourceFileDBO> result = new HashSet<>();
+		for (com.nagoya.model.to.resource.ResourceFileTO resourceFile : dto) {
 			result.add(getDBO(resourceFile));
 		}
 		return result;
 	}
 
-	public static com.nagoya.model.to.resource.Taxonomy getDTO(com.nagoya.model.to.resource.Taxonomy dto,
-			com.nagoya.model.dbo.resource.Taxonomy dbo) {
+	public static com.nagoya.model.to.resource.TaxonomyTO getDTO(com.nagoya.model.to.resource.TaxonomyTO dto,
+			com.nagoya.model.dbo.resource.TaxonomyDBO dbo) {
 		if (dbo == null) {
 			return null;
 		}
 		if (dto == null) {
-			dto = new com.nagoya.model.to.resource.Taxonomy();
+			dto = new com.nagoya.model.to.resource.TaxonomyTO();
 		}
 		dto.setId(dbo.getId().toString());
 		dto.setName(dbo.getName());
@@ -64,13 +64,13 @@ public final class GeneticResourceTransformer {
 		return dto;
 	}
 
-	public static com.nagoya.model.dbo.resource.Taxonomy getDBO(com.nagoya.model.dbo.resource.Taxonomy dbo,
-			com.nagoya.model.to.resource.Taxonomy dto) {
+	public static com.nagoya.model.dbo.resource.TaxonomyDBO getDBO(com.nagoya.model.dbo.resource.TaxonomyDBO dbo,
+			com.nagoya.model.to.resource.TaxonomyTO dto) {
 		if (dto == null) {
 			return null;
 		}
 		if (dbo == null) {
-			dbo = new com.nagoya.model.dbo.resource.Taxonomy();
+			dbo = new com.nagoya.model.dbo.resource.TaxonomyDBO();
 		}
 		dbo.setName(dto.getName());
 		if (dto.getParent() != null) {
@@ -79,11 +79,11 @@ public final class GeneticResourceTransformer {
 		return dbo;
 	}
 
-	public static com.nagoya.model.dbo.resource.ResourceFile getDBO(com.nagoya.model.to.resource.ResourceFile dto) {
+	public static com.nagoya.model.dbo.resource.ResourceFileDBO getDBO(com.nagoya.model.to.resource.ResourceFileTO dto) {
 		if (dto == null) {
 			return null;
 		}
-		com.nagoya.model.dbo.resource.ResourceFile result = new com.nagoya.model.dbo.resource.ResourceFile();
+		com.nagoya.model.dbo.resource.ResourceFileDBO result = new com.nagoya.model.dbo.resource.ResourceFileDBO();
 		result.setId(dto.getId());
 		result.setName(dto.getName());
 		result.setType(dto.getType());
@@ -91,12 +91,12 @@ public final class GeneticResourceTransformer {
 		return result;
 	}
 
-	public static com.nagoya.model.to.resource.GeneticResource getDTO(
-			com.nagoya.model.dbo.resource.GeneticResource dbo) {
+	public static com.nagoya.model.to.resource.GeneticResourceTO getDTO(
+			com.nagoya.model.dbo.resource.GeneticResourceDBO dbo) {
 		if (dbo == null) {
 			return null;
 		}
-		com.nagoya.model.to.resource.GeneticResource result = new com.nagoya.model.to.resource.GeneticResource();
+		com.nagoya.model.to.resource.GeneticResourceTO result = new com.nagoya.model.to.resource.GeneticResourceTO();
 		result.setId(dbo.getId());
 		result.setDescription(dbo.getDescription());
 		result.setHashSequence(dbo.getHashSequence());
@@ -109,23 +109,23 @@ public final class GeneticResourceTransformer {
 		return result;
 	}
 
-	public static Set<com.nagoya.model.to.resource.ResourceFile> getDTO(
-			Set<com.nagoya.model.dbo.resource.ResourceFile> dbo) {
+	public static Set<com.nagoya.model.to.resource.ResourceFileTO> getDTO(
+			Set<com.nagoya.model.dbo.resource.ResourceFileDBO> dbo) {
 		if (dbo == null) {
 			return null;
 		}
-		Set<com.nagoya.model.to.resource.ResourceFile> result = new HashSet<>();
-		for (com.nagoya.model.dbo.resource.ResourceFile resourceFile : dbo) {
+		Set<com.nagoya.model.to.resource.ResourceFileTO> result = new HashSet<>();
+		for (com.nagoya.model.dbo.resource.ResourceFileDBO resourceFile : dbo) {
 			result.add(getDTO(resourceFile));
 		}
 		return result;
 	}
 
-	public static com.nagoya.model.to.resource.ResourceFile getDTO(com.nagoya.model.dbo.resource.ResourceFile dbo) {
+	public static com.nagoya.model.to.resource.ResourceFileTO getDTO(com.nagoya.model.dbo.resource.ResourceFileDBO dbo) {
 		if (dbo == null) {
 			return null;
 		}
-		com.nagoya.model.to.resource.ResourceFile result = new com.nagoya.model.to.resource.ResourceFile();
+		com.nagoya.model.to.resource.ResourceFileTO result = new com.nagoya.model.to.resource.ResourceFileTO();
 		result.setId(dbo.getId());
 		result.setName(dbo.getName());
 		result.setType(dbo.getType());

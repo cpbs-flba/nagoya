@@ -50,21 +50,21 @@
 
 		<!-- Annotated entity classes -->
 		<mapping class="com.nagoya.model.dbo.DBO" />
-		<mapping class="com.nagoya.model.dbo.person.Address" />
-		<mapping class="com.nagoya.model.dbo.person.Person" />
-		<mapping class="com.nagoya.model.dbo.person.PersonNatural" />
-		<mapping class="com.nagoya.model.dbo.person.PersonLegal" />		
-		<mapping class="com.nagoya.model.dbo.user.OnlineUser" />
-		<mapping class="com.nagoya.model.dbo.user.UserRequest" />		
-		<mapping class="com.nagoya.model.dbo.person.PersonKeys" />		
-		<mapping class="com.nagoya.model.dbo.person.group.PersonGroup" />		
-		<mapping class="com.nagoya.model.dbo.resource.GeneticResource" />		
-		<mapping class="com.nagoya.model.dbo.resource.ResourceFile" />		
-		<mapping class="com.nagoya.model.dbo.resource.Taxonomy" />		
+		<mapping class="com.nagoya.model.dbo.person.AddressDBO" />
+		<mapping class="com.nagoya.model.dbo.person.PersonDBO" />
+		<mapping class="com.nagoya.model.dbo.person.PersonNaturalDBO" />
+		<mapping class="com.nagoya.model.dbo.person.PersonLegalDBO" />		
+		<mapping class="com.nagoya.model.dbo.user.OnlineUserDBO" />
+		<mapping class="com.nagoya.model.dbo.user.UserRequestDBO" />		
+		<mapping class="com.nagoya.model.dbo.person.PersonKeysDBO" />		
+		<mapping class="com.nagoya.model.dbo.person.group.PersonGroupDBO" />		
+		<mapping class="com.nagoya.model.dbo.resource.GeneticResourceDBO" />		
+		<mapping class="com.nagoya.model.dbo.resource.ResourceFileDBO" />		
+		<mapping class="com.nagoya.model.dbo.resource.TaxonomyDBO" />		
 
 		<!-- contract -->
-		<mapping class="com.nagoya.model.dbo.contract.Contract" />
-		<mapping class="com.nagoya.model.dbo.contract.ContractResource" />
+		<mapping class="com.nagoya.model.dbo.contract.ContractDBO" />
+		<mapping class="com.nagoya.model.dbo.contract.ContractResourceDBO" />
 		
 	</session-factory>
 

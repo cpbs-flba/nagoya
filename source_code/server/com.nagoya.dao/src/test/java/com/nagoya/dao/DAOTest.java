@@ -8,12 +8,12 @@ import org.hibernate.Transaction;
 
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
-import com.nagoya.model.dbo.person.Address;
-import com.nagoya.model.dbo.person.Person;
-import com.nagoya.model.dbo.person.PersonLegal;
+import com.nagoya.model.dbo.person.AddressDBO;
+import com.nagoya.model.dbo.person.PersonDBO;
+import com.nagoya.model.dbo.person.PersonLegalDBO;
 import com.nagoya.model.dbo.person.PersonType;
-import com.nagoya.model.dbo.resource.GeneticResource;
-import com.nagoya.model.dbo.resource.ResourceFile;
+import com.nagoya.model.dbo.resource.GeneticResourceDBO;
+import com.nagoya.model.dbo.resource.ResourceFileDBO;
 import com.nagoya.model.dbo.resource.VisibilityType;
 
 public class DAOTest {
@@ -63,15 +63,15 @@ public class DAOTest {
 
     }
 
-    public PersonLegal insertTestPersonLegal(Session session, String email) {
-        Address address = new Address();
+    public PersonLegalDBO insertTestPersonLegal(Session session, String email) {
+        AddressDBO address = new AddressDBO();
         address.setStreet("Max Street");
         address.setNumber("1");
         address.setZip("1010");
         address.setCountry("Austria");
         address.setCity("Vienna");
 
-        PersonLegal legalPerson = new PersonLegal();
+        PersonLegalDBO legalPerson = new PersonLegalDBO();
         legalPerson.setEmail(email);
         legalPerson.setPassword(email);
         legalPerson.setAddress(address);
@@ -81,24 +81,24 @@ public class DAOTest {
         legalPerson.setPersonType(PersonType.LEGAL);
 
         PersonDAO personDAO = new PersonDAOImpl(session);
-        return (PersonLegal) personDAO.insert(legalPerson, true);
+        return (PersonLegalDBO) personDAO.insert(legalPerson, true);
     }
 
-    public GeneticResource insertTestGeneticResource(Session session, Person owner, String idName) {
-        GeneticResource resource1 = new GeneticResource();
+    public GeneticResourceDBO insertTestGeneticResource(Session session, PersonDBO owner, String idName) {
+        GeneticResourceDBO resource1 = new GeneticResourceDBO();
         resource1.setIdentifier(idName);
         resource1.setDescription(idName);
         resource1.setOwner(owner);
         resource1.setVisibilityType(VisibilityType.PRIVATE);
         resource1.setSource("Brasil");
-        ResourceFile rf = new ResourceFile();
+        ResourceFileDBO rf = new ResourceFileDBO();
         rf.setContent("test".getBytes());
         rf.setName("sometext");
         rf.setType("txt");
         resource1.getFiles().add(rf);
 
         PersonDAO personDAO = new PersonDAOImpl(session);
-        return (GeneticResource) personDAO.insert(resource1, true);
+        return (GeneticResourceDBO) personDAO.insert(resource1, true);
     }
 
     public Session getSession() {

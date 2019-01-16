@@ -12,6 +12,7 @@
 
 package com.nagoya.dao.contract.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,15 +28,15 @@ import org.hibernate.Session;
 
 import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.dao.contract.ContractDAO;
-import com.nagoya.model.dbo.contract.Contract;
+import com.nagoya.model.dbo.contract.ContractDBO;
 import com.nagoya.model.dbo.contract.Status;
-import com.nagoya.model.dbo.person.Person;
+import com.nagoya.model.dbo.person.PersonDBO;
 
 /**
  * @author Florin Bogdan Balint
  *
  */
-public class ContractDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.contract.Contract> implements ContractDAO {
+public class ContractDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.contract.ContractDBO> implements ContractDAO {
 
     private Session session;
 
@@ -45,7 +46,7 @@ public class ContractDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.contract.
     }
 
     @Override
-    public List<Contract> search(Person person, Date periodFrom, Date periodUntil, Status status, int maxResults) {
+    public List<ContractDBO> search(PersonDBO person, Date periodFrom, Date periodUntil, Status status, int maxResults) {
         // fail-safe
         if (person == null) {
             return null;
@@ -60,19 +61,39 @@ public class ContractDAOImpl extends BasicDAOImpl<com.nagoya.model.dbo.contract.
         CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
         // Create criteriaQuery
-        CriteriaQuery<Contract> criteriaQuery = criteriaBuilder.createQuery(Contract.class);
+        CriteriaQuery<ContractDBO> criteriaQuery = criteriaBuilder.createQuery(ContractDBO.class);
 
-        Root<Contract> root = criteriaQuery.from(Contract.class);
+        Root<ContractDBO> root = criteriaQuery.from(ContractDBO.class);
 
         // owner condition
         Predicate c1 = criteriaBuilder.equal(root.get("sender"), person);
         Predicate c2 = criteriaBuilder.equal(root.get("receiver"), person);
-        Predicate involvedPersonCondition = criteriaBuilder.or(c1, c2);
+        Predicate mandatoryCondition = criteriaBuilder.or(c1, c2);
 
-        criteriaQuery.select(root).where(involvedPersonCondition);
-        TypedQuery<Contract> createdQuery = entityManager.createQuery(criteriaQuery);
+        List<Predicate> additionalPredicates = new ArrayList<>();
+        if (periodFrom != null) {
+            Predicate greaterThanOrEqualTo = criteriaBuilder.greaterThanOrEqualTo(root.get("creationDate"), periodFrom);
+            additionalPredicates.add(greaterThanOrEqualTo);
+        }
+        if (periodUntil != null) {
+            Predicate greaterThanOrEqualTo = criteriaBuilder.lessThanOrEqualTo(root.get("creationDate"), periodUntil);
+            additionalPredicates.add(greaterThanOrEqualTo);
+        }
+        if (status != null) {
+            Predicate statusQuery = criteriaBuilder.equal(root.get("status"), status);
+            additionalPredicates.add(statusQuery);
+        }
+
+        Predicate finalCondition = mandatoryCondition;
+        if (additionalPredicates.size() > 0) {
+            additionalPredicates.add(mandatoryCondition);
+            finalCondition = criteriaBuilder.and(additionalPredicates.toArray(new Predicate[] {}));
+        }
+
+        criteriaQuery.select(root).where(finalCondition);
+        TypedQuery<ContractDBO> createdQuery = entityManager.createQuery(criteriaQuery);
         createdQuery.setMaxResults(maxResults);
-        List<Contract> resultList = createdQuery.getResultList();
+        List<ContractDBO> resultList = createdQuery.getResultList();
         return resultList;
     }
 
