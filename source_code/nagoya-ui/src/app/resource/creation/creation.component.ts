@@ -7,6 +7,7 @@ import {GeneticResource} from '../../model/geneticResource';
 import {ResourceFile} from '../../model/resourceFile';
 import {TranslateService} from '@ngx-translate/core';
 import {Taxonomy} from '../../model/taxonomy';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -20,31 +21,67 @@ export class CreationComponent implements OnInit {
   createNew: boolean;
   @Output()
   createNewChange = new EventEmitter<boolean>();
+  @Output()
+  resourceSubmitted = new EventEmitter<boolean>();
   geneticResourceForm: FormGroup;
   visibilityTypes = Object.keys(VisibilityType);
   attachments: ResourceFile[] = [];
-
+  taxonomyLevels: [Taxonomy[]] = [[]];
+  selectedTaxonomy: Taxonomy;
   @ViewChild('file') fileInput;
-  orders: string[] = ['Ordnung 1', 'Ordnung 2', 'Ordnung 3'];
-  filteredOrders: Observable<string[]>;
-  families: string[] = ['Famile 1', 'Famile 2', 'Famile 3'];
-  subFamilies: string[] = ['Unterfamilie 1', 'Unterfamilie 2', 'Unterfamilie 3'];
 
 
   constructor(private formBuilder: FormBuilder,
               private resourceService: ResourceService,
-              public translate: TranslateService) {
+              public translate: TranslateService, private router: Router) {
     this.createForm();
   }
 
   ngOnInit() {
+    this.getTaxonomy();
   }
+
+
+  getTaxonomy(taxonomy?: Taxonomy) {
+    this.selectedTaxonomy = taxonomy;
+    this.resourceService.getTaxonomy(taxonomy).subscribe(response => {
+
+      //parent got newly selected
+      if (!taxonomy) {
+
+        //reset and start again
+        this.taxonomyLevels = [[]];
+        this.taxonomyLevels[0] = response;
+      } else {
+
+        //get depth of taxonomy
+        const taxonomyLevel = this.getTaxonomyLevel(taxonomy);
+
+        //if tree changes, delete everything after change
+        if (taxonomyLevel < this.taxonomyLevels.length) {
+          this.taxonomyLevels[taxonomyLevel] = response;
+          this.taxonomyLevels.splice(taxonomyLevel);
+
+          // else push add end of list
+        } else {
+          this.taxonomyLevels.push(response);
+        }
+      }
+    });
+
+
+  }
+
+  getTaxonomyLevel(taxonomy: Taxonomy): number {
+    return taxonomy ? 1 + this.getTaxonomyLevel(taxonomy.parent) : 0;
+  }
+
 
   onSubmit() {
     this.resourceService.create(this.extractResource()).subscribe(result => {
-      console.log(result);
       this.createNew = !this.createNew;
       this.createNewChange.emit(this.createNew);
+      this.resourceSubmitted.emit(true);
     }, error => {
       console.log(error);
     });
@@ -57,19 +94,7 @@ export class CreationComponent implements OnInit {
       source: ['', Validators.required],
       origin: ['', Validators.required],
       hashSequence: [''],
-      visibilityType: ['', Validators.required],
-      // taxonomy: this.formBuilder.group({
-      //   kingdom: [''],
-      //   phylum: [''],
-      //   clazz: [''],
-      //   order: [''],
-      //   family: [''],
-      //   subFamily: [''],
-      //   superTribe: [''],
-      //   tribe: [''],
-      //   genus: [''],
-      //   species: [''],
-      // })
+      visibilityType: ['', Validators.required]
     });
   }
 
@@ -105,6 +130,7 @@ export class CreationComponent implements OnInit {
     resource.hashSequence = this.geneticResourceForm.controls.hashSequence.value;
     resource.visibilityType = this.geneticResourceForm.controls.visibilityType.value;
     resource.files = this.attachments;
+    resource.taxonomy = this.selectedTaxonomy;
     return resource;
   }
 }

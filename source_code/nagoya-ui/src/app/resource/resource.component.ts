@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 
@@ -10,6 +10,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class ResourceComponent implements OnInit {
 
   createNew = false;
+  reloadChanges = false;
 
   constructor(public translate: TranslateService) {
   }
@@ -20,6 +21,10 @@ export class ResourceComponent implements OnInit {
 
   toggleResourceCreation() {
     this.createNew = !this.createNew;
+  }
+
+  reloadResources() {
+    this.reloadChanges = true;
   }
 
 }

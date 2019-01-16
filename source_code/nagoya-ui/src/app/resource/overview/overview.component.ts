@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {GeneticResource} from '../../model/geneticResource';
 import {ResourceService} from '../../services/resource.service';
 import {GeneticResourceFilter} from '../../model/geneticResourceFilter';
@@ -13,18 +13,21 @@ export class OverviewComponent implements OnInit, OnDestroy {
   geneticResourceFilter = new GeneticResourceFilter();
   geneticResources: GeneticResource[];
 
+  @Input() reloadChanges: boolean;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.reloadChanges.currentValue) {
+      this.getAllResources();
+    }
+  }
+
   constructor(private resourceService: ResourceService) {
   }
 
   ngOnInit() {
-    this.resourceService.getAll().subscribe(response => {
-      this.geneticResources = response;
-    }, error => {
-      //TODO
-      console.log(error);
-    });
-
+    this.getAllResources();
   }
+
   ngOnDestroy(): void {
   }
 
@@ -38,6 +41,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
     });
   }
 
+  getAllResources() {
+    this.resourceService.getAll().subscribe(response => {
+      this.geneticResources = response;
+    }, error => {
+      //TODO
+      console.log(error);
+    });
+  }
 
 
 }
