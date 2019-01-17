@@ -1,9 +1,9 @@
+
 package com.nagoya.dao.person;
 
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.nagoya.dao.DAOTest;
@@ -22,63 +22,61 @@ import com.nagoya.model.exception.ResourceOutOfDateException;
 
 public class PersonDAOTest extends DAOTest {
 
-	private Session session = null;
+    private Session session = null;
 
-	@BeforeEach
-	public void init() {
-		session = super.getSession();
-		initializeEnvironment(session);
-	}
+    @BeforeEach
+    public void init() {
+        session = super.getSession();
+        initializeEnvironment(session);
+    }
 
-	@Test
-	@DisplayName("Test person: legal person insert, update and delete")
-	public void insertAndDeleteLegalPerson() throws InvalidObjectException, ResourceOutOfDateException {
-		AddressDBO address = new AddressDBO();
-		address.setStreet("s");
-		address.setNumber("132");
-		address.setZip("132");
-		address.setCountry("Bla");
-		address.setCity("A");
+    @Test
+    // @DisplayName("Test person: legal person insert, update and delete")
+    public void insertAndDeleteLegalPerson()
+        throws InvalidObjectException, ResourceOutOfDateException {
+        AddressDBO address = new AddressDBO();
+        address.setStreet("s");
+        address.setNumber("132");
+        address.setZip("132");
+        address.setCountry("Bla");
+        address.setCity("A");
 
-		PersonLegalDBO legalPerson = new PersonLegalDBO();
-		legalPerson.setEmail("legal@legal.com");
-		legalPerson.setPassword("secret");
-		legalPerson.setAddress(address);
-		legalPerson.setName("Legal Corp.");
-		legalPerson.setCommercialRegisterNumber("c123");
-		legalPerson.setTaxNumber("tax123");
-		legalPerson.setPersonType(PersonType.LEGAL);
+        PersonLegalDBO legalPerson = new PersonLegalDBO();
+        legalPerson.setEmail("legal@legal.com");
+        legalPerson.setPassword("secret");
+        legalPerson.setAddress(address);
+        legalPerson.setName("Legal Corp.");
+        legalPerson.setCommercialRegisterNumber("c123");
+        legalPerson.setTaxNumber("tax123");
+        legalPerson.setPersonType(PersonType.LEGAL);
 
-		// save the legal person
-		BasicDAO<PersonDBO> personDAO = new BasicDAOImpl<PersonDBO>(session);
-		personDAO.insert(legalPerson, true);
-		Assert.assertNotNull(address.getId());
-		Assert.assertNotNull(legalPerson.getId());
+        // save the legal person
+        BasicDAO<PersonDBO> personDAO = new BasicDAOImpl<PersonDBO>(session);
+        personDAO.insert(legalPerson, true);
+        Assert.assertNotNull(address.getId());
+        Assert.assertNotNull(legalPerson.getId());
 
-		PersonGroupDBO pg = new PersonGroupDBO();
-		pg.setName("testgroup");
-		pg.getPersons().add(legalPerson);
-		personDAO.insert(pg, true);
-		
-		GeneticResourceDBO resource = new GeneticResourceDBO();
-		resource.setIdentifier("i123");
-		resource.setDescription("sonneblume");
-		resource.setOwner(legalPerson);
-		resource.setVisibilityType(VisibilityType.PUBLIC);
-		resource.setSource("Brasil");
-		ResourceFileDBO rf = new ResourceFileDBO();
-		rf.setContent("test".getBytes());
-		rf.setName("sometext");
-		rf.setType("txt");
-		resource.getFiles().add(rf);
-		personDAO.insert(resource, true);
+        PersonGroupDBO pg = new PersonGroupDBO();
+        pg.setName("testgroup");
+        pg.getPersons().add(legalPerson);
+        personDAO.insert(pg, true);
 
-		// update the legal person
-		legalPerson.setName("Legal Corp. 2 ");
-		personDAO.update(legalPerson, true);
+        GeneticResourceDBO resource = new GeneticResourceDBO();
+        resource.setIdentifier("i123");
+        resource.setDescription("sonneblume");
+        resource.setOwner(legalPerson);
+        resource.setVisibilityType(VisibilityType.PUBLIC);
+        resource.setSource("Brasil");
+        ResourceFileDBO rf = new ResourceFileDBO();
+        rf.setContent("test".getBytes());
+        rf.setName("sometext");
+        rf.setType("txt");
+        resource.getFiles().add(rf);
+        personDAO.insert(resource, true);
 
-		// delete the person
-		// personDAO.delete(legalPerson, true);
-	}
+        // update the legal person
+        legalPerson.setName("Legal Corp. 2 ");
+        personDAO.update(legalPerson, true);
+    }
 
 }

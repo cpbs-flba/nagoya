@@ -11,12 +11,12 @@
 	</appender>
 
 	<logger name="com.mchange.v2.c3p0" additivity="false">
-		<level value="WARN" />
+		<level value="ERROR" />
 		<appender-ref ref="console"/>
 	</logger>
 	
 	<logger name="org.hibernate" additivity="false">
-		<level value="WARN" />
+		<level value="ERROR" />
 		<appender-ref ref="console"/>
 	</logger>
 	

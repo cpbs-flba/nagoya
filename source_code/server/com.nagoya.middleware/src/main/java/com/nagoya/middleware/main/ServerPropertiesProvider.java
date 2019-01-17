@@ -15,6 +15,8 @@ package com.nagoya.middleware.main;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import com.nagoya.dao.util.StringUtil;
+
 public class ServerPropertiesProvider {
 
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("serverconfig");
@@ -66,6 +68,21 @@ public class ServerPropertiesProvider {
      */
     public static int getInteger(ServerProperty property) {
         String valueAsString = BUNDLE.getString(property.getProperty());
+        int valueToReturn = Integer.parseInt(valueAsString);
+        return valueToReturn;
+    }
+
+    /**
+     * Returns the value as Integer for the given key.
+     * 
+     * @param property
+     * @return Integer value of the property
+     */
+    public static int getInteger(ServerProperty property, int defaultValue) {
+        String valueAsString = BUNDLE.getString(property.getProperty());
+        if (StringUtil.isNullOrBlank(valueAsString)) {
+            return defaultValue;
+        }
         int valueToReturn = Integer.parseInt(valueAsString);
         return valueToReturn;
     }

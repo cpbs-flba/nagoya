@@ -36,57 +36,144 @@ import org.glassfish.jersey.server.ManagedAsync;
 @Path("/contracts")
 public interface ContractRESTResource {
 
-    public static final String QUERY_PARAM_STATUS     = "status";
     public static final String QUERY_PARAM_DATE_FROM  = "date-from";
     public static final String QUERY_PARAM_DATE_UNTIL = "date-until";
+    public static final String QUERY_PARAM_STATUS     = "status";
 
     /**
      * Creates a new contract.
      * 
+     * Returns one of the following status codes:
+     * <ul>
+     * <li>204 No Content - if everything was okay</li>
+     * <li>400 Bad Request - if the provided contract is invalid</li>
+     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
+     * <li>408 Timeout - if the authorization token has expired</li>
+     * <li>500 Internal server error - if something went terribly wrong</li>
+     * </ul>
+     * 
      * @param authorization
      * @param geneticRessource
      * @param asyncResponse
-     * @return one of the following status codes:
-     *         <ul>
-     *         <li>204 No Content - if everything was okay</li>
-     *         <li>409 Conflict - if the e-mail address is already registered</li>
-     *         <li>500 Internal server error - if something went terribly wrong.</li>
-     *         </ul>
      */
     @PUT
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
-    public void create(//
+    public void addContract(//
         @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @HeaderParam(UserRESTResource.HEADER_LANGUAGE) String language, //
         final com.nagoya.model.to.contract.ContractTO contractTO, //
         @Suspended final AsyncResponse asyncResponse);
 
     /**
-     * Deletes a created contract.
+     * Adds a file to an existing contract
+     * 
+     * Returns one of the following status codes:
+     * <ul>
+     * <li>204 No Content - if everything was okay</li>
+     * <li>400 Bad Request - if the provided file is invalid</li>
+     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
+     * <li>403 Forbidden - if the user is not authorized for the operation</li>
+     * <li>408 Timeout - if the authorization token has expired</li>
+     * <li>500 Internal server error - if something went terribly wrong</li>
+     * </ul>
      * 
      * @param authorization
      * @param geneticRessource
      * @param asyncResponse
-     * @return one of the following status codes:
-     *         <ul>
-     *         <li>204 No Content - if everything was okay</li>
-     *         <li>400 Bad Request - if the contract ID was not provided or the contract does not exist</li>
-     *         <li>403 Forbidden - if the contract cannot be deleted (e.g., if a contract is already accepted, it cannot be deleted)</li>
-     *         <li>500 Internal server error - if something went terribly wrong.</li>
-     *         </ul>
+     */
+    @PUT
+    @Path("/{contractId}/files")
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @ManagedAsync
+    public void addFile(//
+        @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
+        @HeaderParam(UserRESTResource.HEADER_LANGUAGE) String language, //
+        @PathParam("contractId") String contractId, //
+        final com.nagoya.model.to.contract.ContractFileTO contractFileTO, //
+        @Suspended final AsyncResponse asyncResponse);
+
+    /**
+     * Deletes a created contract.
+     * 
+     * Returns one of the following status codes:
+     * <ul>
+     * <li>204 No Content - if everything was okay</li>
+     * <li>400 Bad Request - if the contract ID was not provided or the contract does not exist</li>
+     * <li>403 Forbidden - if the contract cannot be deleted (e.g., if a contract is already accepted, it cannot be deleted)</li>
+     * <li>500 Internal server error - if something went terribly wrong.</li>
+     * </ul>
+     * 
+     * @param authorization
+     * @param geneticRessource
+     * @param asyncResponse
      */
     @DELETE
     @Path("/{contractId}")
     @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
     @ManagedAsync
-    public void delete(//
+    public void deleteContract(//
         @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @HeaderParam(UserRESTResource.HEADER_LANGUAGE) String language, //
         @PathParam("contractId") String contractId, //
+        @Suspended final AsyncResponse asyncResponse);
+
+    /**
+     * Removes a file from an existing contract
+     * 
+     * Returns one of the following status codes:
+     * <ul>
+     * <li>204 No Content - if everything was okay</li>
+     * <li>400 Bad Request - if the provided file is invalid</li>
+     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
+     * <li>408 Timeout - if the authorization token has expired</li>
+     * <li>500 Internal server error - if something went terribly wrong</li>
+     * </ul>
+     * 
+     * @param authorization
+     * @param geneticRessource
+     * @param asyncResponse
+     */
+    @DELETE
+    @Path("/{contractId}/files/{fileId}")
+    @Consumes({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @ManagedAsync
+    public void deleteFile(//
+        @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
+        @HeaderParam(UserRESTResource.HEADER_LANGUAGE) String language, //
+        @PathParam("contractId") String contractId, //
+        @PathParam("fileId") String fileId, //
+        @Suspended final AsyncResponse asyncResponse);
+
+    /**
+     * Retrieves a file from an existing contract
+     * 
+     * Returns one of the following status codes:
+     * <ul>
+     * <li>204 No Content - if everything was okay</li>
+     * <li>400 Bad Request - if the provided file is invalid</li>
+     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
+     * <li>408 Timeout - if the authorization token has expired</li>
+     * <li>500 Internal server error - if something went terribly wrong</li>
+     * </ul>
+     * 
+     * @param authorization
+     * @param geneticRessource
+     * @param asyncResponse
+     */
+    @GET
+    @Path("/{contractId}/files/{fileId}")
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @ManagedAsync
+    public void retrieveFile(//
+        @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
+        @HeaderParam(UserRESTResource.HEADER_LANGUAGE) String language, //
+        @PathParam("contractId") String contractId, //
+        @PathParam("fileId") String fileId, //
         @Suspended final AsyncResponse asyncResponse);
 
     /**
@@ -95,6 +182,11 @@ public interface ContractRESTResource {
      * If provided, the date parameters will be expected to be in the following <b>ISO-8601</b> format: <br>
      * yyyy-MM-dd'T'HH:mm:ssZ
      * 
+     * <ul>
+     * <li>204 No Content - if everything was okay</li>
+     * <li>500 Internal server error - if something went terribly wrong.</li>
+     * </ul>
+     * 
      * @param authorization
      * @param language
      * @param contractStatus
@@ -102,10 +194,6 @@ public interface ContractRESTResource {
      * @param dateUntil
      * @param asyncResponse
      * @return one of the following status codes:
-     *         <ul>
-     *         <li>204 No Content - if everything was okay</li>
-     *         <li>500 Internal server error - if something went terribly wrong.</li>
-     *         </ul>
      */
     @GET
     @Path("/")

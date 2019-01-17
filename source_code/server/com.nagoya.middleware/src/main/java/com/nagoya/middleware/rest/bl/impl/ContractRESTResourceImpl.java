@@ -31,7 +31,9 @@ import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.exception.BadRequestException;
 import com.nagoya.model.exception.ForbiddenException;
 import com.nagoya.model.exception.NotAuthorizedException;
+import com.nagoya.model.exception.NotFoundException;
 import com.nagoya.model.exception.TimeoutException;
+import com.nagoya.model.to.contract.ContractFileTO;
 import com.nagoya.model.to.contract.ContractTO;
 
 /**
@@ -49,7 +51,7 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
      * javax.ws.rs.container.AsyncResponse)
      */
     @Override
-    public void create(String authorization, String language, ContractTO contractTO, AsyncResponse asyncResponse) {
+    public void addContract(String authorization, String language, ContractTO contractTO, AsyncResponse asyncResponse) {
         Response response = null;
         Session session = null;
         try {
@@ -89,7 +91,7 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
      * javax.ws.rs.container.AsyncResponse)
      */
     @Override
-    public void delete(String authorization, String language, String contractId, AsyncResponse asyncResponse) {
+    public void deleteContract(String authorization, String language, String contractId, AsyncResponse asyncResponse) {
         Response response = null;
         Session session = null;
         try {
@@ -151,6 +153,139 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
         } catch (TimeoutException e) {
             LOGGER.error(e, e);
             response = Response.status(Status.REQUEST_TIMEOUT).build();
+        } catch (Exception e) {
+            LOGGER.error(e);
+            response = Response.serverError().build();
+        } finally {
+            if (session != null) {
+                ConnectionProvider.getInstance().closeSession(session);
+            }
+        }
+        asyncResponse.resume(response);
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.nagoya.middleware.rest.bl.ContractRESTResource#addFile(java.lang.String, java.lang.String, java.lang.String,
+     * com.nagoya.model.to.contract.ContractFileTO, javax.ws.rs.container.AsyncResponse)
+     */
+    @Override
+    public void addFile(String authorization, String language, String contractId, ContractFileTO contractFileTO, AsyncResponse asyncResponse) {
+        Response response = null;
+        Session session = null;
+        try {
+            session = ConnectionProvider.getInstance().getSession();
+            ContractResourceService service = new ContractResourceService(session);
+            DefaultReturnObject result = service.create(authorization, language, contractId, contractFileTO);
+            ResponseBuilder responseBuilder = Response.noContent();
+            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
+            for (Entry<String, String> entry : entrySet) {
+                responseBuilder.header(entry.getKey(), entry.getValue());
+            }
+            response = responseBuilder.build();
+        } catch (ForbiddenException e) {
+            LOGGER.error(e.getMessage());
+            response = Response.status(Status.FORBIDDEN).build();
+        } catch (NotAuthorizedException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.UNAUTHORIZED).build();
+        } catch (TimeoutException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.REQUEST_TIMEOUT).build();
+        } catch (BadRequestException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            LOGGER.error(e);
+            response = Response.serverError().build();
+        } finally {
+            if (session != null) {
+                ConnectionProvider.getInstance().closeSession(session);
+            }
+        }
+        asyncResponse.resume(response);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.nagoya.middleware.rest.bl.ContractRESTResource#deleteFile(java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+     * javax.ws.rs.container.AsyncResponse)
+     */
+    @Override
+    public void deleteFile(String authorization, String language, String contractId, String fileId, AsyncResponse asyncResponse) {
+        Response response = null;
+        Session session = null;
+        try {
+            session = ConnectionProvider.getInstance().getSession();
+            ContractResourceService service = new ContractResourceService(session);
+            DefaultReturnObject result = service.deleteFile(authorization, language, contractId, fileId);
+            ResponseBuilder responseBuilder = Response.noContent();
+            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
+            for (Entry<String, String> entry : entrySet) {
+                responseBuilder.header(entry.getKey(), entry.getValue());
+            }
+            response = responseBuilder.build();
+        } catch (NotFoundException e) {
+            LOGGER.error(e.getMessage());
+            response = Response.status(Status.NOT_FOUND).build();
+        } catch (ForbiddenException e) {
+            LOGGER.error(e.getMessage());
+            response = Response.status(Status.FORBIDDEN).build();
+        } catch (NotAuthorizedException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.UNAUTHORIZED).build();
+        } catch (TimeoutException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.REQUEST_TIMEOUT).build();
+        } catch (BadRequestException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            LOGGER.error(e);
+            response = Response.serverError().build();
+        } finally {
+            if (session != null) {
+                ConnectionProvider.getInstance().closeSession(session);
+            }
+        }
+        asyncResponse.resume(response);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.nagoya.middleware.rest.bl.ContractRESTResource#retrieveFile(java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+     * javax.ws.rs.container.AsyncResponse)
+     */
+    @Override
+    public void retrieveFile(String authorization, String language, String contractId, String fileId, AsyncResponse asyncResponse) {
+        Response response = null;
+        Session session = null;
+        try {
+            session = ConnectionProvider.getInstance().getSession();
+            ContractResourceService service = new ContractResourceService(session);
+            DefaultReturnObject result = service.retrieveFile(authorization, language, contractId, fileId);
+            ResponseBuilder responseBuilder = Response.noContent();
+            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
+            for (Entry<String, String> entry : entrySet) {
+                responseBuilder.header(entry.getKey(), entry.getValue());
+            }
+            response = responseBuilder.build();
+        } catch (NotFoundException e) {
+            LOGGER.error(e.getMessage());
+            response = Response.status(Status.NOT_FOUND).build();
+        } catch (NotAuthorizedException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.UNAUTHORIZED).build();
+        } catch (TimeoutException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.REQUEST_TIMEOUT).build();
+        } catch (BadRequestException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.BAD_REQUEST).build();
         } catch (Exception e) {
             LOGGER.error(e);
             response = Response.serverError().build();

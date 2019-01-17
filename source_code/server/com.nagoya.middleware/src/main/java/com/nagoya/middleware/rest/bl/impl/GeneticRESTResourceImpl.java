@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import com.nagoya.dao.db.ConnectionProvider;
-import com.nagoya.middleware.rest.GeneticResource;
+import com.nagoya.middleware.rest.bl.GeneticResource;
 import com.nagoya.middleware.service.GeneticResourceService;
 import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.exception.BadRequestException;

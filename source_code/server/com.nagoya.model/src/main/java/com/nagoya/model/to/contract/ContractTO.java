@@ -17,15 +17,17 @@ import com.nagoya.model.to.person.PersonTO;
  */
 public class ContractTO implements Serializable {
 
-    private static final long     serialVersionUID  = 1L;
+    private static final long       serialVersionUID  = 1L;
 
     private PersonTO                sender;
 
     private PersonTO                receiver;
 
-    private Date                  conclusionDate;
+    private Date                    conclusionDate;
 
     private Set<ContractResourceTO> contractResources = new HashSet<>();
+
+    private Set<ContractResourceTO> files             = new HashSet<>();
 
     public PersonTO getSender() {
         return sender;
@@ -57,6 +59,14 @@ public class ContractTO implements Serializable {
 
     public void setContractResources(Set<ContractResourceTO> contractResources) {
         this.contractResources = contractResources;
+    }
+
+    public Set<ContractResourceTO> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<ContractResourceTO> files) {
+        this.files = files;
     }
 
 }

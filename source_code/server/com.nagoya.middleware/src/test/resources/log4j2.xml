@@ -22,15 +22,15 @@
 	</Appenders>
 
 	<Loggers>
-		<Root level="WARN">
+		<Root level="ERROR">
 			<AppenderRef ref="console" />
 			<!-- <AppenderRef ref="logfile" /> -->
 		</Root>
 
-		<logger name="com.nagoya" level="DEBUG">
+		<logger name="com.nagoya" level="ERROR">
 			<AppenderRef ref="Console" />
 		</logger>
-		<logger name="com.mchange.v2.c3p0" level="DEBUG">
+		<logger name="com.mchange.v2.c3p0" level="ERROR">
 			<AppenderRef ref="Console" />
 		</logger>
 

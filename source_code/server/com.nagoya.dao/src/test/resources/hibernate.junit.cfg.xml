@@ -65,6 +65,7 @@
 		<!-- contract -->
 		<mapping class="com.nagoya.model.dbo.contract.ContractDBO" />
 		<mapping class="com.nagoya.model.dbo.contract.ContractResourceDBO" />
+		<mapping class="com.nagoya.model.dbo.contract.ContractFileDBO" />
 		
 	</session-factory>
 

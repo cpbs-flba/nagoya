@@ -39,7 +39,7 @@ import com.nagoya.model.dbo.person.PersonDBO;
 @Entity(name = "tcontract")
 public class ContractDBO extends DBO {
 
-    private static final long     serialVersionUID  = 1L;
+    private static final long        serialVersionUID  = 1L;
 
     @OneToOne
     @JoinColumn(name = "sender_id")
@@ -51,12 +51,17 @@ public class ContractDBO extends DBO {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status                status;
+    private Status                   status;
 
     @NotAudited
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "contract_id")
     private Set<ContractResourceDBO> contractResources = new HashSet<>();
+
+    @NotAudited
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "contract_id")
+    private Set<ContractFileDBO>     files             = new HashSet<ContractFileDBO>();
 
     public PersonDBO getSender() {
         return sender;
@@ -88,6 +93,14 @@ public class ContractDBO extends DBO {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Set<ContractFileDBO> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<ContractFileDBO> files) {
+        this.files = files;
     }
 
 }

@@ -2,7 +2,7 @@
  * 
  */
 
-package com.nagoya.model.dbo.resource;
+package com.nagoya.model.dbo.contract;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +13,8 @@ import com.nagoya.model.dbo.DBO;
  * @author Florin Bogdan Balint
  *
  */
-@Entity(name = "tgenetic_resource_file")
-public class ResourceFileDBO extends DBO {
+@Entity(name = "tcontract_file")
+public class ContractFileDBO extends DBO {
 
     private static final long serialVersionUID = 1L;
 

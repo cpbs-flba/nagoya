@@ -69,6 +69,7 @@ CREATE TABLE tperson (
   id 					BIGINT NOT NULL DEFAULT nextval ('tperson_seq'),
   email 				TEXT NOT NULL,
   email_confirmed		BOOLEAN NOT NULL DEFAULT FALSE,
+  store_private_keys	BOOLEAN NOT NULL DEFAULT FALSE,
   password 				TEXT NOT NULL, 
   person_type 			TEXT NOT NULL,
   address_id 			BIGINT DEFAULT NULL,
@@ -88,6 +89,7 @@ CREATE TABLE tperson_aud (
   id 					BIGINT NOT NULL DEFAULT nextval ('tperson_aud_seq'),
   email 				TEXT DEFAULT NULL,
   email_confirmed		BOOLEAN DEFAULT NULL,
+  store_private_keys	BOOLEAN NOT NULL DEFAULT FALSE,
   password 				TEXT DEFAULT NULL, 
   person_type 			TEXT DEFAULT NULL,
   address_id 			BIGINT DEFAULT NULL,
@@ -467,4 +469,25 @@ CREATE TABLE tcontract_aud (
   rev 					BIGINT DEFAULT NULL,
   revtype 				SMALLINT DEFAULT NULL,
   PRIMARY KEY (id, rev)
+);
+
+-- ----------------------------------------------
+-- contract_file
+-- ----------------------------------------------
+DROP TABLE IF EXISTS tcontract_file;
+DROP SEQUENCE IF EXISTS tcontract_file_seq;
+
+CREATE SEQUENCE tcontract_file_seq;
+CREATE TABLE tcontract_file (
+  id 					BIGINT NOT NULL DEFAULT nextval ('tcontract_file_seq'),
+  contract_id			BIGINT DEFAULT NULL,
+  name					TEXT DEFAULT NULL,
+  type					TEXT DEFAULT NULL,
+  content				BYTEA DEFAULT NULL,
+  creation_date 		TIMESTAMP(0) DEFAULT NULL,
+  creation_user 		TEXT DEFAULT NULL,
+  modification_date 	TIMESTAMP(0) DEFAULT NULL,
+  modification_user 	TEXT DEFAULT NULL,
+  rev 					BIGINT DEFAULT NULL,
+  PRIMARY KEY (id)
 );

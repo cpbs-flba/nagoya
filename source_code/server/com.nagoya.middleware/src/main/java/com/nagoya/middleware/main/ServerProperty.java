@@ -29,7 +29,10 @@ public enum ServerProperty {
 
     SERVER_HOST_NAME("server.host.name"), //
     SERVER_MAIL_CONFIRMATION_PATH("server.mail.confirmation.path"), //
-    EMAIL_CONFIG_FILENAME("email.config.filename") //
+    EMAIL_CONFIG_FILENAME("email.config.filename"), //
+
+    // BUSINESS LOGIC VALUES BELOW...
+    CONTRACT_EXPIRAETION_TIME("contract.expiration.time")//
     ;
 
     private String property;

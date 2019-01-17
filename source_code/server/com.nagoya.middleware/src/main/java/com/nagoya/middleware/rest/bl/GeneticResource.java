@@ -10,7 +10,7 @@
  * Created by : Florin Bogdan Balint
  */
 
-package com.nagoya.middleware.rest;
+package com.nagoya.middleware.rest.bl;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -26,8 +26,6 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.server.ManagedAsync;
-
-import com.nagoya.middleware.rest.bl.UserRESTResource;
 
 /**
  * REST service for genetic resources.

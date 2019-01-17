@@ -1,3 +1,4 @@
+
 package com.nagoya.model.dbo.person;
 
 import java.util.HashSet;
@@ -28,113 +29,116 @@ import com.nagoya.model.dbo.DBO;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class PersonDBO extends DBO {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-	@Column(name = "email", nullable = false)
-	private String email;
+    @Column(name = "email", nullable = false)
+    private String             email;
 
-	@Column(name = "email_confirmed", nullable = false)
-	private boolean emailConfirmed;
+    @Column(name = "email_confirmed", nullable = false)
+    private boolean            emailConfirmed;
 
-	@Column(name = "password", nullable = false)
-	private String password;
+    @Column(name = "store_private_keys", nullable = false)
+    private boolean            storePrivateKey;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "person_type", nullable = false)
-	private PersonType personType;
+    @Column(name = "password", nullable = false)
+    private String             password;
 
-	@Audited
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "address_id")
-	private AddressDBO address;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "person_type", nullable = false)
+    private PersonType         personType;
 
-	@NotAudited
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "person_id")
-	private Set<PersonKeysDBO> keys = new HashSet<PersonKeysDBO>();
+    @Audited
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "address_id")
+    private AddressDBO         address;
 
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
+    @NotAudited
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "person_id")
+    private Set<PersonKeysDBO> keys             = new HashSet<PersonKeysDBO>();
 
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
 
-	/**
-	 * @return the emailConfirmed
-	 */
-	public boolean isEmailConfirmed() {
-		return emailConfirmed;
-	}
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	/**
-	 * @param emailConfirmed the emailConfirmed to set
-	 */
-	public void setEmailConfirmed(boolean emailConfirmed) {
-		this.emailConfirmed = emailConfirmed;
-	}
+    /**
+     * @return the emailConfirmed
+     */
+    public boolean isEmailConfirmed() {
+        return emailConfirmed;
+    }
 
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
+    /**
+     * @param emailConfirmed the emailConfirmed to set
+     */
+    public void setEmailConfirmed(boolean emailConfirmed) {
+        this.emailConfirmed = emailConfirmed;
+    }
 
-	/**
-	 * @param password the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
 
-	/**
-	 * @return the personType
-	 */
-	public PersonType getPersonType() {
-		return personType;
-	}
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	/**
-	 * @param personType the personType to set
-	 */
-	public void setPersonType(PersonType personType) {
-		this.personType = personType;
-	}
+    /**
+     * @return the personType
+     */
+    public PersonType getPersonType() {
+        return personType;
+    }
 
-	/**
-	 * @return the address
-	 */
-	public AddressDBO getAddress() {
-		return address;
-	}
+    /**
+     * @param personType the personType to set
+     */
+    public void setPersonType(PersonType personType) {
+        this.personType = personType;
+    }
 
-	/**
-	 * @param address the address to set
-	 */
-	public void setAddress(AddressDBO address) {
-		this.address = address;
-	}
+    /**
+     * @return the address
+     */
+    public AddressDBO getAddress() {
+        return address;
+    }
 
-	/**
-	 * @return the keys
-	 */
-	public Set<PersonKeysDBO> getKeys() {
-		return keys;
-	}
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(AddressDBO address) {
+        this.address = address;
+    }
 
-	/**
-	 * @param keys the keys to set
-	 */
-	public void setKeys(Set<PersonKeysDBO> keys) {
-		this.keys = keys;
-	}
+    /**
+     * @return the keys
+     */
+    public Set<PersonKeysDBO> getKeys() {
+        return keys;
+    }
+
+    /**
+     * @param keys the keys to set
+     */
+    public void setKeys(Set<PersonKeysDBO> keys) {
+        this.keys = keys;
+    }
 
 }
