@@ -141,4 +141,18 @@ public class PersonDBO extends DBO {
         this.keys = keys;
     }
 
+    /**
+     * @return the storePrivateKey
+     */
+    public boolean isStorePrivateKey() {
+        return storePrivateKey;
+    }
+
+    /**
+     * @param storePrivateKey the storePrivateKey to set
+     */
+    public void setStorePrivateKey(boolean storePrivateKey) {
+        this.storePrivateKey = storePrivateKey;
+    }
+
 }

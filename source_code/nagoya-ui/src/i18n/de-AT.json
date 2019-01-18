@@ -2,7 +2,8 @@
   "HEADER": {
     "TITLE": "Nagoya Protokoll",
     "SUBTITLE": "Zugang zu genetischen Ressourcen und Benefit Sharing",
-    "SELECT": "Sprache"
+    "SELECT": "Sprache",
+    "ASD": "asd"
   },
   "FOOTER": {
     "SELECT": "Sprache",
@@ -48,8 +49,8 @@
       "PASSWORD_REQUIRED": "Passwort wird benötigt"
     },
     "LOGIN_FORM": {
-      "REGISTRATION_LINK": "Noch kein Konto? Registrieren Sie sich hier",
-      "PASSWORD_RECOVERY": "Passwort vergessen?"
+      "REGISTRATION_LINK": "Noch kein Konto? Registrieren Sie sich hier!",
+      "PASSWORD_RECOVERY": "Passwort rücksetzen"
     },
     "ABOUT": {
       "TITLE": "Über das Nagoya Protokoll",
@@ -58,12 +59,14 @@
     }
   },
   "REGISTRATION": {
+    "STORE_PRIVATE_KEYS": "Ich möchte meine Blockchain-Schlüssel gespeichert haben",
+    "ACCEPT_TERMS": "Ich habe die Benutzungsbedingungen gelesen und akzeptiere diese",
     "FORM": {
       "TITLE": "Anmeldeformular",
       "SUB_TITLE": "Bitte geben Sie Ihre Daten ein, um sich zu registrieren ",
       "PERSON_TYPE": {
         "natural": "Natürliche Person",
-        "legal": "Rechtsperson"
+        "legal": "Juristische Person"
       },
       "MODEL": {
         "LASTNAME": "Nachname",

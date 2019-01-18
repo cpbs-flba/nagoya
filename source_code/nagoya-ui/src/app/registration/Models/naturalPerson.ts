@@ -46,5 +46,21 @@ export const naturalPerson = {
     validation: {
       required: true
     }
+  },
+  storePrivateKey: {
+    label: 'PASSWORD_CONFIRMATION',
+    value: true,
+    type: 'boolean',
+    validation: {
+      required: false
+    }
+  },
+  termsAccepted: {
+    label: '',
+    value: false,
+    type: 'boolean',
+    validation: {
+      required: true
+    }
   }
 };

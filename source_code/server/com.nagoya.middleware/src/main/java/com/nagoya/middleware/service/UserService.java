@@ -18,9 +18,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
+import com.nagoya.blockchain.api.BlockchainDriver;
+import com.nagoya.blockchain.api.Credentials;
+import com.nagoya.common.blockchain.api.impl.BlockchainDriverImpl;
 import com.nagoya.common.crypto.DefaultPasswordEncryptionProvider;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
+import com.nagoya.dao.util.DefaultDBOFiller;
 import com.nagoya.dao.util.StringUtil;
 import com.nagoya.middleware.rest.bl.UserRESTResource;
 import com.nagoya.middleware.util.DefaultDateProvider;
@@ -186,10 +190,13 @@ public class UserService extends ResourceService {
             // set the email confirmation flag
             person.setEmailConfirmed(true);
 
-            // TODO: generate keys and remove mockup
+            BlockchainDriver bl = new BlockchainDriverImpl();
+            Credentials credentials = bl.createCredentials();
+
             PersonKeysDBO pk = new PersonKeysDBO();
-            pk.setPublicKey("GfHq2tTVk9z4eXgyNEBphzvcS6BQfFPmp8U3Ah3V6G63rSd9MsP1PhMSdPsU");
-            pk.setPrivateKey("2mWNaEKEJrtB1rEvHsFx8aQXMJMRX8dFYUe9vrMnsBQW5vL79zphrCsZMfr9Fxb33U");
+            DefaultDBOFiller.fillDefaultDataObjectValues(pk);
+            pk.setPublicKey(credentials.getPublicKey());
+            pk.setPrivateKey(credentials.getPrivateKey());
             person.getKeys().add(pk);
             personDAO.update(person, true);
 
@@ -198,6 +205,9 @@ public class UserService extends ResourceService {
             dto.setPassword(null);
             DefaultReturnObject result = new DefaultReturnObject();
             result.setEntity(dto);
+
+            personDAO.delete(userRequest, true);
+
             return result;
         }
 

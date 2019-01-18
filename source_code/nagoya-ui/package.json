@@ -29,6 +29,7 @@
     "@env/environment": "latest",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
+    "angular": "^1.7.6",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",

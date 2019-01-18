@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package com.nagoya.model.to.person;
 
 import java.io.Serializable;
@@ -14,127 +15,142 @@ import com.nagoya.blockchain.api.Credentials;
  * @author flba
  *
  */
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PersonTO implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String email;
-	/**
-	 * new password
-	 */
-	private String password;
-	/**
-	 * Always use this field for confirmation operations. This should be filled with
-	 * the actual password.
-	 */
-	private String passwordConfirmation;
-	private PersonType personType;
+    private String            email;
+    /**
+     * new password
+     */
+    private String            password;
+    /**
+     * Always use this field for confirmation operations. This should be filled with the actual password.
+     */
+    private String            passwordConfirmation;
+    private PersonType        personType;
 
-	private AddressTO address;
+    private AddressTO         address;
 
-	private Credentials credentials;
+    private Credentials       credentials;
 
-	private Set<PersonKeysTO> keys = new HashSet<PersonKeysTO>();
+    private boolean           storePrivateKey;
 
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
+    private Set<PersonKeysTO> keys             = new HashSet<PersonKeysTO>();
 
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
 
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	/**
-	 * @param password the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
 
-	/**
-	 * @return the passwordConfirmation
-	 */
-	public String getPasswordConfirmation() {
-		return passwordConfirmation;
-	}
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	/**
-	 * @param passwordConfirmation the passwordConfirmation to set
-	 */
-	public void setPasswordConfirmation(String passwordConfirmation) {
-		this.passwordConfirmation = passwordConfirmation;
-	}
+    /**
+     * @return the passwordConfirmation
+     */
+    public String getPasswordConfirmation() {
+        return passwordConfirmation;
+    }
 
-	/**
-	 * @return the personType
-	 */
-	public PersonType getPersonType() {
-		return personType;
-	}
+    /**
+     * @param passwordConfirmation the passwordConfirmation to set
+     */
+    public void setPasswordConfirmation(String passwordConfirmation) {
+        this.passwordConfirmation = passwordConfirmation;
+    }
 
-	/**
-	 * @param personType the personType to set
-	 */
-	public void setPersonType(PersonType personType) {
-		this.personType = personType;
-	}
+    /**
+     * @return the personType
+     */
+    public PersonType getPersonType() {
+        return personType;
+    }
 
-	/**
-	 * 
-	 * @return the address
-	 */
-	public AddressTO getAddress() {
-		return address;
-	}
+    /**
+     * @param personType the personType to set
+     */
+    public void setPersonType(PersonType personType) {
+        this.personType = personType;
+    }
 
-	/**
-	 * 
-	 * @param address the address to set
-	 */
-	public void setAddress(AddressTO address) {
-		this.address = address;
-	}
+    /**
+     * 
+     * @return the address
+     */
+    public AddressTO getAddress() {
+        return address;
+    }
 
-	/**
-	 * @return the credentials
-	 */
-	public Credentials getCredentials() {
-		return credentials;
-	}
+    /**
+     * 
+     * @param address the address to set
+     */
+    public void setAddress(AddressTO address) {
+        this.address = address;
+    }
 
-	/**
-	 * @param credentials the credentials to set
-	 */
-	public void setCredentials(Credentials credentials) {
-		this.credentials = credentials;
-	}
+    /**
+     * @return the credentials
+     */
+    public Credentials getCredentials() {
+        return credentials;
+    }
 
-	/**
-	 * @return the keys
-	 */
-	public Set<PersonKeysTO> getKeys() {
-		return keys;
-	}
+    /**
+     * @param credentials the credentials to set
+     */
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
+    }
 
-	/**
-	 * @param keys the keys to set
-	 */
-	public void setKeys(Set<PersonKeysTO> keys) {
-		this.keys = keys;
-	}
+    /**
+     * @return the keys
+     */
+    public Set<PersonKeysTO> getKeys() {
+        return keys;
+    }
+
+    /**
+     * @param keys the keys to set
+     */
+    public void setKeys(Set<PersonKeysTO> keys) {
+        this.keys = keys;
+    }
+
+    /**
+     * @return the storePrivateKey
+     */
+    public boolean isStorePrivateKey() {
+        return storePrivateKey;
+    }
+
+    /**
+     * @param storePrivateKey the storePrivateKey to set
+     */
+    public void setStorePrivateKey(boolean storePrivateKey) {
+        this.storePrivateKey = storePrivateKey;
+    }
 
 }

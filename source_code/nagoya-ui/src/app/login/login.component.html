@@ -12,8 +12,10 @@
         <div>
           <p><span>{{'LOGIN.ABOUT.CONTENT'|translate}}</span></p>
           <p>
-            Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu
-            feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
+            Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore
+            eu
+            feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum
+            zzril
             delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing
             elit,
             sed diam</p>
@@ -37,12 +39,11 @@
               <span>{{'LOGIN.ERROR.WRONG_DATA'|translate}}</span>
             </div>
 
-            <br/>
+            <br />
 
             <mat-form-field>
-              <input matInput placeholder="{{ 'GENERAL.EMAIL' | translate }}"
-                     formControlName="email" autocomplete="email"
-                     type="text" id="email" name="email">
+              <input matInput placeholder="{{ 'GENERAL.EMAIL' | translate }}" formControlName="email" autocomplete="email"
+                type="text" id="email" name="email">
               <mat-error *ngIf="loginForm.controls.email.valid || loginForm.controls.email.untouched">
                 <span>{{'LOGIN.VALIDATION.EMAIL_REQUIRED'|translate}}</span>
 
@@ -50,49 +51,43 @@
             </mat-form-field>
 
             <mat-form-field>
-              <input matInput placeholder="{{ 'GENERAL.PASSWORD' | translate }}"
-                     formControlName="password" autocomplete="password"
-                     type="password" id="password" name="password">
+              <input matInput placeholder="{{ 'GENERAL.PASSWORD' | translate }}" formControlName="password"
+                autocomplete="password" type="password" id="password" name="password">
               <mat-error *ngIf="loginForm.controls.password.valid || loginForm.controls.password.untouched">
                 <span>{{'LOGIN.VALIDATION.PASSWORD_REQUIRED'|translate}}</span>
               </mat-error>
             </mat-form-field>
 
-
-
-            <button mat-raised-button color="accent" type="submit"
-                    [disabled]="loginRunning || (loginForm.touched && loginForm.invalid)">
+            <button mat-raised-button color="accent" type="submit" [disabled]="loginRunning || (loginForm.touched && loginForm.invalid)">
               {{ 'GENERAL.AUTHENTICATE' | translate }}
             </button>
           </form>
 
-
           <div fxLayout="column" class="loginRegistrationBox">
-          <mat-form-field>
-            <mat-select placeholder="{{'HEADER.SELECT'|translate}}" #langSelect [value]="translate.currentLang"
-                        (selectionChange)="setLanguage(langSelect.value)">
-              <mat-option *ngFor="let lang of i18nService.supportedLanguages" [value]="lang">{{lang}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-            <div>
-              <a class="loginHint"
-                 routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.REGISTRATION_LINK'|translate}}</span>
+
+            <div style="margin: 0 0 1em 0; font-size: 1.2em;">
+              <a class="loginHint" routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.REGISTRATION_LINK'|translate}}</span>
               </a>
             </div>
-            <br/>
-            <div>
-              <a class="loginHint"
-                 routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.PASSWORD_RECOVERY'|translate}}</span></a>
+
+            <div style="margin-bottom: 2em;">
+              <a class="loginHint" routerLink="/register"><span>{{'LOGIN.LOGIN_FORM.PASSWORD_RECOVERY'|translate}}</span></a>
             </div>
+
+            <mat-form-field>
+              <mat-select placeholder="{{'HEADER.SELECT'|translate}}" #langSelect [value]="translate.currentLang"
+                (selectionChange)="setLanguage(langSelect.value)">
+                <mat-option *ngFor="let lang of i18nService.supportedLanguages" [value]="lang">{{lang}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
           </div>
 
         </div>
 
-
       </mat-card-content>
     </mat-card>
-
 
   </div>
 </div>

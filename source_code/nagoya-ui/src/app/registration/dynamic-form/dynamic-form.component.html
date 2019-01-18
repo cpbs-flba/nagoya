@@ -11,7 +11,6 @@
                [type]="property.type" [placeholder]=" 'REGISTRATION.FORM.MODEL.'+property.label | translate">
       </mat-form-field>
 
-
       <mat-form-field *ngSwitchCase="'password'" fxFlex="100">
         <input matInput [formControlName]="property.key" [id]="property.key"
                [type]="property.type" [placeholder]="'REGISTRATION.FORM.MODEL.'+property.label | translate">
@@ -23,10 +22,17 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker startView="year"></mat-datepicker>
       </mat-form-field>
+
     </div>
+
   </div>
+
+  <mat-checkbox formControlName="storePrivateKey"><a target="_blank" routerLink="/terms">{{'REGISTRATION.STORE_PRIVATE_KEYS'|translate}}</a></mat-checkbox>
+
+  <mat-checkbox formControlName="termsAccepted"><a target="_blank" routerLink="/terms">{{'REGISTRATION.ACCEPT_TERMS'|translate}}</a></mat-checkbox>
 
   <p class="submitFormButton">
     <button fxFlex="100" type="submit" mat-raised-button color="accent" [disabled]="form.invalid || spinner"><span>{{'REGISTRATION.FORM.BUTTON.REGISTER' | translate}}</span></button>
   </p>
+
 </form>

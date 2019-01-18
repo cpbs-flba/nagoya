@@ -26,7 +26,7 @@ export const legalPerson = {
   email: {
     label: 'EMAIL',
     value: '',
-    type: 'email',
+    type: 'text',
     validation: {
       required: true
     }
@@ -43,6 +43,22 @@ export const legalPerson = {
     label: 'PASSWORD_CONFIRMATION',
     value: '',
     type: 'password',
+    validation: {
+      required: true
+    }
+  },
+  storePrivateKey: {
+    label: '',
+    value: true,
+    type: 'boolean',
+    validation: {
+      required: false
+    }
+  },
+  termsAccepted: {
+    label: '',
+    value: false,
+    type: 'boolean',
     validation: {
       required: true
     }
