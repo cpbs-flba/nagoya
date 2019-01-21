@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.nagoya.common.crypto.DefaultPasswordEncryptionProvider;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.model.dbo.person.AddressDBO;
@@ -74,8 +75,9 @@ public class DAOTest {
         address.setCity("Vienna");
 
         PersonLegalDBO legalPerson = new PersonLegalDBO();
+        legalPerson.setEmailConfirmed(true);
         legalPerson.setEmail(email);
-        legalPerson.setPassword(email);
+        legalPerson.setPassword(DefaultPasswordEncryptionProvider.encryptPassword(email));
         legalPerson.setAddress(address);
         legalPerson.setName("Legal Corp.");
         legalPerson.setCommercialRegisterNumber("c123");

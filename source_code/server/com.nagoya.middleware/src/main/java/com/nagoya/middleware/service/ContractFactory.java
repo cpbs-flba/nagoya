@@ -15,13 +15,20 @@ import com.nagoya.dao.geneticresource.impl.GeneticResourceDAOImpl;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.StringUtil;
+import com.nagoya.model.dbo.contract.ContractDBO;
+import com.nagoya.model.dbo.contract.ContractFileDBO;
+import com.nagoya.model.dbo.contract.ContractResourceDBO;
 import com.nagoya.model.dbo.contract.Status;
 import com.nagoya.model.exception.BadRequestException;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.NonUniqueResultException;
+import com.nagoya.model.to.contract.ContractFileTO;
 import com.nagoya.model.to.contract.ContractResourceTO;
+import com.nagoya.model.to.contract.ContractTO;
 import com.nagoya.model.to.person.PersonTO;
+import com.nagoya.model.to.person.PersonTransformer;
 import com.nagoya.model.to.resource.GeneticResourceTO;
+import com.nagoya.model.to.resource.GeneticResourceTransformer;
 
 /**
  * @author flba
@@ -99,6 +106,49 @@ public class ContractFactory {
         personDAO.insert(contractDBO, true);
 
         return contractDBO;
+    }
+
+    public ContractTO getContractTO(ContractDBO contractDBO) {
+        if (contractDBO == null) {
+            return null;
+        }
+        ContractTO result = new ContractTO();
+        result.setSender(PersonTransformer.getDTO(contractDBO.getSender()));
+        result.setReceiver(PersonTransformer.getDTO(contractDBO.getReceiver()));
+        result.setConclusionDate(contractDBO.getCreationDate().getTime() + "");
+        result.setContractResources(getContractResourcesTO(contractDBO.getContractResources()));
+        Set<ContractFileDBO> files = contractDBO.getFiles();
+        for (ContractFileDBO contractFileDBO : files) {
+            result.getFiles().add(getContractFileTO(contractFileDBO));
+        }
+        result.setId(contractDBO.getId().toString());
+        result.setStatus(contractDBO.getStatus());
+        return result;
+    }
+
+    private ContractFileTO getContractFileTO(ContractFileDBO contractFileDBO) {
+        if (contractFileDBO == null) {
+            return null;
+        }
+        ContractFileTO result = new ContractFileTO();
+        result.setId(contractFileDBO.getId().longValue());
+        result.setName(contractFileDBO.getName());
+        return result;
+    }
+
+    private Set<ContractResourceTO> getContractResourcesTO(Set<ContractResourceDBO> contractResourcesDBO) {
+        if (contractResourcesDBO == null) {
+            return null;
+        }
+        Set<ContractResourceTO> results = new HashSet<>();
+        for (ContractResourceDBO contractResourceDBO : contractResourcesDBO) {
+            ContractResourceTO toAdd = new ContractResourceTO();
+            toAdd.setAmount(contractResourceDBO.getAmount().doubleValue());
+            toAdd.setMeasuringUnit(contractResourceDBO.getMeasuringUnit());
+            toAdd.setGeneticResource(GeneticResourceTransformer.getDTO(contractResourceDBO.getGeneticResource()));
+            results.add(toAdd);
+        }
+        return results;
     }
 
 }

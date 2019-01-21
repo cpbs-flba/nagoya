@@ -1,5 +1,4 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {I18nService} from '../services/i18n.service';
 import {environment} from '../../environments/environment';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
@@ -14,8 +13,7 @@ import {MediaMatcher} from '@angular/cdk/layout';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(public i18nService: I18nService,
-              public translate: TranslateService,
+  constructor(public translate: TranslateService,
               private router: Router,
               private authenticationService: AuthenticationService) {
   }
@@ -24,11 +22,6 @@ export class HeaderComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.i18nService.init(environment.defaultLanguage, environment.supportedLanguages);
-  }
-
-  setLanguage(language: string) {
-    this.i18nService.language = language;
   }
 
   navigateToHome() {

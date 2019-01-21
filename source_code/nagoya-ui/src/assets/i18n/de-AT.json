@@ -209,6 +209,16 @@
       }
     }
   },
+  "CONTRACTS": {
+    "OVERVIEW": "Vertragsübersicht",
+    "DATE": "Datum",
+    "NOSTATE": "Keine Auswahl",
+    "SENDER": "Sender",
+    "STATUS": "Status",
+    "STATUS_CREATED": "Neu",
+    "STATUS_ACCEPTED": "Abgeschlossen",
+    "STATUS_CANCELLED": "Abgelehnt"
+  },
   "ENUM": {
     "VISIBILITY_TYPES": {
       "PRIVATE": "Privat",

@@ -75,10 +75,9 @@
             </div>
 
             <mat-form-field>
-              <mat-select placeholder="{{'HEADER.SELECT'|translate}}" #langSelect [value]="translate.currentLang"
-                (selectionChange)="setLanguage(langSelect.value)">
-                <mat-option *ngFor="let lang of i18nService.supportedLanguages" [value]="lang">{{lang}}
-                </mat-option>
+              <mat-select [(value)]="selectedLanguage"
+                placeholder="{{'HEADER.SELECT'|translate}}" #langSelect (selectionChange)="translate.use(langSelect.value)">
+                <mat-option *ngFor="let lang of translate.getLangs()" [value]="lang" (select)="lang === translate.currentLang">{{lang}}</mat-option>
               </mat-select>
             </mat-form-field>
 

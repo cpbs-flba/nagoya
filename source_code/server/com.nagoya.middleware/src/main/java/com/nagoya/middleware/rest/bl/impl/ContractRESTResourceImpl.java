@@ -135,6 +135,7 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
      */
     @Override
     public void search(String authorization, String language, String contractStatus, String dateFrom, String dateUntil, AsyncResponse asyncResponse) {
+        LOGGER.debug("Received request.");
         Response response = null;
         Session session = null;
         try {
@@ -147,6 +148,7 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
                 responseBuilder.header(entry.getKey(), entry.getValue());
             }
             response = responseBuilder.build();
+            LOGGER.debug("Request processed succesfully");
         } catch (NotAuthorizedException e) {
             LOGGER.error(e, e);
             response = Response.status(Status.UNAUTHORIZED).build();

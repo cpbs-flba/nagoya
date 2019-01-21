@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
@@ -35,18 +36,18 @@ import com.nagoya.model.dbo.resource.GeneticResourceDBO;
 @Entity(name = "tcontract_resource")
 public class ContractResourceDBO extends DBO {
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
     @NotAudited
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "genetic_resource_id")
-    private GeneticResourceDBO   geneticResource;
+    private GeneticResourceDBO geneticResource;
 
     @Column(name = "amount")
-    private BigDecimal        amount;
+    private BigDecimal         amount;
 
     @Column(name = "measuring_unit")
-    private String            measuringUnit;
+    private String             measuringUnit;
 
     public GeneticResourceDBO getGeneticResource() {
         return geneticResource;

@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.nagoya.dao.util.StringUtil;
+
 /**
  * @author flba
  *
@@ -51,6 +53,9 @@ public class DefaultDateProvider {
      * @return java.util.Date date
      */
     public static Date getDateFromString(String dateAsString) {
+        if (StringUtil.isNullOrBlank(dateAsString)) {
+            return null;
+        }
         String pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         try {
@@ -60,6 +65,16 @@ public class DefaultDateProvider {
             // either it works or not...
         }
         return null;
+    }
+
+    public static String getDateAsString(Date date) {
+        if (date == null) {
+            return null;
+        }
+        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        String result = sdf.format(date);
+        return result;
     }
 
 }

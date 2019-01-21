@@ -4,6 +4,7 @@
 
 package com.nagoya.middleware.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import com.nagoya.model.exception.ResourceOutOfDateException;
 import com.nagoya.model.exception.TimeoutException;
 import com.nagoya.model.to.contract.ContractFileTO;
 import com.nagoya.model.to.contract.ContractFileTransformer;
+import com.nagoya.model.to.contract.ContractTO;
 
 /**
  * @author Florin Bogdan Balint
@@ -51,11 +53,13 @@ public class ContractResourceService extends ResourceService {
     private static final Logger LOGGER = LogManager.getLogger(ContractResourceService.class);
     private Session             session;
     private ContractDAO         contractDAO;
+    private ContractFactory     contractFactory;
 
     public ContractResourceService(Session session) {
         super(session);
         this.session = session;
         this.contractDAO = new ContractDAOImpl(session);
+        this.contractFactory = new ContractFactory(session);
     }
 
     public DefaultReturnObject create(String authorization, String language, com.nagoya.model.to.contract.ContractTO contractTO)
@@ -68,7 +72,6 @@ public class ContractResourceService extends ResourceService {
             throw new BadRequestException("Cannot execute create operation, when the object is null.");
         }
 
-        ContractFactory contractFactory = new ContractFactory(session);
         // also inserts the contract into the DB
         com.nagoya.model.dbo.contract.ContractDBO contractDBO = contractFactory.createDBOContract(onlineUser.getPerson(), contractTO);
 
@@ -148,14 +151,19 @@ public class ContractResourceService extends ResourceService {
             } catch (Exception e) {
                 statusToFilter = null;
             }
-
         }
 
         LOGGER.debug("Searching for contracts");
         List<ContractDBO> results = contractDAO.search(onlineUser.getPerson(), dateFromToFilter, dateUntilToFilter, statusToFilter, 0);
         LOGGER.debug("Results found: " + results.size());
 
-        DefaultReturnObject result = refreshSession(onlineUser, null, null);
+        List<ContractTO> resultTOs = new ArrayList<>();
+        for (ContractDBO contractDBO : results) {
+            ContractTO contractTO = contractFactory.getContractTO(contractDBO);
+            resultTOs.add(contractTO);
+        }
+
+        DefaultReturnObject result = refreshSession(onlineUser, resultTOs, null);
         return result;
     }
 

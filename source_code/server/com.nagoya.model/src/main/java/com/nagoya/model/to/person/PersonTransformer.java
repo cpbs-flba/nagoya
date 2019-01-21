@@ -32,7 +32,8 @@ public final class PersonTransformer {
 
         result.setEmail(dbo.getEmail());
         result.setStorePrivateKey(dbo.isStorePrivateKey());
-        result.setPassword(dbo.getPassword());
+        // ignore the password field
+        // result.setPassword(dbo.getPassword());
         result.setAddress(getDTO(dbo.getAddress()));
         Set<com.nagoya.model.to.person.PersonKeysTO> keysToAdd = getDTO(dbo.getKeys());
         result.getKeys().addAll(keysToAdd);

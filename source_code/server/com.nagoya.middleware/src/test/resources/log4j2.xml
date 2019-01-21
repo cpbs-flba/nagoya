@@ -27,7 +27,7 @@
 			<!-- <AppenderRef ref="logfile" /> -->
 		</Root>
 
-		<logger name="com.nagoya" level="ERROR">
+		<logger name="com.nagoya" level="DEBUG">
 			<AppenderRef ref="Console" />
 		</logger>
 		<logger name="com.mchange.v2.c3p0" level="ERROR">

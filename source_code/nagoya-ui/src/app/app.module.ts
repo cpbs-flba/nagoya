@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule, HttpClient} from '@angular/common/http';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -86,7 +86,7 @@ import {OverviewComponent} from './resource/overview/overview.component';
 // import {RegistrationModule} from './registration/registration.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './i18n/');
+  return new TranslateHttpLoader(http, './assets/i18n/');
 }
 
 @NgModule({
@@ -119,15 +119,14 @@ export function HttpLoaderFactory(http: HttpClient) {
     CookieModule.forRoot(),
     HttpClientModule,
     BrowserAnimationsModule,
-    TranslateModule.forRoot(),
 
-    // TranslateModule.forRoot({
-    //   loader: {
-    //     provide: TranslateLoader,
-    //     useFactory: HttpLoaderFactory,
-    //     deps: [HttpClient]
-    //   },
-    // }),
+     TranslateModule.forRoot({
+       loader: {
+         provide: TranslateLoader,
+         useFactory: HttpLoaderFactory,
+         deps: [HttpClient]
+       },
+    }),
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,

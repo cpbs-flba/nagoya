@@ -41,11 +41,11 @@ public class ContractDBO extends DBO {
 
     private static final long        serialVersionUID  = 1L;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender_id")
     private PersonDBO                sender;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "receiver_id")
     private PersonDBO                receiver;
 

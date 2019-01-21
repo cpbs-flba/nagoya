@@ -32,6 +32,7 @@ public final class ContractFileTransformer {
             return null;
         }
         ContractFileTO result = new ContractFileTO();
+        result.setId(contractFileDBO.getId());
         result.setContent(contractFileDBO.getContent());
         result.setType(contractFileDBO.getType());
         result.setName(contractFileDBO.getName());
