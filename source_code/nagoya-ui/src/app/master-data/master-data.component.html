@@ -1,4 +1,4 @@
-<div class="contentWrapper">
+<div class="contentWrapper" *ngIf="isUserLoggedIn()">
   <h2 class="mat-h2">{{'MASTER_DATA.TITLE'| translate}}</h2>
   <div class="descriptionBlock" fxLayout="column" *ngIf="toggleUpdateData">
     <div class="innerDescriptionBlock" fxLayout="column">

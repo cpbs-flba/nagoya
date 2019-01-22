@@ -211,13 +211,29 @@
   },
   "CONTRACTS": {
     "OVERVIEW": "Contracts Overview",
-    "DATE": "Date",
+    "DATE_FROM": "Date from",
+    "DATE_UNTIL": "Date until",
     "NOSTATE": "Please select",
+    "ROLE": "Rolle",
     "SENDER": "Sender",
+    "RECEIVER": "Receiver",
     "STATUS": "Status",
     "STATUS_CREATED": "Created",
     "STATUS_ACCEPTED": "Accepted",
-    "STATUS_CANCELLED": "Cancelled"
+    "STATUS_CANCELLED": "Cancelled",
+    "QUANTITY": "Quantity",
+    "MEASURING_UNIT": "Measuring unit",
+    "PARTNER": "Business Partners",
+    "RESOURCES": "Genetic Resources"
+  },
+  "MENU": {
+    "GENETIC_RESOURCES": "Genetic Resources",
+    "BLOCKCHAIN_CONTRACTS": "Contracts / Blockchain",
+    "OVERVIEW_CONTRACTS": "My Contracts",
+    "USER_PROFILE": "User profile",
+    "TRADE_CONTRACT": "Trade contract",
+    "TRADE_OFFERS": "Trade offers",
+    "CHANGE_PW": "Change Password"
   },
   "ENUM": {
     "VISIBILITY_TYPES": {

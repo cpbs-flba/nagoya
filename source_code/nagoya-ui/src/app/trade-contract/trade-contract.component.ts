@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {ResourceFile} from '../model/resourceFile';
 import {ResourceService} from '../services/resource.service';
 import {GeneticResource} from '../model/geneticResource';
+import { Router } from '@angular/router';
+import { AuthenticationService } from '../core';
 
 @Component({
   selector: 'app-trade-contract',
@@ -13,16 +15,24 @@ export class TradeContractComponent implements OnInit {
   geneticResources: GeneticResource [];
   attachments: ResourceFile[] = [];
 
-
-  constructor(private resourceService: ResourceService) { }
+  constructor(private resourceService: ResourceService,
+    private authenticationService: AuthenticationService,
+    private router: Router) { }
 
   ngOnInit() {
+    if (!this.isUserLoggedIn()) {
+      this.router.navigate(['login']);
+    }
     this.resourceService.getAll().subscribe(response => {
       this.geneticResources = response;
     }, error => {
       //TODO
       console.log(error);
     });
+  }
+
+  isUserLoggedIn() {
+    return this.authenticationService.isAuthenticated();
   }
 
   addAttachment(event: any) {

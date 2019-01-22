@@ -1,15 +1,13 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IncompatibleBrowserService } from './services/incompatible-browser.service';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CookiesDialogComponent } from './cookies-dialog/cookies-dialog.component';
 import { CookieAcceptedService } from './services/cookie-accepted.service';
 import { ServerConfigService } from './services/serverconfig.service';
 import { ProgressService } from './services/progress.service';
-import {AuthenticationService} from './core';
+import { AuthenticationService } from './core';
 import { TranslateService } from '@ngx-translate/core';
 
-import deAT from '../assets/i18n/de-AT.json';
-import enUS from '../assets/i18n/en-US.json';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +16,8 @@ import enUS from '../assets/i18n/en-US.json';
 })
 export class AppComponent implements OnInit {
 
-  title = 'Nagoya UI';
-
   constructor(
-    public translateService: TranslateService,
+    public translate: TranslateService,
     private incompatobleBrowserService: IncompatibleBrowserService,
     private cookieService: CookieAcceptedService,
     private serverConfigService: ServerConfigService,
@@ -30,27 +26,23 @@ export class AppComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {
     this.handleCookies();
-    incompatobleBrowserService.verifyBrowser();
+    this.incompatobleBrowserService.verifyBrowser();
     this.serverConfigService.pingServer();
 
-    // translate service
-    translateService.setTranslation('English', enUS);
-    translateService.setTranslation('Deutsch', deAT);
-    translateService.setDefaultLang('English');
-    
-    const browserLang = translateService.getBrowserLang();
+    translate.addLangs(['English', 'Deutsch']);
+    translate.setDefaultLang('English');
+
+    const browserLang = translate.getBrowserLang();
     if (browserLang.startsWith('de')) {
-      translateService.use('Deutsch');
-      translateService.currentLang = 'Deutsch';
+      translate.use('Deutsch');
     } else {
-      translateService.use('English');
-      translateService.currentLang = 'English';
+      translate.use('English');
     }
   }
 
   ngOnInit(): void {
   }
- 
+
   handleCookies() {
     const cookiesAllowed = this.cookieService.areCookiesAllowed();
     if (!cookiesAllowed) {

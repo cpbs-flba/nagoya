@@ -1,30 +1,30 @@
 // angular components
-import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {BrowserModule} from '@angular/platform-browser';
-import {HttpClientModule, HttpClient} from '@angular/common/http';
-import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {FlexLayoutModule} from '@angular/flex-layout';
-import {MatJumbotronModule} from '@angular-material-extensions/jumbotron';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatJumbotronModule } from '@angular-material-extensions/jumbotron';
 // ngx
-import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // own components
-import {AboutComponent} from './about/about.component';
-import {LegalComponent} from './legal/legal.component';
-import {TermsComponent} from './terms/terms.component';
-import {IncompatibleBrowserComponent} from './incompatible-browser/incompatible-browser.component';
-import {CookiesDialogComponent} from './cookies-dialog/cookies-dialog.component';
+import { AboutComponent } from './about/about.component';
+import { LegalComponent } from './legal/legal.component';
+import { TermsComponent } from './terms/terms.component';
+import { IncompatibleBrowserComponent } from './incompatible-browser/incompatible-browser.component';
+import { CookiesDialogComponent } from './cookies-dialog/cookies-dialog.component';
 
 // material
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import {
-  DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE,
+  MAT_DATE_LOCALE,
   MatAutocompleteModule,
   MatBadgeModule,
   MatBottomSheetModule,
@@ -61,19 +61,19 @@ import {
   MatTooltipModule,
   MatTreeModule,
 } from '@angular/material';
-import {CookieModule} from 'ngx-cookie';
-import {ProgressComponent} from './progress/progress.component';
-import {FooterComponent} from './footer/footer.component';
-import {HeaderComponent} from './header/header.component';
-import {LoginComponent} from './login/login.component';
-import {CoreModule} from './core';
-import {HomeComponent} from './home/home.component';
-import {CommonModule} from '@angular/common';
-import {ToastrModule} from 'ngx-toastr';
-import {RegistrationComponent} from './registration/registration.component';
-import {DynamicFormComponent} from './registration/dynamic-form/dynamic-form.component';
-import {ConfirmationComponent} from './confirmation/confirmation.component';
-import {MatMomentDateModule} from '@angular/material-moment-adapter';
+import { CookieModule } from 'ngx-cookie';
+import { ProgressComponent } from './progress/progress.component';
+import { FooterComponent } from './footer/footer.component';
+import { HeaderComponent } from './header/header.component';
+import { LoginComponent } from './login/login.component';
+import { CoreModule } from './core';
+import { HomeComponent } from './home/home.component';
+import { CommonModule } from '@angular/common';
+import { ToastrModule } from 'ngx-toastr';
+import { RegistrationComponent } from './registration/registration.component';
+import { DynamicFormComponent } from './registration/dynamic-form/dynamic-form.component';
+import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { ResourceComponent } from './resource/resource.component';
 import { CreationComponent } from './resource/creation/creation.component';
 import { MasterDataComponent } from './master-data/master-data.component';
@@ -81,7 +81,7 @@ import { TradeOfferComponent } from './trade-offer/trade-offer.component';
 import { TradeOverviewComponent } from './trade-overview/trade-overview.component';
 import { TradeContractComponent } from './trade-contract/trade-contract.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
-import {OverviewComponent} from './resource/overview/overview.component';
+import { OverviewComponent } from './resource/overview/overview.component';
 
 // import {RegistrationModule} from './registration/registration.module';
 
@@ -120,12 +120,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     HttpClientModule,
     BrowserAnimationsModule,
 
-     TranslateModule.forRoot({
-       loader: {
-         provide: TranslateLoader,
-         useFactory: HttpLoaderFactory,
-         deps: [HttpClient]
-       },
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      },
     }),
     MatFormFieldModule,
     MatInputModule,
@@ -203,7 +203,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatTreeModule
   ],
   entryComponents: [CookiesDialogComponent],
-  providers: [{provide: MAT_DATE_LOCALE, useValue: 'de-AT'}],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'de-DE' }],
   bootstrap: [AppComponent]
 })
 export class AppModule {

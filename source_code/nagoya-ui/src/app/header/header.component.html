@@ -14,13 +14,15 @@
           <mat-icon>menu</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item [routerLink]="['./home']">Home</button>
-          <button mat-menu-item [routerLink]="['./resource']">Genetic Resources</button>
-          <button mat-menu-item [routerLink]="['./trade/contract']">Trade Contract</button>
-          <button mat-menu-item [routerLink]="['./trade/overview']">Trade Overview</button>
-          <button mat-menu-item [routerLink]="['./trade/offers']">Trade Offers</button>
-          <button mat-menu-item [routerLink]="['./masterData']">Master Data</button>
-          <button mat-menu-item [routerLink]="['./change/password']">Change Password</button>
+          <button mat-menu-item [routerLink]="['./home']" *ngIf="!isLoggedIn()">{{'MENU.HOME'|translate}}</button>
+          <button mat-menu-item [routerLink]="['./resource']">{{'MENU.GENETIC_RESOURCES'|translate}}</button>
+          <button mat-menu-item [routerLink]="['./resource']">{{'MENU.BLOCKCHAIN_CONTRACTS'|translate}}</button>
+
+          <button mat-menu-item [routerLink]="['./trade/contract']" *ngIf="isLoggedIn()">{{'MENU.TRADE_CONTRACT' | translate}}</button>
+          <button mat-menu-item [routerLink]="['./trade/overview']" *ngIf="isLoggedIn()">{{'MENU.OVERVIEW_CONTRACTS' | translate}}</button>
+          <button mat-menu-item [routerLink]="['./trade/offers']" *ngIf="isLoggedIn()">{{'MENU.TRADE_OFFERS' | translate}}</button>
+          <button mat-menu-item [routerLink]="['./masterData']" *ngIf="isLoggedIn()">{{'MENU.USER_PROFILE' | translate}}</button>
+          <button mat-menu-item [routerLink]="['./change/password']" *ngIf="isLoggedIn()">{{'MENU.CHANGE_PW' | translate}}</button>
         </mat-menu>
       </div>
 

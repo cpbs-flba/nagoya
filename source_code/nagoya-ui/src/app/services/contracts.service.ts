@@ -19,9 +19,12 @@ export class ContractsService {
     public tokenService: TokenService) {
   }
 
-  public getAll(): Observable<any> {
-    console.log('Requesting: ' + environment.serverUrl + 'contracts/');
-    return this.http.get(environment.serverUrl + 'contracts/', {
+  public getAll(dateFrom, dateUntil, status): Observable<any> {
+    let requestUrl = environment.serverUrl + 'contracts?';
+    requestUrl += 'status=' + status + '&';
+    requestUrl += 'date-from=' + dateFrom + '&';
+    requestUrl += 'date-until=' + dateUntil;
+    return this.http.get(requestUrl, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': this.tokenService.getToken() }),
       observe: 'response'
     }).pipe(
@@ -29,7 +32,6 @@ export class ContractsService {
         // verify status
         this.tokenService.setToken(result.headers.get('Authorization'));
         this.contracts = result.body;
-        console.log(result.body);
       }));
   }
 

@@ -126,7 +126,7 @@ public final class PersonTransformer {
             }
         }
 
-        dbo.setEmail(dto.getEmail());
+        dbo.setEmail(dto.getEmail().toLowerCase());
         dbo.setPassword(dto.getPassword());
         dbo.setStorePrivateKey(dto.isStorePrivateKey());
         dbo.setAddress(getDBO(dbo.getAddress(), dto.getAddress()));

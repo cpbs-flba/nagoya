@@ -78,7 +78,7 @@ public class UserService extends ResourceService {
 
         String email = person.getEmail();
 
-        com.nagoya.model.dbo.person.PersonDBO existentPerson = personDAO.findPersonForEmail(email);
+        com.nagoya.model.dbo.person.PersonDBO existentPerson = personDAO.findPersonForEmail(email.toLowerCase());
         if (existentPerson == null) {
             throw new NotAuthorizedException("Invalid email/password combination.");
         }
