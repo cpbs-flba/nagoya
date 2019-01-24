@@ -177,6 +177,7 @@ CREATE TABLE tonline_user (
   session_token			TEXT NOT NULL,
   private_key 			TEXT NOT NULL,
   expiration_date		TIMESTAMP(0) NOT NULL,
+  blockchain_key		TEXT DEFAULT NULL,
   creation_date 		TIMESTAMP(0) DEFAULT NULL,
   creation_user 		TEXT DEFAULT NULL,
   modification_date 	TIMESTAMP(0) DEFAULT NULL,

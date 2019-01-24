@@ -5,13 +5,14 @@
 package com.nagoya.middleware.service;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -144,19 +145,29 @@ public abstract class ResourceService {
      */
     public String updateSession(OnlineUserDBO onlineUser)
         throws InvalidObjectException, ResourceOutOfDateException {
-        // step 1: create new session
-        String sessionToken = DefaultIDGenerator.generateRandomID();
-        LOGGER.debug("Created token: " + sessionToken);
-        Key key = MacProvider.generateKey();
-        String privateKey = new String(Base64.getEncoder().encode(key.getEncoded()), StandardCharsets.UTF_8);
+        // step 1: get the secret key or create a new one
+        Key secretKey = null;
+
+        String privateKey = onlineUser.getPrivateKey();
+        if (StringUtil.isNullOrBlank(privateKey)) {
+            secretKey = MacProvider.generateKey();
+            privateKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+        } else {
+            byte[] decodedPrivateKey = Base64.getDecoder().decode(privateKey);
+            secretKey = new SecretKeySpec(decodedPrivateKey, SignatureAlgorithm.HS512.getJcaName());
+        }
 
         // append the deadline to the token
-        Date deadline = DefaultDateProvider.getDeadline(10);
+        // default deadline is 30 minutes
+        Date deadline = DefaultDateProvider.getDeadline(30);
         long time = deadline.getTime();
         Map<String, Object> claims = new HashMap<>();
         claims.put("deadline", time);
 
-        String jsonWebToken = Jwts.builder().setClaims(claims).setSubject(sessionToken).signWith(SignatureAlgorithm.HS512, key).compact();
+        // the session token is always random
+        String sessionToken = DefaultIDGenerator.generateRandomID();
+        LOGGER.debug("Created token: " + sessionToken);
+        String jsonWebToken = Jwts.builder().setClaims(claims).setSubject(sessionToken).signWith(SignatureAlgorithm.HS512, secretKey).compact();
 
         // persist
         onlineUser.setExpirationDate(deadline);

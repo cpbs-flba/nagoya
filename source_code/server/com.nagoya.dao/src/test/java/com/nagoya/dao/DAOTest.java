@@ -58,6 +58,8 @@ public class DAOTest {
 
             session.createNativeQuery("DELETE FROM tcontract_file").executeUpdate();
 
+            session.createNativeQuery("DELETE FROM tonline_user").executeUpdate();
+
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();

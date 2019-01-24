@@ -1,5 +1,13 @@
-/**
+/*
+ * (C) Copyright 2004 - 2019 CPB Software AG
+ * 1020 Wien, Vorgartenstrasse 206c
+ * All rights reserved.
  * 
+ * This software is provided by the copyright holders and contributors "as is". 
+ * In no event shall the copyright owner or contributors be liable for any direct,
+ * indirect, incidental, special, exemplary, or consequential damages.
+ * 
+ * Created by : Florin Bogdan Balint
  */
 
 package com.nagoya.middleware.service;
@@ -13,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +30,7 @@ import org.hibernate.Session;
 import com.nagoya.blockchain.api.BlockchainDriver;
 import com.nagoya.blockchain.api.Credentials;
 import com.nagoya.common.blockchain.api.impl.BlockchainDriverImpl;
+import com.nagoya.common.crypto.AESEncryptionProvider;
 import com.nagoya.common.crypto.DefaultPasswordEncryptionProvider;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
@@ -72,18 +82,20 @@ public class UserService extends ResourceService {
         // this.blockchainHelper = new BlockchainHelper();
     }
 
-    public DefaultReturnObject login(PersonTO person)
-        throws NotAuthorizedException, BadRequestException, ConflictException, ForbiddenException {
-        validateCredentialsExist(person);
+    public DefaultReturnObject login(PersonTO personTO)
+        throws NotAuthorizedException, BadRequestException, ConflictException, ForbiddenException, InvalidObjectException,
+        ResourceOutOfDateException {
+        validateCredentialsExist(personTO);
 
-        String email = person.getEmail();
+        String email = personTO.getEmail();
 
         com.nagoya.model.dbo.person.PersonDBO existentPerson = personDAO.findPersonForEmail(email.toLowerCase());
         if (existentPerson == null) {
             throw new NotAuthorizedException("Invalid email/password combination.");
         }
 
-        boolean passwordCorrect = DefaultPasswordEncryptionProvider.isPasswordCorrect(existentPerson.getPassword(), person.getPassword());
+        String enteredPassword = personTO.getPassword();
+        boolean passwordCorrect = DefaultPasswordEncryptionProvider.isPasswordCorrect(existentPerson.getPassword(), enteredPassword);
         if (!passwordCorrect) {
             throw new NotAuthorizedException("Invalid email/password combination.");
         }
@@ -93,7 +105,30 @@ public class UserService extends ResourceService {
             throw new ForbiddenException();
         }
 
+        // login was okay, create the session and the online user
+        OnlineUserDBO onlineUserDBO = createSession(existentPerson);
+
+        if (existentPerson.isStorePrivateKey()) {
+            Set<PersonKeysDBO> keys = existentPerson.getKeys();
+            for (PersonKeysDBO personKeysDBO : keys) {
+                String privateKey = personKeysDBO.getPrivateKey();
+                if (StringUtil.isNullOrBlank(privateKey)) {
+                    continue;
+                }
+
+                String decryptedBlockchainPrivateKey = AESEncryptionProvider.decrypt(privateKey, enteredPassword);
+                if (StringUtil.isNotNullOrBlank(decryptedBlockchainPrivateKey)) {
+                    // this is the private key for the blockchain, we need to save it to the session
+                    String encryptedBlockchainPrivateKey = AESEncryptionProvider.encrypt(decryptedBlockchainPrivateKey,
+                        onlineUserDBO.getPrivateKey());
+                    onlineUserDBO.setBlockchainKey(encryptedBlockchainPrivateKey);
+                    personDAO.update(onlineUserDBO, true);
+                }
+            }
+        }
+
         // login was okay, return the user object
+
         PersonTO dto = PersonTransformer.getDTO(existentPerson);
         // hide the password hash
         dto.setPassword(null);
@@ -101,8 +136,7 @@ public class UserService extends ResourceService {
         result.setEntity(dto);
 
         // also set the JSON web token in the bearer authorization
-        String jsonWebToken = createSession(existentPerson);
-        String headerValue = UserRESTResource.HEADER_AUTHORIZATION_BEARER + jsonWebToken;
+        String headerValue = UserRESTResource.HEADER_AUTHORIZATION_BEARER + onlineUserDBO.getJsonWebToken();
         result.getHeader().put(UserRESTResource.HEADER_AUTHORIZATION, headerValue);
 
         return result;
@@ -117,6 +151,16 @@ public class UserService extends ResourceService {
         String plainPassword = toRegister.getPassword();
         String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(plainPassword);
         toRegister.setPassword(encryptPassword);
+
+        BlockchainDriver bl = new BlockchainDriverImpl();
+        Credentials credentials = bl.createCredentials();
+
+        PersonKeysDBO pk = new PersonKeysDBO();
+        DefaultDBOFiller.fillDefaultDataObjectValues(pk);
+        pk.setPublicKey(credentials.getPublicKey());
+        String privateKeyEncrypted = AESEncryptionProvider.encrypt(credentials.getPrivateKey(), plainPassword);
+        pk.setPrivateKey(privateKeyEncrypted);
+        toRegister.getKeys().add(pk);
 
         // persist into the DB
         com.nagoya.model.dbo.person.PersonDBO registered = personDAO.register(toRegister);
@@ -189,15 +233,6 @@ public class UserService extends ResourceService {
             com.nagoya.model.dbo.person.PersonDBO person = userRequest.getPerson();
             // set the email confirmation flag
             person.setEmailConfirmed(true);
-
-            BlockchainDriver bl = new BlockchainDriverImpl();
-            Credentials credentials = bl.createCredentials();
-
-            PersonKeysDBO pk = new PersonKeysDBO();
-            DefaultDBOFiller.fillDefaultDataObjectValues(pk);
-            pk.setPublicKey(credentials.getPublicKey());
-            pk.setPrivateKey(credentials.getPrivateKey());
-            person.getKeys().add(pk);
             personDAO.update(person, true);
 
             PersonTO dto = PersonTransformer.getDTO(person);
@@ -220,10 +255,15 @@ public class UserService extends ResourceService {
             if (personTO == null) {
                 throw new BadRequestException();
             }
-            String newPassword = personTO.getPassword();
-            String newEncryptedPassword = DefaultPasswordEncryptionProvider.encryptPassword(newPassword);
+
+            String newEnteredPassword = personTO.getPassword();
+            String newEncryptedPassword = DefaultPasswordEncryptionProvider.encryptPassword(newEnteredPassword);
             com.nagoya.model.dbo.person.PersonDBO person = userRequest.getPerson();
             person.setPassword(newEncryptedPassword);
+
+            if (person.isStorePrivateKey()) {
+                // TODO
+            }
             personDAO.update(person, true);
         }
 
@@ -241,7 +281,7 @@ public class UserService extends ResourceService {
         return null;
     }
 
-    private String createSession(com.nagoya.model.dbo.person.PersonDBO person) {
+    private OnlineUserDBO createSession(com.nagoya.model.dbo.person.PersonDBO person) {
         // step 1: create new session
         String sessionToken = DefaultIDGenerator.generateRandomID();
         LOGGER.debug("Created token: " + sessionToken);
@@ -262,10 +302,12 @@ public class UserService extends ResourceService {
         onlineUser.setExpirationDate(deadline);
         onlineUser.setPrivateKey(privateKey);
         onlineUser.setSessionToken(sessionToken);
+        onlineUser.setJsonWebToken(jsonWebToken);
+
         personDAO.removeOldSessions(person);
         personDAO.insert(onlineUser, true);
 
-        return jsonWebToken;
+        return onlineUser;
     }
 
     public static String checkSignature(String token, String privateKey)
@@ -308,7 +350,8 @@ public class UserService extends ResourceService {
     }
 
     public DefaultReturnObject delete(String authorization, String language)
-        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException,
+        ResourceOutOfDateException {
         OnlineUserDBO onlineUser = validateSession(authorization);
         com.nagoya.model.dbo.person.PersonDBO person = onlineUser.getPerson();
 
@@ -328,10 +371,7 @@ public class UserService extends ResourceService {
         mailService.sendDeleteAccountMail(email, token, expirationDate);
 
         // also set the JSON web token in the bearer authorization
-        DefaultReturnObject result = new DefaultReturnObject();
-        String newToken = createSession(person);
-        String headerValue = UserRESTResource.HEADER_AUTHORIZATION_BEARER + newToken;
-        result.getHeader().put(UserRESTResource.HEADER_AUTHORIZATION, headerValue);
+        DefaultReturnObject result = refreshSession(onlineUser, null, null);
         return result;
     }
 

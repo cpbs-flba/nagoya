@@ -87,7 +87,8 @@ public class GeneticResourceService extends ResourceService {
             throw new BadRequestException("Resource ID and/or File ID is invalid.");
         }
 
-        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
+        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong,
+            com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
 
         if (dbo == null) {
             throw new NotFoundException();
@@ -138,7 +139,8 @@ public class GeneticResourceService extends ResourceService {
         } catch (NumberFormatException e) {
             throw new BadRequestException("Resource ID and/or File ID is invalid.");
         }
-        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
+        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong,
+            com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
 
         if (dbo == null) {
             throw new NotFoundException();
@@ -168,7 +170,8 @@ public class GeneticResourceService extends ResourceService {
         } catch (NumberFormatException e) {
             throw new BadRequestException("Resource ID and/or File ID is invalid.");
         }
-        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
+        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong,
+            com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
 
         if (dbo == null) {
             throw new NotFoundException();
@@ -206,7 +209,8 @@ public class GeneticResourceService extends ResourceService {
         } catch (NumberFormatException e) {
             throw new BadRequestException("Resource ID and/or File ID is invalid.");
         }
-        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
+        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong,
+            com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
 
         if (dbo == null) {
             throw new NotFoundException();
@@ -237,7 +241,8 @@ public class GeneticResourceService extends ResourceService {
         } catch (NumberFormatException e) {
             throw new BadRequestException("Resource ID and/or File ID is invalid.");
         }
-        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong, com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
+        GeneticResourceDBO dbo = (GeneticResourceDBO) geneticResourceDAO.find(resourceIdAsLong,
+            com.nagoya.model.dbo.resource.GeneticResourceDBO.class);
 
         if (dbo == null) {
             throw new NotFoundException();
