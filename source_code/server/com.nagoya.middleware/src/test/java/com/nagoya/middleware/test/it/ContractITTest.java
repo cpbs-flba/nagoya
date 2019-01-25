@@ -20,6 +20,7 @@ import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.middleware.test.base.RestBaseTest;
 import com.nagoya.model.dbo.person.PersonLegalDBO;
 import com.nagoya.model.dbo.resource.GeneticResourceDBO;
+import com.nagoya.model.dbo.resource.VisibilityType;
 import com.nagoya.model.to.contract.ContractResourceTO;
 import com.nagoya.model.to.contract.ContractTO;
 import com.nagoya.model.to.person.PersonTO;
@@ -43,7 +44,7 @@ public class ContractITTest extends RestBaseTest {
         PersonLegalDBO p1 = insertDummyLegalPerson();
 
         // insert the genetic resource
-        GeneticResourceDBO insertedGeneticResource = insertTestGeneticResource(getSession(), p1, "bla123");
+        GeneticResourceDBO insertedGeneticResource = insertTestGeneticResource(getSession(), p1, "bla123", VisibilityType.PRIVATE);
 
         // now login
         String targetUrl = serverURL + "/users/login";

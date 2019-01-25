@@ -152,15 +152,19 @@ public class UserService extends ResourceService {
         String encryptPassword = DefaultPasswordEncryptionProvider.encryptPassword(plainPassword);
         toRegister.setPassword(encryptPassword);
 
-        BlockchainDriver bl = new BlockchainDriverImpl();
-        Credentials credentials = bl.createCredentials();
+        // generate and store the keys only if the person wants it
+        // otherwise they are generated upon account confirmation
+        if (toRegister.isStorePrivateKey()) {
+            BlockchainDriver bl = new BlockchainDriverImpl();
+            Credentials credentials = bl.createCredentials();
 
-        PersonKeysDBO pk = new PersonKeysDBO();
-        DefaultDBOFiller.fillDefaultDataObjectValues(pk);
-        pk.setPublicKey(credentials.getPublicKey());
-        String privateKeyEncrypted = AESEncryptionProvider.encrypt(credentials.getPrivateKey(), plainPassword);
-        pk.setPrivateKey(privateKeyEncrypted);
-        toRegister.getKeys().add(pk);
+            PersonKeysDBO pk = new PersonKeysDBO();
+            DefaultDBOFiller.fillDefaultDataObjectValues(pk);
+            pk.setPublicKey(credentials.getPublicKey());
+            String privateKeyEncrypted = AESEncryptionProvider.encrypt(credentials.getPrivateKey(), plainPassword);
+            pk.setPrivateKey(privateKeyEncrypted);
+            toRegister.getKeys().add(pk);
+        }
 
         // persist into the DB
         com.nagoya.model.dbo.person.PersonDBO registered = personDAO.register(toRegister);
@@ -212,6 +216,7 @@ public class UserService extends ResourceService {
 
     public DefaultReturnObject confirmRequest(String token, PersonTO personTO)
         throws TimeoutException, BadRequestException, ConflictException, InvalidObjectException, ResourceOutOfDateException {
+
         if (StringUtil.isNullOrBlank(token)) {
             throw new BadRequestException();
         }
@@ -221,36 +226,55 @@ public class UserService extends ResourceService {
             throw new BadRequestException();
         }
 
+        // we found the request, now we have to delete it
+        com.nagoya.model.dbo.person.PersonDBO person = userRequest.getPerson();
+        personDAO.delete(userRequest, true);
+
         Date expirationDate = userRequest.getExpirationDate();
         Date currentDate = Calendar.getInstance().getTime();
 
+        // if the user request expired, then we are done here
         if (expirationDate.before(currentDate)) {
-            personDAO.delete(userRequest, true);
             throw new TimeoutException();
         }
 
+        // handle user registration request
         if (userRequest.getRequestType().equals(RequestType.REGISTRATION)) {
-            com.nagoya.model.dbo.person.PersonDBO person = userRequest.getPerson();
             // set the email confirmation flag
             person.setEmailConfirmed(true);
+            BlockchainDriver bl = new BlockchainDriverImpl();
+            Credentials credentials = bl.createCredentials();
+            if (person.isStorePrivateKey() == false) {
+
+                PersonKeysDBO pk = new PersonKeysDBO();
+                DefaultDBOFiller.fillDefaultDataObjectValues(pk);
+                pk.setPublicKey(credentials.getPublicKey());
+                person.getKeys().add(pk);
+            }
+
             personDAO.update(person, true);
 
             PersonTO dto = PersonTransformer.getDTO(person);
             // hide the password hash
             dto.setPassword(null);
+            if (person.isStorePrivateKey() == false) {
+                dto.getKeys().iterator().next().setPrivateKey(credentials.getPrivateKey());
+            } else {
+                dto.getKeys().iterator().next().setPrivateKey(null);
+            }
             DefaultReturnObject result = new DefaultReturnObject();
             result.setEntity(dto);
-
-            personDAO.delete(userRequest, true);
 
             return result;
         }
 
+        // handle the account removal request
         if (userRequest.getRequestType().equals(RequestType.ACCOUNT_REMOVAL)) {
-            com.nagoya.model.dbo.person.PersonDBO person = userRequest.getPerson();
             personDAO.delete(person);
+            return null;
         }
 
+        // handle password recovery request
         if (userRequest.getRequestType().equals(RequestType.PASSWORD_RECOVERY)) {
             if (personTO == null) {
                 throw new BadRequestException();
@@ -258,13 +282,28 @@ public class UserService extends ResourceService {
 
             String newEnteredPassword = personTO.getPassword();
             String newEncryptedPassword = DefaultPasswordEncryptionProvider.encryptPassword(newEnteredPassword);
-            com.nagoya.model.dbo.person.PersonDBO person = userRequest.getPerson();
             person.setPassword(newEncryptedPassword);
 
+            // we need new credentials for the blockchain and encrypt them with the new password
             if (person.isStorePrivateKey()) {
-                // TODO
+                BlockchainDriver bl = new BlockchainDriverImpl();
+                Credentials credentials = bl.createCredentials();
+
+                PersonKeysDBO pk = new PersonKeysDBO();
+                DefaultDBOFiller.fillDefaultDataObjectValues(pk);
+                pk.setPublicKey(credentials.getPublicKey());
+                String privateKeyEncrypted = AESEncryptionProvider.encrypt(credentials.getPrivateKey(), newEnteredPassword);
+                pk.setPrivateKey(privateKeyEncrypted);
+                person.getKeys().add(pk);
             }
             personDAO.update(person, true);
+
+            // hide the password hash
+            PersonTO dto = PersonTransformer.getDTO(person);
+            dto.setPassword(null);
+            DefaultReturnObject result = new DefaultReturnObject();
+            result.setEntity(dto);
+            return result;
         }
 
         if (userRequest.getRequestType().equals(RequestType.CONTRACT_ACCEPTANCE)) {

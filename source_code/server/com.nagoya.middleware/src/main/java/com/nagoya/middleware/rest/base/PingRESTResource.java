@@ -7,7 +7,7 @@
  * In no event shall the copyright owner or contributors be liable for any direct,
  * indirect, incidental, special, exemplary, or consequential damages.
  * 
- * Created by : flba
+ * Created by : Florin Bogdan Balint
  */
 
 package com.nagoya.middleware.rest.base;

@@ -127,7 +127,8 @@ public class ContractResourceService extends ResourceService {
 
         Status status = contractToDelete.getStatus();
         if (status.equals(Status.CREATED)) {
-            contractDAO.delete(contractToDelete, true);
+            contractToDelete.setStatus(Status.CANCELLED);
+            contractDAO.update(contractToDelete, true);
         } else {
             throw new ForbiddenException("Cannot delete contract which was already accepted or is already cancelled.");
         }

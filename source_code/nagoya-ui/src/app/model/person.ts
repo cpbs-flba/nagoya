@@ -4,5 +4,9 @@ class Person {
   passwordConfirmation: string;
   personType: string;
   address: Address;
-  
+
+  keys: PersonKeys;
+
+  // optional parameter
+  storePrivateKey?: boolean;
 }

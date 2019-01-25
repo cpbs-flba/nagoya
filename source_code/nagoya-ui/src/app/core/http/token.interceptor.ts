@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {TokenService} from '../authentication/token.service';
-import {tap} from 'rxjs/internal/operators';
+import { Injectable } from '@angular/core';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { TokenService } from '../authentication/token.service';
+import { tap } from 'rxjs/internal/operators';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -11,8 +11,8 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let token = this.tokenService.getToken();
-
     if (token) {
+      // console.log('Token is: ' + token);
       request = request.clone({
         headers: request.headers.set('Authorization', token)
       });

@@ -42,9 +42,10 @@
 			<modules>
 				<module>com.nagoya.common</module>
 				<module>com.nagoya.model</module>
-				<module>com.nagoya.dao</module>
 				<module>com.nagoya.blockchain.api</module>
 				<module>com.nagoya.blockchain.impl</module>
+				<module>com.nagoya.dao</module>
+				<module>com.nagoya.dao.test</module>
 				<module>com.nagoya.middleware</module>
 			</modules>
 		</profile>

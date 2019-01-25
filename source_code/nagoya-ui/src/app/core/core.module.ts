@@ -9,8 +9,8 @@ import { AuthenticationGuard } from './authentication/authentication.guard';
 import { HttpCacheService } from './http/http-cache.service';
 import { ErrorHandlerInterceptor } from './http/error-handler.interceptor';
 import { CacheInterceptor } from './http/cache.interceptor';
-import {TokenInterceptor} from './http/token.interceptor';
-import {TokenService} from './authentication/token.service';
+import { TokenInterceptor } from './http/token.interceptor';
+import { TokenService } from './authentication/token.service';
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, TranslateModule, RouterModule],

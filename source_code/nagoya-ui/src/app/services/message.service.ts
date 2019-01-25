@@ -63,4 +63,10 @@ export class MessageService {
       this.toastr.error(value);
     });
   }
+
+  displayInfoMessage(key) {
+    this.translate.get(key).subscribe(value => {
+      this.toastr.info(value);
+    });
+  }
 }

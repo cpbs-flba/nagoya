@@ -103,7 +103,11 @@
       "SUCCESS": {
         "TITLE": "Ihre Registrierung war erfolgreich",
         "SUB_TITLE": "Ihre E-Mail Adresse wurde bestätigt",
-        "CONTENT": "Ihr Konto wurde erstellt. Sie können sich mit Ihrer verifizierten E-Mail Adresse nun einloggen."
+        "CONTENT": "Ihr Konto wurde erstellt. Sie können sich mit Ihrer verifizierten E-Mail Adresse nun einloggen.",
+        "KEYS_INFO": "Ihre Blockchain Schlüssel",
+        "PUBLIC_KEY": "Öffentlicher Schlüssel",
+        "PRIVATE_KEY": "Privater Schlüssel",
+        "KEYS_PRIVATE_INFO": "Hinweis: Bewahren Sie den privaten Schlüssel an einem sicheren Ort. Dieser wird für jede Transaktionsbestätigung benötigt."
       },
       "FAILED": {
         "TITLE": "Ihre Registrierung war nicht erfolgreich",
@@ -139,18 +143,22 @@
     }
   },
   "CHANGE_PASSWORD": {
-    "TITLE": "Passwort Änderung",
-    "SUB_TITLE": "Hier können Sie Ihr Passwort ändern",
+    "TITLE": "Kennwort Ändern",
+    "SUB_TITLE": "Hier können Sie Ihr Kennwort ändern",
     "FORM": {
-      "OLD_PASSWORD": "altes Passwort",
-      "NEW_PASSWORD": "neues Passwort",
-      "NEW_PASSWORD_CONFIRMATION": "neues Passwort bestätigen"
+      "OLD_PASSWORD": "Derzeitiges Kennwort",
+      "NEW_PASSWORD": "Neues Kennwort",
+      "NEW_PASSWORD_CONFIRMATION": "Neues Kennwort bestätigen"
     },
     "ACTION": {
       "UPDATE": "Ändern"
     },
     "ERROR": {
-      "NO_MATCH": "Passwörter stimmen nicht überein"
+      "NO_MATCH": "Passwörter stimmen nicht überein",
+      "OLD_PW_NOK" : "Das derzeitige Kennwort ist nicht korrekt."
+    },
+    "INFO": {
+      "PW_CHANGE_OK" : "Ihr Kennwort wurde erfolgreich aktualisiert"
     }
   },
   "RESOURCE": {
@@ -229,11 +237,10 @@
   "MENU": {
     "HOME": "Hauptseite",
     "GENETIC_RESOURCES": "Genetische Ressourcen",
-    "BLOCKCHAIN_CONTRACTS": "Verträge / Blockchain",
-    "OVERVIEW_CONTRACTS": "Meine Verträge",
+    "BLOCKCHAIN_CONTRACTS": "Blockchain Durchsuchen",
+    "OVERVIEW_CONTRACTS": "Übersicht Verträge",
     "USER_PROFILE": "Benutzerprofil",
-    "TRADE_CONTRACT": "Verträge anlegen",
-    "TRADE_OFFERS": "Offene Verträge",
+    "TRADE_CONTRACT": "Vertrag anlegen",
     "CHANGE_PW": "Kennwort Ändern"
   },
   "ENUM": {

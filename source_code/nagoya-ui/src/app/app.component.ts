@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IncompatibleBrowserService } from './services/incompatible-browser.service';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { CookiesDialogComponent } from './cookies-dialog/cookies-dialog.component';
+import { CookiesDialogComponent } from './components/cookies-dialog/cookies-dialog.component';
 import { CookieAcceptedService } from './services/cookie-accepted.service';
 import { ServerConfigService } from './services/serverconfig.service';
 import { ProgressService } from './services/progress.service';

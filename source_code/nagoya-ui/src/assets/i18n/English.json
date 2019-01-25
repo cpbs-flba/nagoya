@@ -103,7 +103,11 @@
       "SUCCESS": {
         "TITLE":"Your registration was successful",
         "SUB_TITLE":"Your e-mail address has been confirmed",
-        "CONTENT":"Your account has been created. You can now log in with your verified e-mail address."
+        "CONTENT":"Your account has been created. You can now log in with your verified e-mail address.",
+        "KEYS_INFO": "Your blockchain keys",
+        "PUBLIC_KEY": "Public key",
+        "PRIVATE_KEY": "Private key",
+        "KEYS_PRIVATE_INFO": "Note: Keep your private key safe, as all transactions have to confirmed with your private key."
       },
       "FAILED": {
         "TITLE":"Your registration was unsuccessful",
@@ -142,15 +146,19 @@
     "TITLE": "Password Change",
     "SUB_TITLE": "Here you can change your password",
     "FORM": {
-      "OLD_PASSWORD": "old Password",
-      "NEW_PASSWORD": "new Password",
-      "NEW_PASSWORD_CONFIRMATION": "new Password confirmation"
+      "OLD_PASSWORD": "Current password",
+      "NEW_PASSWORD": "New password",
+      "NEW_PASSWORD_CONFIRMATION": "New password confirmation"
     },
     "ACTION": {
       "UPDATE": "Update"
     },
     "ERROR": {
-      "NO_MATCH": "Passwords do not match"
+      "NO_MATCH": "Passwords do not match",
+      "OLD_PW_NOK" : "The current password is incorrect."
+    },
+    "INFO": {
+      "PW_CHANGE_OK" : "Your password was successfully updated"
     }
   },
   "RESOURCE": {
@@ -214,7 +222,7 @@
     "DATE_FROM": "Date from",
     "DATE_UNTIL": "Date until",
     "NOSTATE": "Please select",
-    "ROLE": "Rolle",
+    "ROLE": "Role",
     "SENDER": "Sender",
     "RECEIVER": "Receiver",
     "STATUS": "Status",
@@ -227,12 +235,12 @@
     "RESOURCES": "Genetic Resources"
   },
   "MENU": {
+    "HOME": "Home",
     "GENETIC_RESOURCES": "Genetic Resources",
-    "BLOCKCHAIN_CONTRACTS": "Contracts / Blockchain",
-    "OVERVIEW_CONTRACTS": "My Contracts",
-    "USER_PROFILE": "User profile",
-    "TRADE_CONTRACT": "Trade contract",
-    "TRADE_OFFERS": "Trade offers",
+    "BLOCKCHAIN_CONTRACTS": "Blockchain Explorer",
+    "OVERVIEW_CONTRACTS": "Contracts Overview",
+    "USER_PROFILE": "User Profile",
+    "TRADE_CONTRACT": "Create Contract",
     "CHANGE_PW": "Change Password"
   },
   "ENUM": {
