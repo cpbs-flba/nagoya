@@ -15,7 +15,7 @@ We are currently working on a prototype. As soon as it will be ready, we will pu
 * Exploring contracts in the blockchain
 
 ## Used Technologies
-The project was programmed in the latest open-source technologies
+The project was programmed using the latest open-source technologies
 * Front-end: Angular 7
 * Back-end: Java 11, Jetty, PostgreSQL, BigChainDB
 
