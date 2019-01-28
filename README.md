@@ -9,9 +9,9 @@ This project can be used to set up a platform, that enables users to conduct tra
 We are currently working on a prototype. As soon as it will be ready, we will publish the link here.
 
 ## Supported Use-Cases
-* User management (Login, Logout, Password Recovery)
-* Managing and exploring genetic resources
-* Creating contracts for genetic resources
+* User management (user registration, login, logout, password recovery)
+* Managing and exploring genetic resources (support for private, grouped and public resources)
+* Creating contracts for genetic resources (incl. e-mail notifications, contract confirmation)
 * Exploring contracts in the blockchain
 
 ## Used Technologies
