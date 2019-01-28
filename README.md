@@ -14,10 +14,7 @@ This project can be used to set up a platform, that enables users to conduct tra
 ## Used Technologies
 The project was programmed in the latest open-source technologies
 * Front-end: Angular 7
-* Back-end: 
-** Java 11
-** PostgreSQL
-** BigChainDB
+* Back-end: Java 11, PostgreSQL, BigChainDB
 
 ## About this project
 This project is created by <a href="https://www.cpb-software.com">CPB-Software GmbH, Austria</a> in collaboration with the <a href="https://www.arche-noah.at/">Arche Noah</a> association.
