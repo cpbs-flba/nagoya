@@ -31,7 +31,17 @@ public enum Status {
     ACCEPTED,
 
     /**
-     * If a contract is cancelled then it means it is no longer valid. Only created contracts (not accepted) can be cancelled.
+     * If a contract is created and the sender has changed his/her mind and cancels this contract, then this status is used.
      */
-    CANCELLED
+    CANCELLED,
+
+    /**
+     * This status is used, when a contract is expired.
+     */
+    EXPIRED,
+
+    /**
+     * This status is used when a contract is rejected by the receiver.
+     */
+    REJECTED
 }

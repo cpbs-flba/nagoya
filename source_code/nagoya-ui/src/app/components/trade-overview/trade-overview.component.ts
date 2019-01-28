@@ -30,6 +30,7 @@ export class TradeOverviewComponent implements OnInit {
 
   roles: ContractRole[];
   selectedRole: string;
+  privateKey: string;
 
   columnsToDisplay = ['id', 'date', 'status', 'role'];
   expandedElement: Contract;
@@ -38,7 +39,7 @@ export class TradeOverviewComponent implements OnInit {
   dateUntil = new FormControl({ value: null, disabled: false });
 
   constructor(//
-    public contractsService: ContractsService,
+    private contractsService: ContractsService,
     private userService: UserService,
     private messageService: MessageService
   ) { }
@@ -47,6 +48,8 @@ export class TradeOverviewComponent implements OnInit {
     this.statuses = [
       { value: 'CREATED', viewValue: this.messageService.getI18nMessage('CONTRACTS.STATUS_CREATED') },
       { value: 'ACCEPTED', viewValue: this.messageService.getI18nMessage('CONTRACTS.STATUS_ACCEPTED') },
+      { value: 'EXPIRED', viewValue: this.messageService.getI18nMessage('CONTRACTS.STATUS_EXPIRED') },
+      { value: 'REJECTED', viewValue: this.messageService.getI18nMessage('CONTRACTS.STATUS_REJECTED') },
       { value: 'CANCELLED', viewValue: this.messageService.getI18nMessage('CONTRACTS.STATUS_CANCELLED') }
     ];
     this.roles = [
@@ -57,6 +60,64 @@ export class TradeOverviewComponent implements OnInit {
 
   getUser() {
     return this.userService.getUser();
+  }
+
+  cancel(contractId) {
+    this.contractsService.cancel(contractId).subscribe(result => {
+      // when we are finished, refresh the list
+      this.filter();
+    }, error => {
+      if (error.status == 403) {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.FORBIDDEN');
+      } else {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.GENERAL');
+      }
+      this.filter();
+    });
+  }
+
+  isPrivateKeyNeeded() {
+    return !this.userService.getUser().storePrivateKey;
+  }
+
+  reject(token) {
+    this.contractsService.reject(token).subscribe(result => {
+      // when we are finished, refresh the list
+      this.filter();
+    }, error => {
+      if (error.status == 403) {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.FORBIDDEN');
+      } else {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.GENERAL');
+      }
+      this.filter();
+    });
+  }
+
+  accept(token) {
+    let param = null;
+    if (this.privateKey != null) {
+      param = this.privateKey;
+    }
+    this.contractsService.accept(token, param).subscribe(result => {
+      // when we are finished, refresh the list
+      this.filter();
+      this.messageService.displayInfoMessage('CONTRACTS.INFO.OK');
+    }, error => {
+      let refresh = true;
+      if (error.status == 403) {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.FORBIDDEN');
+      } else if (error.status == 412) {
+        refresh = false;
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.WRONG_PK');
+      } else {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.GENERAL');
+      }
+      if (refresh) {
+        this.filter();
+      }
+    }
+    );
   }
 
   filter() {
@@ -79,7 +140,13 @@ export class TradeOverviewComponent implements OnInit {
       param3 = this.selectedStatus;
     }
 
-    this.contractsService.getAll(param1, param2, param3).subscribe(result => {
+    let param4 = null;
+    if (this.selectedRole != null) {
+      param4 = this.selectedRole;
+    }
+
+    this.contractsService.getAll(param1, param2, param3, param4).subscribe(result => {
+      // console.log(result);
       this.dataSource = this.contractsService.getContracts();
     });
   }

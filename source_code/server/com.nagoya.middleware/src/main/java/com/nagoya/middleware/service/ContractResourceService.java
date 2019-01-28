@@ -18,6 +18,8 @@ import com.nagoya.dao.base.BasicDAO;
 import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.dao.contract.ContractDAO;
 import com.nagoya.dao.contract.impl.ContractDAOImpl;
+import com.nagoya.dao.person.PersonDAO;
+import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.StringUtil;
 import com.nagoya.middleware.main.ServerPropertiesProvider;
 import com.nagoya.middleware.main.ServerProperty;
@@ -27,6 +29,7 @@ import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.dbo.contract.ContractDBO;
 import com.nagoya.model.dbo.contract.ContractFileDBO;
 import com.nagoya.model.dbo.contract.Status;
+import com.nagoya.model.dbo.person.PersonDBO;
 import com.nagoya.model.dbo.user.OnlineUserDBO;
 import com.nagoya.model.dbo.user.RequestType;
 import com.nagoya.model.dbo.user.UserRequestDBO;
@@ -38,6 +41,7 @@ import com.nagoya.model.exception.InvalidTokenException;
 import com.nagoya.model.exception.NonUniqueResultException;
 import com.nagoya.model.exception.NotAuthorizedException;
 import com.nagoya.model.exception.NotFoundException;
+import com.nagoya.model.exception.PreconditionFailedException;
 import com.nagoya.model.exception.ResourceOutOfDateException;
 import com.nagoya.model.exception.TimeoutException;
 import com.nagoya.model.to.contract.ContractFileTO;
@@ -53,18 +57,20 @@ public class ContractResourceService extends ResourceService {
     private static final Logger LOGGER = LogManager.getLogger(ContractResourceService.class);
     private Session             session;
     private ContractDAO         contractDAO;
+    private PersonDAO           personDAO;
     private ContractFactory     contractFactory;
 
     public ContractResourceService(Session session) {
         super(session);
         this.session = session;
         this.contractDAO = new ContractDAOImpl(session);
+        this.personDAO = new PersonDAOImpl(session);
         this.contractFactory = new ContractFactory(session);
     }
 
-    public DefaultReturnObject create(String authorization, String language, com.nagoya.model.to.contract.ContractTO contractTO)
+    public DefaultReturnObject create(String authorization, String privateKey, String language, com.nagoya.model.to.contract.ContractTO contractTO)
         throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException, ResourceOutOfDateException,
-        BadRequestException, NonUniqueResultException {
+        BadRequestException, NonUniqueResultException, PreconditionFailedException {
         LOGGER.debug("Adding contract");
         OnlineUserDBO onlineUser = validateSession(authorization);
 
@@ -74,6 +80,12 @@ public class ContractResourceService extends ResourceService {
 
         // also inserts the contract into the DB
         com.nagoya.model.dbo.contract.ContractDBO contractDBO = contractFactory.createDBOContract(onlineUser.getPerson(), contractTO);
+
+        // persist first part in blockchain
+        PersonDBO person = onlineUser.getPerson();
+        if (!person.isStorePrivateKey() && StringUtil.isNullOrBlank(privateKey)) {
+            throw new PreconditionFailedException("Private key for blockchain is invalid or missing!");
+        }
 
         Calendar cal = Calendar.getInstance();
         int integer = ServerPropertiesProvider.getInteger(ServerProperty.CONTRACT_EXPIRAETION_TIME, 72);
@@ -137,7 +149,7 @@ public class ContractResourceService extends ResourceService {
         return result;
     }
 
-    public DefaultReturnObject search(String authorization, String contractStatus, String dateFromTO, String dateUntilTO)
+    public DefaultReturnObject search(String authorization, String contractStatus, String dateFromTO, String dateUntilTO, String role)
         throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException,
         ResourceOutOfDateException {
         OnlineUserDBO onlineUser = validateSession(authorization);
@@ -158,14 +170,68 @@ public class ContractResourceService extends ResourceService {
         List<ContractDBO> results = contractDAO.search(onlineUser.getPerson(), dateFromToFilter, dateUntilToFilter, statusToFilter, 0);
         LOGGER.debug("Results found: " + results.size());
 
+        updateContracts(results);
+
         List<ContractTO> resultTOs = new ArrayList<>();
         for (ContractDBO contractDBO : results) {
             ContractTO contractTO = contractFactory.getContractTO(contractDBO);
-            resultTOs.add(contractTO);
+
+            // filter by role if set
+            if (StringUtil.isNotNullOrBlank(role)) {
+                boolean roleSetCorrectly = false;
+                if (role.equalsIgnoreCase("sender")) {
+                    roleSetCorrectly = true;
+                    if (contractTO.getSender().getEmail().equals(onlineUser.getPerson().getEmail())) {
+                        resultTOs.add(contractTO);
+                    }
+                }
+                if (role.equalsIgnoreCase("receiver")) {
+                    roleSetCorrectly = true;
+                    if (contractTO.getReceiver().getEmail().equals(onlineUser.getPerson().getEmail())) {
+                        resultTOs.add(contractTO);
+                    }
+                }
+                if (!roleSetCorrectly) {
+                    resultTOs.add(contractTO);
+                }
+            } else {
+                resultTOs.add(contractTO);
+            }
         }
 
         DefaultReturnObject result = refreshSession(onlineUser, resultTOs, null);
         return result;
+    }
+
+    private void updateContracts(List<ContractDBO> contracts)
+        throws InvalidObjectException, ResourceOutOfDateException {
+        // clean up requests
+        for (ContractDBO contractDBO : contracts) {
+            boolean edited = false;
+            Iterator<UserRequestDBO> iterator = contractDBO.getUserRequests().iterator();
+            while (iterator.hasNext()) {
+                UserRequestDBO userRequest = iterator.next();
+                Date expirationDate = userRequest.getExpirationDate();
+                Date currentDate = Calendar.getInstance().getTime();
+                if (currentDate.after(expirationDate)) {
+                    iterator.remove();
+                    edited = true;
+                }
+            }
+
+            // if a contract has no more requests and its status is accepted
+            // then the contract is automatically cancelled
+            boolean statusIsCreated = contractDBO.getStatus().equals(Status.CREATED);
+            boolean userRequestsIsEmpty = contractDBO.getUserRequests().isEmpty();
+            if (statusIsCreated && userRequestsIsEmpty) {
+                contractDBO.setStatus(Status.EXPIRED);
+                edited = true;
+            }
+            if (edited) {
+                LOGGER.debug("Updating contract: " + contractDBO.getId());
+                contractDAO.update(contractDBO, true);
+            }
+        }
     }
 
     public DefaultReturnObject create(String authorization, String language, String contractId, ContractFileTO contractFileTO)
@@ -285,6 +351,116 @@ public class ContractResourceService extends ResourceService {
         contractDAO.update(contractDBO, true);
 
         DefaultReturnObject result = refreshSession(onlineUser, null, null);
+        return result;
+    }
+
+    public DefaultReturnObject accept(String token, String privateKey, String authorization, String language)
+        throws BadRequestException, NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException,
+        ResourceOutOfDateException, ForbiddenException, PreconditionFailedException {
+        OnlineUserDBO validateSession = validateSession(authorization);
+
+        if (StringUtil.isNullOrBlank(token)) {
+            throw new BadRequestException("Token must be provided.");
+        }
+
+        UserRequestDBO userRequest = personDAO.findUserRequest(token);
+        if (userRequest == null) {
+            throw new BadRequestException("Invalid token provided");
+        }
+
+        // we found the request, now we have to delete it
+        ContractDBO contract = userRequest.getContract();
+
+        Date expirationDate = userRequest.getExpirationDate();
+        Date currentDate = Calendar.getInstance().getTime();
+
+        // if the user request expired, then we are done here
+        if (expirationDate.before(currentDate)) {
+            contract.setStatus(Status.EXPIRED);
+            personDAO.update(contract, true);
+            personDAO.delete(userRequest, true);
+            throw new TimeoutException();
+        }
+
+        if (!userRequest.getRequestType().equals(RequestType.CONTRACT_ACCEPTANCE)) {
+            throw new BadRequestException("Invalid token provided (invalid request type).");
+        }
+
+        if (!contract.getStatus().equals(Status.CREATED)) {
+            throw new ForbiddenException("Cannot accept contract which is not in the status 'created'.");
+        }
+
+        PersonDBO person = validateSession.getPerson();
+        if (!person.isStorePrivateKey() && StringUtil.isNullOrBlank(privateKey)) {
+            throw new PreconditionFailedException("Private key for blockchain is invalid or missing!");
+        }
+
+        // at this point everything is okay and the contract is legally concluded
+        // TODO: persist in blockchain
+        // TODO: remove dummy key
+        if (!privateKey.equals("asdf")) {
+            throw new PreconditionFailedException("Private key for blockchain is invalid or missing!");
+        }
+
+        // delete the request only if everything else was okay...
+        personDAO.delete(userRequest, true);
+
+        // now everyhting else was okay.
+        contract.setStatus(Status.ACCEPTED);
+        personDAO.update(contract, true);
+
+        // now we are done, just send a confirmation mail
+        MailService mailService = new MailService(language);
+        mailService.sendContractAccepted(contract);
+
+        DefaultReturnObject result = buildDefaultReturnObject(authorization, null, null);
+        return result;
+    }
+
+    public DefaultReturnObject reject(String token, String authorization, String language)
+        throws BadRequestException, NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException,
+        ResourceOutOfDateException, ForbiddenException {
+        validateSession(authorization);
+
+        if (StringUtil.isNullOrBlank(token)) {
+            throw new BadRequestException("Token must be provided.");
+        }
+
+        UserRequestDBO userRequest = personDAO.findUserRequest(token);
+        if (userRequest == null) {
+            throw new BadRequestException("Invalid token provided");
+        }
+
+        // we found the request, now we have to delete it
+        ContractDBO contract = userRequest.getContract();
+        personDAO.delete(userRequest, true);
+
+        Date expirationDate = userRequest.getExpirationDate();
+        Date currentDate = Calendar.getInstance().getTime();
+
+        // if the user request expired then it does not matter, we expire the contract
+        if (expirationDate.before(currentDate)) {
+            contract.setStatus(Status.EXPIRED);
+            personDAO.update(contract, true);
+            throw new TimeoutException();
+        }
+
+        if (!userRequest.getRequestType().equals(RequestType.CONTRACT_ACCEPTANCE)) {
+            throw new BadRequestException("Invalid token provided (invalid request type).");
+        }
+
+        if (!contract.getStatus().equals(Status.CREATED)) {
+            throw new ForbiddenException("Cannot accept contract which is not in the status 'created'.");
+        }
+
+        contract.setStatus(Status.REJECTED);
+        personDAO.update(contract, true);
+
+        // now we are done, just send a confirmation mail
+        MailService mailService = new MailService(language);
+        mailService.sendContractAccepted(contract);
+
+        DefaultReturnObject result = buildDefaultReturnObject(authorization, null, null);
         return result;
     }
 }

@@ -19,21 +19,55 @@ export class ContractsService {
     public tokenService: TokenService) {
   }
 
-  public getAll(dateFrom, dateUntil, status): Observable<any> {
+  public getAll(dateFrom, dateUntil, status, role): Observable<any> {
     let requestUrl = environment.serverUrl + 'contracts?';
     requestUrl += 'status=' + status + '&';
     requestUrl += 'date-from=' + dateFrom + '&';
     requestUrl += 'date-until=' + dateUntil;
+    requestUrl += 'role=' + role;
     return this.http.get(requestUrl, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': this.tokenService.getToken() }),
+      observe: 'response'
+    }).pipe(
+      tap(result => {
+        this.contracts = result.body;
+      }));
+  }
+
+  public cancel(contractId): Observable<any> {
+    const requestUrl = environment.serverUrl + 'contracts/' + contractId;
+    return this.http.delete(requestUrl, {
       observe: 'response'
     }).pipe(
       tap(result => {
         // verify status
-        this.tokenService.setToken(result.headers.get('Authorization'));
-        this.contracts = result.body;
+        // console.log('Received: ' + result.status);
       }));
   }
+
+  public reject(token): Observable<any> {
+    const requestUrl = environment.serverUrl + 'contracts/reject/' + token;
+    return this.http.get(requestUrl, {
+      observe: 'response'
+    }).pipe(
+      tap(result => {
+        // noop
+      }));
+  }
+
+  public accept(token, privateKey): Observable<any> {
+    let requestUrl = environment.serverUrl + 'contracts/accept/' + token;
+    if (privateKey != null) {
+      requestUrl += "?privatekey=" + privateKey;
+    }
+    return this.http.get(requestUrl, {
+      observe: 'response'
+    }).pipe(
+      tap(result => {
+        // noop
+      }));
+  }
+
+
 
   getContracts(): Contract[] {
     return this.contracts;

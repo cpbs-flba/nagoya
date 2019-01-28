@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe(response => {
         this.userService.setUser(response.body);
         this.router.navigate(['home']);
-
+        console.log(response.body);
       }, error => {
         this.loginRunning = false;
         if (error.status === 401) {

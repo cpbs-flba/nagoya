@@ -19,6 +19,7 @@ import com.nagoya.model.dbo.contract.ContractDBO;
 import com.nagoya.model.dbo.contract.ContractFileDBO;
 import com.nagoya.model.dbo.contract.ContractResourceDBO;
 import com.nagoya.model.dbo.contract.Status;
+import com.nagoya.model.dbo.user.UserRequestDBO;
 import com.nagoya.model.exception.BadRequestException;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.NonUniqueResultException;
@@ -123,6 +124,14 @@ public class ContractFactory {
         }
         result.setId(contractDBO.getId().toString());
         result.setStatus(contractDBO.getStatus());
+
+        // set the token if it exists
+        Set<UserRequestDBO> userRequests = contractDBO.getUserRequests();
+        if (!userRequests.isEmpty()) {
+            String token = userRequests.iterator().next().getToken();
+            result.setToken(token);
+        }
+
         return result;
     }
 

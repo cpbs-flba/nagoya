@@ -30,6 +30,7 @@ import org.hibernate.envers.NotAudited;
 
 import com.nagoya.model.dbo.DBO;
 import com.nagoya.model.dbo.person.PersonDBO;
+import com.nagoya.model.dbo.user.UserRequestDBO;
 
 /**
  * @author Florin Bogdan Balint
@@ -61,7 +62,12 @@ public class ContractDBO extends DBO {
     @NotAudited
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "contract_id")
-    private Set<ContractFileDBO>     files             = new HashSet<ContractFileDBO>();
+    private Set<ContractFileDBO>     files             = new HashSet<>();
+
+    @NotAudited
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "contract_id")
+    private Set<UserRequestDBO>      userRequests      = new HashSet<>();
 
     public PersonDBO getSender() {
         return sender;
@@ -101,6 +107,20 @@ public class ContractDBO extends DBO {
 
     public void setFiles(Set<ContractFileDBO> files) {
         this.files = files;
+    }
+
+    /**
+     * @return the userRequests
+     */
+    public Set<UserRequestDBO> getUserRequests() {
+        return userRequests;
+    }
+
+    /**
+     * @param userRequests the userRequests to set
+     */
+    public void setUserRequests(Set<UserRequestDBO> userRequests) {
+        this.userRequests = userRequests;
     }
 
 }

@@ -135,17 +135,17 @@ public class BigchainDBJavaDriverUsageExample {
 
         EdDSAPublicKey publicKey = (EdDSAPublicKey) keyPair.getPublic();
         String encode = Base58.encode(publicKey.getAbyte());
-        System.out.println("first: " + encode);
+        // System.out.println("first: " + encode);
 
         String encodePrivateKeyBase64 = KeyPairUtils.encodePrivateKeyBase64(keyPair);
-        System.out.println("base64 private key: " + encodePrivateKeyBase64);
+        // System.out.println("base64 private key: " + encodePrivateKeyBase64);
 
         KeyPair decodedKeyPair = KeyPairUtils.decodeKeyPair(encodePrivateKeyBase64);
         EdDSAPublicKey publicKey2 = (EdDSAPublicKey) decodedKeyPair.getPublic();
         String encode2 = Base58.encode(publicKey2.getAbyte());
-        System.out.println("second: " + encode2);
+        // System.out.println("second: " + encode2);
 
-        System.out.println("(*) Keys Generated..");
+        // System.out.println("(*) Keys Generated..");
         return keyPair;
 
     }

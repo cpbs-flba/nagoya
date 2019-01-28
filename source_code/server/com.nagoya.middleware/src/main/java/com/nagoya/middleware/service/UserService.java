@@ -40,8 +40,6 @@ import com.nagoya.middleware.rest.bl.UserRESTResource;
 import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
-import com.nagoya.model.dbo.contract.ContractDBO;
-import com.nagoya.model.dbo.contract.Status;
 import com.nagoya.model.dbo.person.PersonKeysDBO;
 import com.nagoya.model.dbo.person.PersonLegalDBO;
 import com.nagoya.model.dbo.person.PersonNaturalDBO;
@@ -304,15 +302,6 @@ public class UserService extends ResourceService {
             DefaultReturnObject result = new DefaultReturnObject();
             result.setEntity(dto);
             return result;
-        }
-
-        if (userRequest.getRequestType().equals(RequestType.CONTRACT_ACCEPTANCE)) {
-            ContractDBO contract = userRequest.getContract();
-            contract.setStatus(Status.ACCEPTED);
-            personDAO.update(contract, true);
-
-            // TODO: persist transfer in the blockchain
-            // TODO: send confirmation emails to both parties
         }
 
         personDAO.delete(userRequest, true);

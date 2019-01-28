@@ -32,6 +32,7 @@ import com.nagoya.model.exception.BadRequestException;
 import com.nagoya.model.exception.ForbiddenException;
 import com.nagoya.model.exception.NotAuthorizedException;
 import com.nagoya.model.exception.NotFoundException;
+import com.nagoya.model.exception.PreconditionFailedException;
 import com.nagoya.model.exception.TimeoutException;
 import com.nagoya.model.to.contract.ContractFileTO;
 import com.nagoya.model.to.contract.ContractTO;
@@ -51,19 +52,22 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
      * javax.ws.rs.container.AsyncResponse)
      */
     @Override
-    public void addContract(String authorization, String language, ContractTO contractTO, AsyncResponse asyncResponse) {
+    public void addContract(String authorization, String privateKey, String language, ContractTO contractTO, AsyncResponse asyncResponse) {
         Response response = null;
         Session session = null;
         try {
             session = ConnectionProvider.getInstance().getSession();
             ContractResourceService service = new ContractResourceService(session);
-            DefaultReturnObject result = service.create(authorization, language, contractTO);
+            DefaultReturnObject result = service.create(authorization, privateKey, language, contractTO);
             ResponseBuilder responseBuilder = Response.noContent();
             Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
             for (Entry<String, String> entry : entrySet) {
                 responseBuilder.header(entry.getKey(), entry.getValue());
             }
             response = responseBuilder.build();
+        } catch (PreconditionFailedException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.PRECONDITION_FAILED).build();
         } catch (NotAuthorizedException e) {
             LOGGER.error(e, e);
             response = Response.status(Status.UNAUTHORIZED).build();
@@ -130,18 +134,19 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
     /*
      * (non-Javadoc)
      * 
-     * @see com.nagoya.middleware.rest.bl.ContractResource#search(java.lang.String, java.lang.String, java.lang.String, java.lang.String,
-     * java.lang.String, javax.ws.rs.container.AsyncResponse)
+     * @see com.nagoya.middleware.rest.bl.ContractRESTResource#search(java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+     * java.lang.String, java.lang.String, javax.ws.rs.container.AsyncResponse)
      */
     @Override
-    public void search(String authorization, String language, String contractStatus, String dateFrom, String dateUntil, AsyncResponse asyncResponse) {
+    public void search(String authorization, String language, String contractStatus, String dateFrom, String dateUntil, String role,
+        AsyncResponse asyncResponse) {
         LOGGER.debug("Received request.");
         Response response = null;
         Session session = null;
         try {
             session = ConnectionProvider.getInstance().getSession();
             ContractResourceService service = new ContractResourceService(session);
-            DefaultReturnObject result = service.search(authorization, contractStatus, dateFrom, dateUntil);
+            DefaultReturnObject result = service.search(authorization, contractStatus, dateFrom, dateUntil, role);
             ResponseBuilder responseBuilder = Response.ok(result.getEntity());
             Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
             for (Entry<String, String> entry : entrySet) {
@@ -298,6 +303,83 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
         }
         asyncResponse.resume(response);
 
+    }
+
+    @Override
+    public void acceptContract(String authorization, String language, String tokenId, String privateKey, AsyncResponse asyncResponse) {
+        Response response = null;
+        Session session = null;
+        try {
+            session = ConnectionProvider.getInstance().getSession();
+            ContractResourceService service = new ContractResourceService(session);
+            DefaultReturnObject result = service.accept(tokenId, privateKey, authorization, language);
+            ResponseBuilder responseBuilder = Response.accepted();
+            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
+            for (Entry<String, String> entry : entrySet) {
+                responseBuilder.header(entry.getKey(), entry.getValue());
+            }
+            response = responseBuilder.build();
+        } catch (PreconditionFailedException e) {
+            LOGGER.error(e.getMessage());
+            response = Response.status(Status.PRECONDITION_FAILED).build();
+        } catch (NotAuthorizedException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.UNAUTHORIZED).build();
+        } catch (BadRequestException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.BAD_REQUEST).build();
+        } catch (ForbiddenException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.FORBIDDEN).build();
+        } catch (TimeoutException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.REQUEST_TIMEOUT).build();
+        } catch (Exception e) {
+            LOGGER.error(e);
+            response = Response.serverError().build();
+        } finally {
+            if (session != null) {
+                ConnectionProvider.getInstance().closeSession(session);
+            }
+        }
+        asyncResponse.resume(response);
+    }
+
+    @Override
+    public void rejectContract(String authorization, String language, String tokenId, AsyncResponse asyncResponse) {
+        Response response = null;
+        Session session = null;
+        try {
+            session = ConnectionProvider.getInstance().getSession();
+            ContractResourceService service = new ContractResourceService(session);
+            DefaultReturnObject result = service.reject(tokenId, authorization, language);
+            ResponseBuilder responseBuilder = Response.accepted();
+            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
+            for (Entry<String, String> entry : entrySet) {
+                responseBuilder.header(entry.getKey(), entry.getValue());
+            }
+            response = responseBuilder.build();
+        } catch (NotAuthorizedException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.UNAUTHORIZED).build();
+        } catch (BadRequestException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.BAD_REQUEST).build();
+        } catch (ForbiddenException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.FORBIDDEN).build();
+        } catch (TimeoutException e) {
+            LOGGER.error(e, e);
+            response = Response.status(Status.REQUEST_TIMEOUT).build();
+        } catch (Exception e) {
+            LOGGER.error(e);
+            response = Response.serverError().build();
+        } finally {
+            if (session != null) {
+                ConnectionProvider.getInstance().closeSession(session);
+            }
+        }
+        asyncResponse.resume(response);
     }
 
 }

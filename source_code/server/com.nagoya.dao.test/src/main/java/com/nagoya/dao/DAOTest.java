@@ -81,6 +81,10 @@ public class DAOTest {
 
             session.createNativeQuery("DELETE FROM tonline_user").executeUpdate();
 
+            session.createNativeQuery("DELETE FROM tuser_request").executeUpdate();
+
+            session.createNativeQuery("DELETE FROM tperson_keys").executeUpdate();
+
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -102,6 +106,14 @@ public class DAOTest {
         legalPerson.setEmail(email);
         legalPerson.setPassword(DefaultPasswordEncryptionProvider.encryptPassword(email));
         legalPerson.setAddress(address);
+
+        BlockchainDriver bl = new BlockchainDriverImpl();
+        Credentials credentials = bl.createCredentials();
+
+        PersonKeysDBO pk = new PersonKeysDBO();
+        pk.setPublicKey(credentials.getPublicKey());
+        LOGGER.info("Private key for: " + email + ", is: " + credentials.getPrivateKey());
+        legalPerson.getKeys().add(pk);
 
         Random rn = new Random();
         int answer = rn.nextInt(100) + 1;
@@ -183,6 +195,9 @@ public class DAOTest {
         PersonKeysDBO pk = new PersonKeysDBO();
         DefaultDBOFiller.fillDefaultDataObjectValues(pk);
         pk.setPublicKey(credentials.getPublicKey());
+
+        LOGGER.info("Private key for: " + email + ", is: " + credentials.getPrivateKey());
+
         String privateKeyEncrypted = AESEncryptionProvider.encrypt(credentials.getPrivateKey(), email.toLowerCase());
         pk.setPrivateKey(privateKeyEncrypted);
         person.getKeys().add(pk);

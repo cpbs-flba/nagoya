@@ -218,7 +218,10 @@
     }
   },
   "CONTRACTS": {
+    "CREATE": "Angebot erstellen",
+    "DOCS" : "Dokumente",
     "OVERVIEW": "Vertragsübersicht",
+    "DATE": "Datum",
     "DATE_FROM": "Datum von",
     "DATE_UNTIL": "Datum bis",
     "NOSTATE": "Keine Auswahl",
@@ -228,11 +231,29 @@
     "STATUS": "Status",
     "STATUS_CREATED": "Neu",
     "STATUS_ACCEPTED": "Abgeschlossen",
-    "STATUS_CANCELLED": "Abgelehnt",
+    "STATUS_CANCELLED": "Storniert",
+    "STATUS_REJECTED": "Abgelehnt",
+    "STATUS_EXPIRED": "Abgelaufen",
     "QUANTITY": "Menge",
     "MEASURING_UNIT": "Maßeinheit",
     "PARTNER": "Geschäftspartner",
-    "RESOURCES": "Genetische Resourcen"
+    "RESOURCES": "Genetische Resourcen",
+    "OPERATION": {
+      "OPERATIONS": "Aktionen",
+      "ACCEPT": "Annehmen",
+      "REJECT": "Ablehnen",
+      "CANCEL": "Stornieren"
+    },
+    "INFO": {
+      "OK": "Der Vertrag wurde erfolgreich angenommen.",
+      "REJECT_OK": "Der Vertrag wurde erfolgreich abgelehnt.",
+      "CANCEL_OK": "Der Vertrag wurde erfolgreich storniert."
+    },
+    "ERROR": {
+      "WRONG_PK": "Der angegebene private Schlüssel ist nicht korrekt, bitte versuchen Sie es erneut.",
+      "FORBIDDEN": "Diese Operation ist nicht mehr erlaubt. Das ist dann der Fall, wenn z.B. Ihr Geschäftspartner der Vertrag aktualisiert hat.",
+      "GENERAL": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
+    }
   },
   "MENU": {
     "HOME": "Hauptseite",

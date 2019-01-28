@@ -36,9 +36,11 @@ import org.glassfish.jersey.server.ManagedAsync;
 @Path("/contracts")
 public interface ContractRESTResource {
 
-    public static final String QUERY_PARAM_DATE_FROM  = "date-from";
-    public static final String QUERY_PARAM_DATE_UNTIL = "date-until";
-    public static final String QUERY_PARAM_STATUS     = "status";
+    public static final String QUERY_PARAM_DATE_FROM   = "date-from";
+    public static final String QUERY_PARAM_DATE_UNTIL  = "date-until";
+    public static final String QUERY_PARAM_STATUS      = "status";
+    public static final String QUERY_PARAM_ROLE        = "role";
+    public static final String QUERY_PARAM_PRIVATE_KEY = "privatekey";
 
     /**
      * Creates a new contract.
@@ -64,6 +66,7 @@ public interface ContractRESTResource {
     public void addContract(//
         @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
         @HeaderParam(UserRESTResource.HEADER_LANGUAGE) String language, //
+        @QueryParam(QUERY_PARAM_PRIVATE_KEY) String privateKey, //
         final com.nagoya.model.to.contract.ContractTO contractTO, //
         @Suspended final AsyncResponse asyncResponse);
 
@@ -203,5 +206,59 @@ public interface ContractRESTResource {
     public void search(@HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization,
         @HeaderParam(UserRESTResource.HEADER_LANGUAGE) String language, @QueryParam(QUERY_PARAM_STATUS) String contractStatus,
         @QueryParam(QUERY_PARAM_DATE_FROM) String dateFrom, @QueryParam(QUERY_PARAM_DATE_UNTIL) String dateUntil,
+        @QueryParam(QUERY_PARAM_ROLE) String role, @Suspended final AsyncResponse asyncResponse);
+
+    /**
+     * Accepts a contract
+     * 
+     * Returns one of the following status codes:
+     * <ul>
+     * <li>204 No Content - if everything was okay</li>
+     * <li>400 Bad Request - if the provided file is invalid</li>
+     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
+     * <li>408 Timeout - if the authorization token has expired</li>
+     * <li>412 Precondition Failed - if everything is okay, but the private key of the receiver is still missing.</li>
+     * <li>500 Internal server error - if something went terribly wrong</li>
+     * </ul>
+     * 
+     * @param authorization
+     * @param geneticRessource
+     * @param asyncResponse
+     */
+    @GET
+    @Path("/accept/{tokenId}")
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @ManagedAsync
+    public void acceptContract(//
+        @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
+        @HeaderParam(UserRESTResource.HEADER_LANGUAGE) String language, //
+        @PathParam("tokenId") String tokenId, //
+        @QueryParam(QUERY_PARAM_PRIVATE_KEY) String privateKey, //
+        @Suspended final AsyncResponse asyncResponse);
+
+    /**
+     * Accepts a contract
+     * 
+     * Returns one of the following status codes:
+     * <ul>
+     * <li>204 No Content - if everything was okay</li>
+     * <li>400 Bad Request - if the provided file is invalid</li>
+     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
+     * <li>408 Timeout - if the authorization token has expired</li>
+     * <li>500 Internal server error - if something went terribly wrong</li>
+     * </ul>
+     * 
+     * @param authorization
+     * @param geneticRessource
+     * @param asyncResponse
+     */
+    @GET
+    @Path("/reject/{tokenId}")
+    @Produces({ MediaType.APPLICATION_JSON + UserRESTResource.DEFAULT_RESPONSE_ENCODING })
+    @ManagedAsync
+    public void rejectContract(//
+        @HeaderParam(UserRESTResource.HEADER_AUTHORIZATION) String authorization, //
+        @HeaderParam(UserRESTResource.HEADER_LANGUAGE) String language, //
+        @PathParam("tokenId") String tokenId, //
         @Suspended final AsyncResponse asyncResponse);
 }

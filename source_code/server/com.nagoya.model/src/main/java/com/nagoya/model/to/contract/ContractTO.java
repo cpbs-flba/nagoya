@@ -33,6 +33,8 @@ public class ContractTO implements Serializable {
 
     private Status                  status;
 
+    private String                  token;
+
     /**
      * @return the id
      */
@@ -129,6 +131,20 @@ public class ContractTO implements Serializable {
      */
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    /**
+     * @return the token
+     */
+    public String getToken() {
+        return token;
+    }
+
+    /**
+     * @param token the token to set
+     */
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

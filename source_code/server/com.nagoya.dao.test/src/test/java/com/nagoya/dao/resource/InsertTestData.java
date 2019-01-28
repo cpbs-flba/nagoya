@@ -31,6 +31,8 @@ import com.nagoya.model.dbo.person.PersonLegalDBO;
 import com.nagoya.model.dbo.person.PersonNaturalDBO;
 import com.nagoya.model.dbo.resource.GeneticResourceDBO;
 import com.nagoya.model.dbo.resource.VisibilityType;
+import com.nagoya.model.dbo.user.RequestType;
+import com.nagoya.model.dbo.user.UserRequestDBO;
 
 /**
  * Use this test to insert test data.
@@ -81,6 +83,14 @@ public class InsertTestData extends DAOTest {
         ContractDAO contractDAO = new ContractDAOImpl(session);
         contractDAO.insert(c1, true);
 
+        UserRequestDBO ur = new UserRequestDBO();
+        ur.setContract(c1);
+        cal.add(Calendar.DAY_OF_YEAR, 3);
+        ur.setExpirationDate(cal.getTime());
+        ur.setToken("t12345");
+        ur.setRequestType(RequestType.CONTRACT_ACCEPTANCE);
+        ur.setPerson(pl2);
+        contractDAO.insert(ur, true);
     }
 
 }

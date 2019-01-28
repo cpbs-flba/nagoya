@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {ResourceFile} from '../../model/resourceFile';
-import {ResourceService} from '../../services/resource.service';
-import {GeneticResource} from '../../model/geneticResource';
+import { ResourceFile } from '../../model/resourceFile';
+import { ResourceService } from '../../services/resource.service';
+import { GeneticResource } from '../../model/geneticResource';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../core';
+import { UserService } from 'src/app/services/user.service';
+import { Contract } from 'src/app/model/contract/contract';
+import { ContractsService } from 'src/app/services/contracts.service';
 
 @Component({
   selector: 'app-trade-contract',
@@ -12,12 +15,22 @@ import { AuthenticationService } from '../../core';
 })
 export class TradeContractComponent implements OnInit {
 
-  geneticResources: GeneticResource [];
+  contract: Contract = new Contract();
+  geneticResources: GeneticResource[];
   attachments: ResourceFile[] = [];
+  privateKey: string;
 
-  constructor(private resourceService: ResourceService,
+  constructor(
+    private contractsService: ContractsService,
+    private resourceService: ResourceService,
     private authenticationService: AuthenticationService,
-    private router: Router) { }
+    private userService: UserService,
+    private router: Router) { 
+
+      this.contract.sender = this.userService.getUser();
+      this.contract.receiver = this.userService.getUser();
+
+    }
 
   ngOnInit() {
     if (!this.isUserLoggedIn()) {
@@ -29,6 +42,7 @@ export class TradeContractComponent implements OnInit {
       //TODO
       console.log(error);
     });
+    
   }
 
   isUserLoggedIn() {
@@ -49,6 +63,10 @@ export class TradeContractComponent implements OnInit {
         this.attachments.push(resourceFile);
       };
     }
+  }
+
+  isPrivateKeyNeeded() {
+    return !this.userService.getUser().storePrivateKey;
   }
 
   removeAttachment(resourceFile) {

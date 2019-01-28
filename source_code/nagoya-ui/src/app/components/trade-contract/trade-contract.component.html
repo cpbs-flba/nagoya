@@ -1,13 +1,13 @@
 <div fxLayout="column" class="contentWrapper" *ngIf="isUserLoggedIn()">
-  <h1 class="mat-h1">Neuen Vertrag erstellen</h1>
+  <h1 class="mat-h1">{{'CONTRACTS.CREATE'|translate}}</h1>
 
   <!-- Recipient -->
   <mat-form-field>
-    <input matInput placeholder="Empfänger" type="text">
+    <input matInput placeholder="{{'CONTRACTS.RECEIVER'|translate}}" type="text" [(ngModel)]="contract.receiver.email">
   </mat-form-field>
 
   <!-- Resources -->
-  <h2>Ressourcen</h2>
+  <h2>{{'CONTRACTS.RESOURCES'|translate}}</h2>
   <mat-selection-list class="resourceSelectionList">
     <div class="innerResourceSelectionList">
       <mat-list-option *ngFor="let resource of geneticResources">
@@ -20,7 +20,7 @@
   <div fxLayout="column">
     <div fxLayout="row">
       <div>
-        <h2>Dokumente</h2>
+        <h2>{{'CONTRACTS.DOCS'|translate}}</h2>
       </div>
       <div fxFlex></div>
       <div>
@@ -43,13 +43,20 @@
         </button>
       </div>
     </div>
-    <br/>
+    <br />
   </div>
 
 
   <div fxLayout="row">
-    <div fxFlex></div>
-    <button type="submit" mat-raised-button color="accent">Angebot erstellen</button>
+    <div *ngIf="isPrivateKeyNeeded()" fxLayout="row" fxLayoutAlign="start center" style="margin-top: 1em;">
+      <mat-form-field style="width: 30em;">
+        <input matInput placeholder="{{'CONFIRMATION.VALIDATION.SUCCESS.PRIVATE_KEY'|translate}}" [(ngModel)]="privateKey" />
+      </mat-form-field>
+    </div>
   </div>
-  <br/>
+
+  <div fxLayout="row">
+    <button type="submit" mat-raised-button color="accent">{{'CONTRACTS.CREATE'|translate}}</button>
+  </div>
+  <br />
 </div>

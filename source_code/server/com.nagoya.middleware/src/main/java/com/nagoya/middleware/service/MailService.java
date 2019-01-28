@@ -27,6 +27,7 @@ import com.nagoya.dao.util.StringUtil;
 import com.nagoya.middleware.main.ServerPropertiesProvider;
 import com.nagoya.middleware.main.ServerProperty;
 import com.nagoya.middleware.util.FileReader;
+import com.nagoya.model.dbo.contract.ContractDBO;
 
 /**
  * @author flba
@@ -217,6 +218,11 @@ public class MailService {
 
         String subject = getTitle(registrationMailText);
         sendMail(emailAddress, subject, registrationMailText);
+
+    }
+
+    public void sendContractAccepted(ContractDBO contract) {
+        // TODO Auto-generated method stub
 
     }
 }

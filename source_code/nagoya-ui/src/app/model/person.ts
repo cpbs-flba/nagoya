@@ -7,6 +7,5 @@ class Person {
 
   keys: PersonKeys;
 
-  // optional parameter
-  storePrivateKey?: boolean;
+  storePrivateKey: boolean;
 }
