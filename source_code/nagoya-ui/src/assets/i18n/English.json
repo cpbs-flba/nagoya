@@ -245,11 +245,14 @@
       "CANCEL": "Cancel"
     },
     "INFO": {
+      "CREATED": "An offer was successfully created.",
       "OK": "The contract was accepted successfully.",
       "REJECT_OK": "The contract was rejected successfully.",
       "CANCEL_OK": "The contract was cancelled successfully."
     },
     "ERROR": {
+      "INVALID_COUNTERPARTY": "Invalid counterparty. Please verify the provided e-mail address.",
+      "INVALID_RESOURCE_SELECTION": "Invalid resource selection. Select at least 1 resource and specify the amount and the unit measurement of the amount",
       "WRONG_PK": "The specified private key is incorrect, please try again.",
       "FORBIDDEN": "You are no longer authorized for this operation. This happens when, e.g., your business partner already concudcted another operation on the contract.",
       "GENERAL": "Something went wrong, please try again later."

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Contract } from '../model/contract/contract';
 
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../core/authentication/token.service';
 import { tap } from 'rxjs/operators';
@@ -31,6 +31,19 @@ export class ContractsService {
       tap(result => {
         this.contracts = result.body;
       }));
+  }
+
+  public create(contractToCreate, privateKey): Observable<any> {
+    let requestUrl = environment.serverUrl + 'contracts';
+    if (privateKey != null) {
+      requestUrl += "?privatekey=" + privateKey;
+    }
+    console.log('Creating contract. URL: ' + requestUrl, contractToCreate);
+    return this.http.put<HttpResponse<any>>(requestUrl, contractToCreate, { observe: 'response' })
+      .pipe(
+        tap(response => {
+          return response.body;
+        }));
   }
 
   public cancel(contractId): Observable<any> {
@@ -66,8 +79,6 @@ export class ContractsService {
         // noop
       }));
   }
-
-
 
   getContracts(): Contract[] {
     return this.contracts;

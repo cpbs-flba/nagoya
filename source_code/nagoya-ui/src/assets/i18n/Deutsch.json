@@ -245,11 +245,14 @@
       "CANCEL": "Stornieren"
     },
     "INFO": {
+      "CREATED": "Das Angebot wurde erfolgreich erstellt.",
       "OK": "Der Vertrag wurde erfolgreich angenommen.",
       "REJECT_OK": "Der Vertrag wurde erfolgreich abgelehnt.",
       "CANCEL_OK": "Der Vertrag wurde erfolgreich storniert."
     },
     "ERROR": {
+      "INVALID_COUNTERPARTY": "Ungültiger Geschäftspartner. Bitte prüfen Sie die angegebene E-Mail Adresse.",
+      "INVALID_RESOURCE_SELECTION": "Ungültige Auswahl von genetischen Ressourcen. Bitte mindestens 1 Ressource auswählen und die Menge und die Einheit angeben.",
       "WRONG_PK": "Der angegebene private Schlüssel ist nicht korrekt, bitte versuchen Sie es erneut.",
       "FORBIDDEN": "Diese Operation ist nicht mehr erlaubt. Das ist dann der Fall, wenn z.B. Ihr Geschäftspartner der Vertrag aktualisiert hat.",
       "GENERAL": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."

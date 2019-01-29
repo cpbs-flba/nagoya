@@ -7,6 +7,8 @@ import { AuthenticationService } from '../../core';
 import { UserService } from 'src/app/services/user.service';
 import { Contract } from 'src/app/model/contract/contract';
 import { ContractsService } from 'src/app/services/contracts.service';
+import { ContractResource } from 'src/app/model/contract/contractResource';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-trade-contract',
@@ -15,38 +17,38 @@ import { ContractsService } from 'src/app/services/contracts.service';
 })
 export class TradeContractComponent implements OnInit {
 
-  contract: Contract = new Contract();
   geneticResources: GeneticResource[];
   attachments: ResourceFile[] = [];
+
+  contractResources = new Array();
+  selectedContractResources: ContractResource[];
+
   privateKey: string;
+  emailReceiver: string;
 
   constructor(
     private contractsService: ContractsService,
     private resourceService: ResourceService,
-    private authenticationService: AuthenticationService,
+    private messageService: MessageService,
     private userService: UserService,
-    private router: Router) { 
-
-      this.contract.sender = this.userService.getUser();
-      this.contract.receiver = this.userService.getUser();
-
-    }
+    private router: Router) {
+  }
 
   ngOnInit() {
-    if (!this.isUserLoggedIn()) {
-      this.router.navigate(['login']);
-    }
     this.resourceService.getAll().subscribe(response => {
       this.geneticResources = response;
+      this.geneticResources.forEach(element => {
+        let cr: ContractResource = {
+          amount: null,
+          geneticResource: element,
+          measuringUnit: ''
+        };
+        this.contractResources.push(cr);
+      });
     }, error => {
       //TODO
       console.log(error);
     });
-    
-  }
-
-  isUserLoggedIn() {
-    return this.authenticationService.isAuthenticated();
   }
 
   addAttachment(event: any) {
@@ -63,6 +65,44 @@ export class TradeContractComponent implements OnInit {
         this.attachments.push(resourceFile);
       };
     }
+  }
+
+  createContract() {
+    let contract: Contract = {
+      id: null,
+      sender: this.userService.getUser(),
+      receiver: {
+        email: this.emailReceiver,
+        password: null,
+        passwordConfirmation: null,
+        personType: null,
+        address: null,
+        keys: null,
+        storePrivateKey: null
+      },
+
+      conclusionDate: null,
+      contractResources: this.selectedContractResources,
+      token: null
+    };
+
+    this.contractsService.create(contract, this.privateKey).subscribe(result => {
+      this.messageService.displayInfoMessage('CONTRACTS.INFO.CREATED');
+      this.router.navigate(['home']);
+    }, error => {
+      if (error.error== 'ERROR_SENDER_1') {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.INVALID_COUNTERPARTY');
+      }
+      if (error.error== 'ERROR_RESOURCE_1') {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.INVALID_RESOURCE_SELECTION');
+      }
+
+      if (error.status == 403) {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.FORBIDDEN');
+      } else if (error.status === 412) {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.WRONG_PK');
+      }
+    });
   }
 
   isPrivateKeyNeeded() {
