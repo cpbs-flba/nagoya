@@ -1,14 +1,15 @@
-/**
- * (C) Copyright 2004 - 2019 CPB Software AG
- * 1020 Wien, Vorgartenstrasse 206c
- * All rights reserved.
- * 
- * This software is provided by the copyright holders and contributors "as is". 
- * In no event shall the copyright owner or contributors be liable for any direct,
- * indirect, incidental, special, exemplary, or consequential damages.
- * 
- * Created by : Florin Bogdan Balint
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.dao;
 
@@ -20,13 +21,13 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.nagoya.blockchain.api.BlockchainDriver;
-import com.nagoya.blockchain.api.Credentials;
 import com.nagoya.common.blockchain.api.impl.BlockchainDriverImpl;
 import com.nagoya.common.crypto.AESEncryptionProvider;
 import com.nagoya.common.crypto.DefaultPasswordEncryptionProvider;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.DefaultDBOFiller;
+import com.nagoya.model.blockchain.Credentials;
 import com.nagoya.model.dbo.person.AddressDBO;
 import com.nagoya.model.dbo.person.PersonDBO;
 import com.nagoya.model.dbo.person.PersonKeysDBO;
@@ -106,12 +107,18 @@ public class DAOTest {
         legalPerson.setEmail(email);
         legalPerson.setPassword(DefaultPasswordEncryptionProvider.encryptPassword(email));
         legalPerson.setAddress(address);
+        legalPerson.setStorePrivateKey(true);
 
-        BlockchainDriver bl = new BlockchainDriverImpl();
-        Credentials credentials = bl.createCredentials();
+        BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
+        Credentials credentials = blockchainDriver.createCredentials();
 
         PersonKeysDBO pk = new PersonKeysDBO();
         pk.setPublicKey(credentials.getPublicKey());
+
+        String privateKeyEncrypted = AESEncryptionProvider.encrypt(credentials.getPrivateKey(), email.toLowerCase());
+        pk.setPrivateKey(privateKeyEncrypted);
+
+        pk.setActive(true);
         LOGGER.info("Private key for: " + email + ", is: " + credentials.getPrivateKey());
         legalPerson.getKeys().add(pk);
 
@@ -130,7 +137,8 @@ public class DAOTest {
         return (PersonLegalDBO) personDAO.insert(legalPerson, true);
     }
 
-    public GeneticResourceDBO insertTestGeneticResource(Session session, PersonDBO owner, String idName, VisibilityType visibilityType) {
+    public GeneticResourceDBO insertTestGeneticResource(Session session, PersonDBO owner, String idName, VisibilityType visibilityType,
+        TaxonomyDBO t6) {
         GeneticResourceDBO resource1 = new GeneticResourceDBO();
         resource1.setIdentifier(idName);
         resource1.setDescription(idName);
@@ -146,6 +154,13 @@ public class DAOTest {
         rf.setType("txt");
         resource1.getFiles().add(rf);
 
+        resource1.setTaxonomy(t6);
+
+        PersonDAO personDAO = new PersonDAOImpl(session);
+        return (GeneticResourceDBO) personDAO.insert(resource1, true);
+    }
+
+    public TaxonomyDBO getTaxonomyParent() {
         TaxonomyDBO t1 = new TaxonomyDBO();
         t1.setName("Plantae");
 
@@ -153,22 +168,31 @@ public class DAOTest {
         t2.setName("Angiosperms");
         t2.setParent(t1);
 
+        return t2;
+    }
+
+    public TaxonomyDBO getTaxonomyChild1(TaxonomyDBO parent) {
+        TaxonomyDBO t3 = new TaxonomyDBO();
+        t3.setName("Asteraceae 1");
+        t3.setParent(parent);
+
         TaxonomyDBO t4 = new TaxonomyDBO();
-        t4.setName("Asteraceae");
-        t4.setParent(t2);
+        t4.setName("Asteroideae 1");
+        t4.setParent(t3);
 
-        TaxonomyDBO t5 = new TaxonomyDBO();
-        t5.setName("Asteroideae");
-        t5.setParent(t4);
+        return t4;
+    }
 
-        TaxonomyDBO t6 = new TaxonomyDBO();
-        t6.setName("Heliantheae");
-        t6.setParent(t5);
+    public TaxonomyDBO getTaxonomyChild2(TaxonomyDBO parent) {
+        TaxonomyDBO t3 = new TaxonomyDBO();
+        t3.setName("Asteraceae 2");
+        t3.setParent(parent);
 
-        resource1.setTaxonomy(t6);
+        TaxonomyDBO t4 = new TaxonomyDBO();
+        t4.setName("Asteroideae 2");
+        t4.setParent(t3);
 
-        PersonDAO personDAO = new PersonDAOImpl(session);
-        return (GeneticResourceDBO) personDAO.insert(resource1, true);
+        return t4;
     }
 
     public PersonNaturalDBO insertTestPersonNatural(Session session, String email, String firstname, String lastname) {
@@ -189,10 +213,11 @@ public class DAOTest {
         person.setPassword(DefaultPasswordEncryptionProvider.encryptPassword(email.toLowerCase()));
         person.setAddress(address);
 
-        BlockchainDriver bl = new BlockchainDriverImpl();
-        Credentials credentials = bl.createCredentials();
+        BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
+        Credentials credentials = blockchainDriver.createCredentials();
 
         PersonKeysDBO pk = new PersonKeysDBO();
+        pk.setActive(true);
         DefaultDBOFiller.fillDefaultDataObjectValues(pk);
         pk.setPublicKey(credentials.getPublicKey());
 

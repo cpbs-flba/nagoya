@@ -1,14 +1,15 @@
-/**
- * (C) Copyright 2004 - 2018 CPB Software AG
- * 1020 Wien, Vorgartenstrasse 206c
- * All rights reserved.
- * 
- * This software is provided by the copyright holders and contributors "as is". 
- * In no event shall the copyright owner or contributors be liable for any direct,
- * indirect, incidental, special, exemplary, or consequential damages.
- * 
- * Created by : Florin Bogdan Balint
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.middleware.rest.bl.impl;
 
@@ -52,7 +53,7 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
      * javax.ws.rs.container.AsyncResponse)
      */
     @Override
-    public void addContract(String authorization, String privateKey, String language, ContractTO contractTO, AsyncResponse asyncResponse) {
+    public void addContract(String authorization, String language, String privateKey, ContractTO contractTO, AsyncResponse asyncResponse) {
         Response response = null;
         Session session = null;
         try {
@@ -76,7 +77,7 @@ public class ContractRESTResourceImpl implements ContractRESTResource {
             response = Response.status(Status.REQUEST_TIMEOUT).build();
         } catch (BadRequestException e) {
             LOGGER.error(e, e);
-            response = Response.status(Status.BAD_REQUEST).build();
+            response = Response.status(Status.BAD_REQUEST).entity(e.getErrorCode()).build();
         } catch (Exception e) {
             LOGGER.error(e);
             response = Response.serverError().build();

@@ -22,7 +22,7 @@
 			<artifactId>com.nagoya.blockchain.api</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		
+
 		<!-- specific blockchain dependency -->
 		<dependency>
 			<groupId>com.bigchaindb</groupId>
@@ -31,10 +31,32 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.bigchaindb</groupId>
-			<artifactId>cryptoconditions</artifactId>
-			<version>1.0</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.8.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.github.novacrypto</groupId>
+			<artifactId>Base58</artifactId>
+			<version>2018.10.06</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.nagoya</groupId>
+			<artifactId>com.nagoya.common.test</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>ridnovacrypto</id>
+			<name>Repository with the Base58 dependency</name>
+			<url>http://jcenter.bintray.com/</url>
+		</repository>
+	</repositories>
 
 </project>

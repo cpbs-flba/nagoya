@@ -1,14 +1,15 @@
-/**
- * (C) Copyright 2004 - 2019 CPB Software AG
- * 1020 Wien, Vorgartenstrasse 206c
- * All rights reserved.
- * 
- * This software is provided by the copyright holders and contributors "as is". 
- * In no event shall the copyright owner or contributors be liable for any direct,
- * indirect, incidental, special, exemplary, or consequential damages.
- * 
- * Created by : Florin Bogdan Balint
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.model.dbo.contract;
 
@@ -24,10 +25,12 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
+import com.nagoya.model.blockchain.Credentials;
 import com.nagoya.model.dbo.DBO;
 import com.nagoya.model.dbo.person.PersonDBO;
 import com.nagoya.model.dbo.user.UserRequestDBO;
@@ -68,6 +71,12 @@ public class ContractDBO extends DBO {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "contract_id")
     private Set<UserRequestDBO>      userRequests      = new HashSet<>();
+
+    @Transient
+    private Credentials              credentialsSender;
+
+    @Transient
+    private Credentials              credentialsReceiver;
 
     public PersonDBO getSender() {
         return sender;
@@ -121,6 +130,34 @@ public class ContractDBO extends DBO {
      */
     public void setUserRequests(Set<UserRequestDBO> userRequests) {
         this.userRequests = userRequests;
+    }
+
+    /**
+     * @return the credentialsSender
+     */
+    public Credentials getCredentialsSender() {
+        return credentialsSender;
+    }
+
+    /**
+     * @param credentialsSender the credentialsSender to set
+     */
+    public void setCredentialsSender(Credentials credentialsSender) {
+        this.credentialsSender = credentialsSender;
+    }
+
+    /**
+     * @return the credentialsReceiver
+     */
+    public Credentials getCredentialsReceiver() {
+        return credentialsReceiver;
+    }
+
+    /**
+     * @param credentialsReceiver the credentialsReceiver to set
+     */
+    public void setCredentialsReceiver(Credentials credentialsReceiver) {
+        this.credentialsReceiver = credentialsReceiver;
     }
 
 }

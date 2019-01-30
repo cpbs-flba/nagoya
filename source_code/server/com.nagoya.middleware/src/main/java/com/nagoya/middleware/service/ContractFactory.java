@@ -1,6 +1,15 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.middleware.service;
 
@@ -10,11 +19,11 @@ import java.util.Set;
 
 import org.hibernate.Session;
 
+import com.nagoya.common.util.StringUtil;
 import com.nagoya.dao.geneticresource.GeneticResourceDAO;
 import com.nagoya.dao.geneticresource.impl.GeneticResourceDAOImpl;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
-import com.nagoya.dao.util.StringUtil;
 import com.nagoya.model.dbo.contract.ContractDBO;
 import com.nagoya.model.dbo.contract.ContractFileDBO;
 import com.nagoya.model.dbo.contract.ContractResourceDBO;
@@ -54,18 +63,18 @@ public class ContractFactory {
         // and retrieve the persons based on their e-mail addresses
         PersonTO receiver = contractTO.getReceiver();
         if (receiver == null) {
-            throw new BadRequestException("Sender/Receiver cannot be NULL.");
+            throw new BadRequestException("Sender/Receiver cannot be NULL.", "ERROR_SENDER_1");
         }
 
         String emailReceiver = receiver.getEmail();
 
         if (StringUtil.isNullOrBlank(emailReceiver)) {
-            throw new BadRequestException("Sender-email or receiver-email cannot be NULL.");
+            throw new BadRequestException("Sender-email or receiver-email cannot be NULL.", "ERROR_SENDER_1");
         }
 
         com.nagoya.model.dbo.person.PersonDBO receiverDBO = personDAO.findPersonForEmail(emailReceiver);
         if (senderDBO == null || receiverDBO == null) {
-            throw new BadRequestException("Sender/Receiver could not be found.");
+            throw new BadRequestException("Sender/Receiver could not be found.", "ERROR_SENDER_1");
         }
 
         contractDBO.setSender(senderDBO);
@@ -75,17 +84,17 @@ public class ContractFactory {
 
         Set<ContractResourceTO> contractResourcesDTO = contractTO.getContractResources();
         if (contractResourcesDTO.isEmpty()) {
-            throw new BadRequestException("At least one contract resource must exist!");
+            throw new BadRequestException("At least one contract resource must exist!", "ERROR_RESOURCE_1");
         }
         for (com.nagoya.model.to.contract.ContractResourceTO contractResourceTO : contractResourcesDTO) {
             double amount = contractResourceTO.getAmount();
             if (amount <= 0) {
-                throw new BadRequestException("Amount must not be greater than 0!");
+                throw new BadRequestException("Amount must not be greater than 0!", "ERROR_RESOURCE_1");
             }
 
             String measuringUnit = contractResourceTO.getMeasuringUnit();
             if (StringUtil.isNullOrBlank(measuringUnit)) {
-                throw new BadRequestException("A measuring unit must be provided (e.g., 'kg') !");
+                throw new BadRequestException("A measuring unit must be provided (e.g., 'kg') !", "ERROR_RESOURCE_1");
             }
 
             GeneticResourceTO geneticResource = contractResourceTO.getGeneticResource();

@@ -28,6 +28,7 @@
 			<groupId>com.nagoya</groupId>
 			<artifactId>com.nagoya.dao.test</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- Blockchain API -->
 		<dependency>

@@ -41,32 +41,14 @@
 			<version>1.7.25</version>
 		</dependency>
 
-		<!-- JUnit 5 -->
+		<!-- test dependency -->
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>${project.junit.version}</version>
+			<groupId>com.nagoya</groupId>
+			<artifactId>com.nagoya.common.test</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>${project.junit.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.vintage</groupId>
-			<artifactId>junit-vintage-engine</artifactId>
-			<version>${project.junit.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-launcher</artifactId>
-			<version>${project.junit.platform.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-runner</artifactId>
-			<version>${project.junit.platform.version}</version>
-		</dependency>
+
 	</dependencies>
 
 </project>

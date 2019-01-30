@@ -1,14 +1,15 @@
-/*
- * (C) Copyright 2004 - 2019 CPB Software AG
- * 1020 Wien, Vorgartenstrasse 206c
- * All rights reserved.
- * 
- * This software is provided by the copyright holders and contributors "as is". 
- * In no event shall the copyright owner or contributors be liable for any direct,
- * indirect, incidental, special, exemplary, or consequential damages.
- * 
- * Created by : Florin Bogdan Balint
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.middleware.service;
 
@@ -28,18 +29,18 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import com.nagoya.blockchain.api.BlockchainDriver;
-import com.nagoya.blockchain.api.Credentials;
 import com.nagoya.common.blockchain.api.impl.BlockchainDriverImpl;
 import com.nagoya.common.crypto.AESEncryptionProvider;
 import com.nagoya.common.crypto.DefaultPasswordEncryptionProvider;
+import com.nagoya.common.util.DefaultDateProvider;
+import com.nagoya.common.util.StringUtil;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
 import com.nagoya.dao.util.DefaultDBOFiller;
-import com.nagoya.dao.util.StringUtil;
 import com.nagoya.middleware.rest.bl.UserRESTResource;
-import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
+import com.nagoya.model.blockchain.Credentials;
 import com.nagoya.model.dbo.person.PersonKeysDBO;
 import com.nagoya.model.dbo.person.PersonLegalDBO;
 import com.nagoya.model.dbo.person.PersonNaturalDBO;
@@ -71,7 +72,6 @@ public class UserService extends ResourceService {
 
     private static final Logger LOGGER = LogManager.getLogger(UserService.class);
 
-    // private BlockchainHelper blockchainHelper;
     private PersonDAO           personDAO;
 
     public UserService(Session session) {
@@ -153,14 +153,15 @@ public class UserService extends ResourceService {
         // generate and store the keys only if the person wants it
         // otherwise they are generated upon account confirmation
         if (toRegister.isStorePrivateKey()) {
-            BlockchainDriver bl = new BlockchainDriverImpl();
-            Credentials credentials = bl.createCredentials();
+            BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
+            Credentials credentials = blockchainDriver.createCredentials();
 
             PersonKeysDBO pk = new PersonKeysDBO();
             DefaultDBOFiller.fillDefaultDataObjectValues(pk);
             pk.setPublicKey(credentials.getPublicKey());
             String privateKeyEncrypted = AESEncryptionProvider.encrypt(credentials.getPrivateKey(), plainPassword);
             pk.setPrivateKey(privateKeyEncrypted);
+            pk.setActive(true);
             toRegister.getKeys().add(pk);
         }
 
@@ -240,12 +241,13 @@ public class UserService extends ResourceService {
         if (userRequest.getRequestType().equals(RequestType.REGISTRATION)) {
             // set the email confirmation flag
             person.setEmailConfirmed(true);
-            BlockchainDriver bl = new BlockchainDriverImpl();
-            Credentials credentials = bl.createCredentials();
+            BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
+            Credentials credentials = blockchainDriver.createCredentials();
             if (person.isStorePrivateKey() == false) {
 
                 PersonKeysDBO pk = new PersonKeysDBO();
                 DefaultDBOFiller.fillDefaultDataObjectValues(pk);
+                pk.setActive(true);
                 pk.setPublicKey(credentials.getPublicKey());
                 person.getKeys().add(pk);
             }
@@ -284,11 +286,17 @@ public class UserService extends ResourceService {
 
             // we need new credentials for the blockchain and encrypt them with the new password
             if (person.isStorePrivateKey()) {
-                BlockchainDriver bl = new BlockchainDriverImpl();
-                Credentials credentials = bl.createCredentials();
+                // deactivate all old keys
+                for (PersonKeysDBO keyPair : person.getKeys()) {
+                    keyPair.setActive(false);
+                }
+
+                BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
+                Credentials credentials = blockchainDriver.createCredentials();
 
                 PersonKeysDBO pk = new PersonKeysDBO();
                 DefaultDBOFiller.fillDefaultDataObjectValues(pk);
+                pk.setActive(true);
                 pk.setPublicKey(credentials.getPublicKey());
                 String privateKeyEncrypted = AESEncryptionProvider.encrypt(credentials.getPrivateKey(), newEnteredPassword);
                 pk.setPrivateKey(privateKeyEncrypted);

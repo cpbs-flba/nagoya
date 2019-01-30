@@ -1,6 +1,15 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.middleware.service;
 
@@ -12,9 +21,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
+import com.nagoya.common.util.StringUtil;
+import com.nagoya.dao.base.BasicDAO;
+import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.dao.geneticresource.GeneticResourceDAO;
 import com.nagoya.dao.geneticresource.impl.GeneticResourceDAOImpl;
-import com.nagoya.dao.util.StringUtil;
 import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.dbo.resource.GeneticResourceDBO;
 import com.nagoya.model.dbo.resource.ResourceFileDBO;
@@ -32,6 +43,7 @@ import com.nagoya.model.exception.NotFoundException;
 import com.nagoya.model.exception.ResourceOutOfDateException;
 import com.nagoya.model.exception.TimeoutException;
 import com.nagoya.model.to.resource.GeneticResourceTransformer;
+import com.nagoya.model.to.resource.TaxonomyTO;
 import com.nagoya.model.to.resource.filter.GeneticResourceFilter;
 
 /**
@@ -44,14 +56,17 @@ public class GeneticResourceService extends ResourceService {
 
     private GeneticResourceDAO  geneticResourceDAO;
 
+    private Session             session;
+
     public GeneticResourceService(Session session) {
         super(session);
+        this.session = session;
         this.geneticResourceDAO = new GeneticResourceDAOImpl(session);
     }
 
     public DefaultReturnObject create(String authorization, com.nagoya.model.to.resource.GeneticResourceTO geneticRessource)
         throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException, ResourceOutOfDateException,
-        BadRequestException {
+        BadRequestException, NonUniqueResultException {
         LOGGER.debug("Adding genetic resource");
         OnlineUserDBO onlineUser = validateSession(authorization);
 
@@ -59,7 +74,25 @@ public class GeneticResourceService extends ResourceService {
             throw new BadRequestException("Cannot execute create operation, when the object is null.");
         }
 
+        // find the taxonomy based on the provided ID
+        TaxonomyTO taxonomy = geneticRessource.getTaxonomy();
+        if (taxonomy == null) {
+            throw new BadRequestException("Taxonomy must be provided.");
+        }
+        String taxonomyId = taxonomy.getId();
+        if (StringUtil.isNullOrBlank(taxonomyId)) {
+            throw new BadRequestException("Taxonomy ID must be provided.");
+        }
+        TaxonomyDBO taxonomyDBO = null;
+        try {
+            long parseLong = Long.parseLong(taxonomyId);
+            BasicDAO<TaxonomyDBO> taxonomyDAO = new BasicDAOImpl<TaxonomyDBO>(session);
+            taxonomyDBO = (TaxonomyDBO) taxonomyDAO.find(parseLong, TaxonomyDBO.class);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Invalid taxonomy ID provided.");
+        }
         GeneticResourceDBO dbo = GeneticResourceTransformer.getDBO(null, geneticRessource);
+        dbo.setTaxonomy(taxonomyDBO);
         dbo.setOwner(onlineUser.getPerson());
         geneticResourceDAO.insert(dbo, true);
 

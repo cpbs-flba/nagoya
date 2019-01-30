@@ -1,6 +1,15 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.middleware.service;
 
@@ -9,27 +18,31 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
+import com.nagoya.common.crypto.AESEncryptionProvider;
+import com.nagoya.common.util.DefaultDateProvider;
+import com.nagoya.common.util.StringUtil;
 import com.nagoya.dao.base.BasicDAO;
 import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.dao.contract.ContractDAO;
 import com.nagoya.dao.contract.impl.ContractDAOImpl;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
-import com.nagoya.dao.util.StringUtil;
 import com.nagoya.middleware.main.ServerPropertiesProvider;
 import com.nagoya.middleware.main.ServerProperty;
-import com.nagoya.middleware.util.DefaultDateProvider;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
+import com.nagoya.model.blockchain.Credentials;
 import com.nagoya.model.dbo.contract.ContractDBO;
 import com.nagoya.model.dbo.contract.ContractFileDBO;
 import com.nagoya.model.dbo.contract.Status;
 import com.nagoya.model.dbo.person.PersonDBO;
+import com.nagoya.model.dbo.person.PersonKeysDBO;
 import com.nagoya.model.dbo.user.OnlineUserDBO;
 import com.nagoya.model.dbo.user.RequestType;
 import com.nagoya.model.dbo.user.UserRequestDBO;
@@ -41,6 +54,7 @@ import com.nagoya.model.exception.InvalidTokenException;
 import com.nagoya.model.exception.NonUniqueResultException;
 import com.nagoya.model.exception.NotAuthorizedException;
 import com.nagoya.model.exception.NotFoundException;
+import com.nagoya.model.exception.OperationFailedException;
 import com.nagoya.model.exception.PreconditionFailedException;
 import com.nagoya.model.exception.ResourceOutOfDateException;
 import com.nagoya.model.exception.TimeoutException;
@@ -70,7 +84,7 @@ public class ContractResourceService extends ResourceService {
 
     public DefaultReturnObject create(String authorization, String privateKey, String language, com.nagoya.model.to.contract.ContractTO contractTO)
         throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException, ResourceOutOfDateException,
-        BadRequestException, NonUniqueResultException, PreconditionFailedException {
+        BadRequestException, NonUniqueResultException, PreconditionFailedException, OperationFailedException {
         LOGGER.debug("Adding contract");
         OnlineUserDBO onlineUser = validateSession(authorization);
 
@@ -87,9 +101,28 @@ public class ContractResourceService extends ResourceService {
             throw new PreconditionFailedException("Private key for blockchain is invalid or missing!");
         }
 
+        Credentials credentialsSender = getValidCredentials(person);
+        if (person.isStorePrivateKey()) {
+            String privateKeyFromDB = onlineUser.getPrivateKey();
+            if (StringUtil.isNullOrBlank(privateKeyFromDB)) {
+                throw new PreconditionFailedException("Private key for blockchain is invalid or missing!");
+            }
+            String decodedPrivateKey = AESEncryptionProvider.decrypt(onlineUser.getBlockchainKey(), privateKeyFromDB);
+            credentialsSender.setPrivateKey(decodedPrivateKey);
+        } else {
+            credentialsSender.setPrivateKey(privateKey);
+        }
+        contractDBO.setCredentialsSender(credentialsSender);
+        Credentials credentialsReceiver = getValidCredentials(contractDBO.getReceiver());
+        contractDBO.setCredentialsReceiver(credentialsReceiver);
+
+        // now we should everything we need to store the asset into the blockchain
+        BlockchainService blockchainService = new BlockchainService(session);
+        blockchainService.persistContractInBlockchain(contractDBO);
+
         Calendar cal = Calendar.getInstance();
         int integer = ServerPropertiesProvider.getInteger(ServerProperty.CONTRACT_EXPIRAETION_TIME, 72);
-        cal.add(Calendar.HOUR, integer);
+        cal.add(Calendar.HOUR_OF_DAY, integer);
 
         Date expirationDate = cal.getTime();
         String token = DefaultIDGenerator.generateRandomID();
@@ -109,6 +142,19 @@ public class ContractResourceService extends ResourceService {
         mailService.sendContractAcceptancePending(token, expirationDate, contractDBO.getReceiver().getEmail());
 
         DefaultReturnObject result = refreshSession(onlineUser, null, null);
+        return result;
+    }
+
+    private Credentials getValidCredentials(PersonDBO person) {
+        Credentials result = null;
+        Set<PersonKeysDBO> keyPairs = person.getKeys();
+        for (PersonKeysDBO keyPair : keyPairs) {
+            if (Boolean.TRUE.equals(keyPair.getActive())) {
+                result = new Credentials();
+                result.setPublicKey(keyPair.getPublicKey());
+                break;
+            }
+        }
         return result;
     }
 
@@ -397,10 +443,6 @@ public class ContractResourceService extends ResourceService {
 
         // at this point everything is okay and the contract is legally concluded
         // TODO: persist in blockchain
-        // TODO: remove dummy key
-        if (!privateKey.equals("asdf")) {
-            throw new PreconditionFailedException("Private key for blockchain is invalid or missing!");
-        }
 
         // delete the request only if everything else was okay...
         personDAO.delete(userRequest, true);

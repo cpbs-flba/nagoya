@@ -1,14 +1,15 @@
-/**
- * (C) Copyright 2004 - 2019 CPB Software AG
- * 1020 Wien, Vorgartenstrasse 206c
- * All rights reserved.
- * 
- * This software is provided by the copyright holders and contributors "as is". 
- * In no event shall the copyright owner or contributors be liable for any direct,
- * indirect, incidental, special, exemplary, or consequential damages.
- * 
- * Created by : Florin Bogdan Balint
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.dao.person;
 
@@ -60,12 +61,14 @@ public class SearchPersonDAOTest extends DAOTest {
         PersonNaturalDBO n1 = getNaturalTestPerson("test1@test.com", "max", "mustermann");
         PersonKeysDBO k1 = new PersonKeysDBO();
         k1.setPublicKey("pk1");
+        k1.setActive(true);
         n1.getKeys().add(k1);
         dao.insert(n1, true);
 
         PersonNaturalDBO n2 = getNaturalTestPerson("test2@test.com", "maxi", "mustermann");
         PersonKeysDBO k2 = new PersonKeysDBO();
         k2.setPublicKey("pk2");
+        k2.setActive(true);
         n2.getKeys().add(k2);
         dao.insert(n2, true);
 

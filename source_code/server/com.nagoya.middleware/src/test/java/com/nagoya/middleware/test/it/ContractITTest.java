@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.middleware.test.it;
 
@@ -14,9 +26,6 @@ import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.nagoya.common.crypto.DefaultPasswordEncryptionProvider;
-import com.nagoya.dao.base.BasicDAO;
-import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.middleware.test.base.RestBaseTest;
 import com.nagoya.model.dbo.person.PersonLegalDBO;
 import com.nagoya.model.dbo.resource.GeneticResourceDBO;
@@ -44,7 +53,8 @@ public class ContractITTest extends RestBaseTest {
         PersonLegalDBO p1 = insertDummyLegalPerson();
 
         // insert the genetic resource
-        GeneticResourceDBO insertedGeneticResource = insertTestGeneticResource(getSession(), p1, "bla123", VisibilityType.PRIVATE);
+        GeneticResourceDBO insertedGeneticResource = insertTestGeneticResource(getSession(), p1, "bla123", VisibilityType.PRIVATE,
+            getTaxonomyParent());
 
         // now login
         String targetUrl = serverURL + "/users/login";
@@ -95,26 +105,18 @@ public class ContractITTest extends RestBaseTest {
         Assert.assertEquals(204, status);
     }
 
-    private com.nagoya.model.dbo.person.PersonLegalDBO insertDummyLegalPerson() {
+    private PersonLegalDBO insertDummyLegalPerson() {
+        PersonLegalDBO result = null;
         // save the legal person
-        com.nagoya.model.dbo.person.PersonLegalDBO result = null;
-        BasicDAO<com.nagoya.model.dbo.person.PersonLegalDBO> personDAO = new BasicDAOImpl<com.nagoya.model.dbo.person.PersonLegalDBO>(getSession());
-        for (int i = 0; i < 20; i++) {
-            // insert dummy data
-            com.nagoya.model.dbo.person.PersonLegalDBO pl = new com.nagoya.model.dbo.person.PersonLegalDBO();
-            pl.setEmail("test@test.com" + i);
-            pl.setPassword(DefaultPasswordEncryptionProvider.encryptPassword("test@test.com" + i));
-            pl.setEmailConfirmed(true);
-            pl.setName("test");
-            pl.setTaxNumber("test");
-            pl.setCommercialRegisterNumber("test");
-            personDAO.insert(pl, true);
+        for (int i = 0; i < 3; i++) {
+            String email = "test@test.com" + i;
+            PersonLegalDBO insertTestPersonLegal = insertTestPersonLegal(getSession(), email);
             if (result == null) {
-                result = pl;
+                result = insertTestPersonLegal;
             }
         }
-
         return result;
+
     }
 
 }
