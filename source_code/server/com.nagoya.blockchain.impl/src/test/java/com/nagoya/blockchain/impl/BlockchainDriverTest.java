@@ -13,11 +13,15 @@
 
 package com.nagoya.blockchain.impl;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.runners.MethodSorters;
 
 import com.nagoya.blockchain.api.BlockchainDriver;
 import com.nagoya.common.blockchain.api.impl.BlockchainDriverImpl;
@@ -28,15 +32,16 @@ import com.nagoya.model.blockchain.Credentials;
  * @author flba
  *
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BlockchainDriverTest {
 
     private static final Logger LOGGER = LogManager.getLogger(BlockchainDriverTest.class);
 
     @Test
     @DisplayName("Create credentials")
-    public void credentialsTest()
+    public void t1()
         throws Exception {
-        LOGGER.debug("Credentials");
+        LOGGER.debug("\r\n\r\n\r\n");
         BlockchainDriverImpl blockchainDriver = new BlockchainDriverImpl();
         Credentials credentials = blockchainDriver.createCredentials();
         Assert.assertNotNull(credentials.getPublicKey());
@@ -45,8 +50,9 @@ public class BlockchainDriverTest {
 
     @Test
     @DisplayName("Blockchain asset creation test")
-    public void createAssetTest()
+    public void t2()
         throws Exception {
+        LOGGER.debug("\r\n\r\n\r\n");
         BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
         Credentials credentialsSender = blockchainDriver.createCredentials();
 
@@ -57,15 +63,15 @@ public class BlockchainDriverTest {
         asset.getMetaData().put("where is he now?", "Thailand");
         asset.setAmount("1");
 
-        String txId1 = blockchainDriver.createAsset(credentialsSender, asset);
-        asset.setTransactionId(txId1);
-        Assert.assertNotNull(txId1);
+        blockchainDriver.createAsset(credentialsSender, asset);
+        Assert.assertNotNull(asset.getTxIdAssetCreation());
     }
 
     @Test
     @DisplayName("Blockchain asset creation + transfer test")
-    public void createAndTransferAssetTest()
+    public void t3()
         throws Exception {
+        LOGGER.debug("\r\n\r\n\r\n");
         BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
         Credentials credentialsSender = blockchainDriver.createCredentials();
 
@@ -76,13 +82,55 @@ public class BlockchainDriverTest {
         asset.getMetaData().put("where is he now?", "Thailand");
         asset.setAmount("1");
 
-        String txId1 = blockchainDriver.createAsset(credentialsSender, asset);
-        asset.setTransactionId(txId1);
-        Assert.assertNotNull(txId1);
+        blockchainDriver.createAsset(credentialsSender, asset);
+        Assert.assertNotNull(asset.getTxIdAssetCreation());
 
         Credentials credentialsReceiver = blockchainDriver.createCredentials();
         String txId2 = blockchainDriver.transferAsset(credentialsSender, credentialsReceiver, asset);
         Assert.assertNotNull(txId2);
+    }
+
+    @Test
+    @DisplayName("Blockchain asset creation + transfer + metadata update test")
+    public void t4()
+        throws Exception {
+        LOGGER.debug("\r\n\r\n\r\n");
+        BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
+        Credentials credentialsSender = blockchainDriver.createCredentials();
+
+        // genetic resource
+        Asset asset = new Asset();
+        asset.getAssetData().put("name", "Jack Ryan");
+        asset.getAssetData().put("age", "30");
+        asset.getAssetData().put("genetic_resource_id", "someid123");
+
+        asset.getMetaData().put("home", "USA");
+        asset.getMetaData().put("location", "DEU");
+        asset.getMetaData().put("confirmed", "false");
+        asset.setAmount("1");
+
+        blockchainDriver.createAsset(credentialsSender, asset);
+        Assert.assertNotNull(asset.getTxIdAssetCreation());
+
+        Credentials credentialsReceiver = blockchainDriver.createCredentials();
+        String txId2 = blockchainDriver.transferAsset(credentialsSender, credentialsReceiver, asset);
+        Assert.assertNotNull(txId2);
+
+        asset.getMetaData().put("confirmed", "true");
+        blockchainDriver.transferAsset(credentialsReceiver, credentialsReceiver, asset);
+        Assert.assertNotNull(asset.getTxIdAssetOperation());
+    }
+
+    @Test
+    @DisplayName("Search test")
+    public void t5()
+        throws Exception {
+        LOGGER.debug("\r\n\r\n\r\n");
+
+        BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
+        List<Asset> searched = blockchainDriver.search("gr_id=tomato123");
+        Assert.assertFalse(searched.isEmpty());
+
     }
 
 }

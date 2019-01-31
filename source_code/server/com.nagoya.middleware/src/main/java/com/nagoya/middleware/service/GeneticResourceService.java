@@ -292,9 +292,22 @@ public class GeneticResourceService extends ResourceService {
     }
 
     public DefaultReturnObject search(String authorization, GeneticResourceFilter geneticRessourceFilter)
-        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException,
-        ResourceOutOfDateException {
-        OnlineUserDBO onlineUser = validateSession(authorization);
+        throws InvalidObjectException, ResourceOutOfDateException {
+
+        // just avoid NPE
+        OnlineUserDBO onlineUser = new OnlineUserDBO();
+        // the user may or may not be logged in
+        try {
+            onlineUser = validateSession(authorization);
+        } catch (TimeoutException e) {
+            // noop - this is allowed at this location
+        } catch (ConflictException e) {
+            // noop - this is allowed at this location
+        } catch (InvalidTokenException e) {
+            // noop - this is allowed at this location
+        } catch (NotAuthorizedException e) {
+            // noop - this is allowed at this location
+        }
 
         List<GeneticResourceDBO> dbos = geneticResourceDAO.search(geneticRessourceFilter, onlineUser.getPerson(), 50);
 

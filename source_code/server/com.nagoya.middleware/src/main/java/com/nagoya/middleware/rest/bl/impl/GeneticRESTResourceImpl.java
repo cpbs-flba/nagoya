@@ -301,14 +301,8 @@ public class GeneticRESTResourceImpl implements GeneticResource {
                 responseBuilder.header(entry.getKey(), entry.getValue());
             }
             response = responseBuilder.build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(e, e);
             response = Response.serverError().build();
         } finally {
             if (session != null) {

@@ -13,6 +13,7 @@
 
 package com.nagoya.common.blockchain.api.impl;
 
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.util.ArrayList;
@@ -25,13 +26,18 @@ import java.util.concurrent.TimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.bigchaindb.api.AssetsApi;
+import com.bigchaindb.api.TransactionsApi;
 import com.bigchaindb.builders.BigchainDbConfigBuilder;
 import com.bigchaindb.builders.BigchainDbTransactionBuilder;
 import com.bigchaindb.constants.Operations;
+import com.bigchaindb.model.Assets;
 import com.bigchaindb.model.Connection;
 import com.bigchaindb.model.FulFill;
 import com.bigchaindb.model.MetaData;
+import com.bigchaindb.model.Output;
 import com.bigchaindb.model.Transaction;
+import com.bigchaindb.model.Transactions;
 import com.bigchaindb.util.KeyPairUtils;
 import com.nagoya.blockchain.api.BlockchainDriver;
 import com.nagoya.common.blockchain.properties.BlockChainPropertiesProvider;
@@ -202,7 +208,8 @@ public class BlockchainDriverImpl implements BlockchainDriver {
 
             String transactionID = transaction.getId();
             LOGGER.debug("Asset created with transaction ID: " + transactionID);
-            asset.setTransactionId(transactionID);
+            asset.setTxIdAssetCreation(new String(transactionID));
+            asset.setTxIdAssetOperation(new String(transactionID));
 
             String txURL = BlockChainPropertiesProvider.getURL() + "/api/v1/transactions/" + transactionID;
             LOGGER.debug("URL: " + txURL);
@@ -232,7 +239,7 @@ public class BlockchainDriverImpl implements BlockchainDriver {
             // which transaction you want to fulfill?
             FulFill fulfill = new FulFill();
             fulfill.setOutputIndex(0);
-            fulfill.setTransactionId(asset.getTransactionId());
+            fulfill.setTransactionId(asset.getTxIdAssetOperation());
 
             MetaData metaData = new MetaData();
             metaData.getMetadata().putAll(asset.getMetaData());
@@ -241,7 +248,7 @@ public class BlockchainDriverImpl implements BlockchainDriver {
             Transaction transaction = BigchainDbTransactionBuilder.init() //
                 .addInput(null, fulfill, (EdDSAPublicKey) senderKeyPair.getPublic()) //
                 .addOutput(asset.getAmount(), receiversPublicKey) //
-                .addAssets(asset.getTransactionId(), String.class)//
+                .addAssets(asset.getTxIdAssetCreation(), String.class)//
                 .addMetaData(metaData) //
                 .operation(Operations.TRANSFER)//
                 .buildAndSign((EdDSAPublicKey) senderKeyPair.getPublic(), (EdDSAPrivateKey) senderKeyPair.getPrivate()) //
@@ -267,6 +274,7 @@ public class BlockchainDriverImpl implements BlockchainDriver {
 
             String transactionID = transaction.getId();
             LOGGER.debug("Asset transferred with transaction ID: " + transactionID);
+            asset.setTxIdAssetOperation(new String(transactionID));
 
             String txURL = BlockChainPropertiesProvider.getURL() + "/api/v1/transactions/" + transactionID;
             LOGGER.debug("URL: " + txURL);
@@ -292,6 +300,62 @@ public class BlockchainDriverImpl implements BlockchainDriver {
         } catch (Exception e) {
             // noop
         }
+    }
+
+    @Override
+    public List<Asset> search(String query)
+        throws IOException {
+
+        List<Asset> results = new ArrayList<Asset>();
+
+        Assets assets = AssetsApi.getAssets(query);
+        List<com.bigchaindb.model.Asset> assetsList = assets.getAssets();
+        for (com.bigchaindb.model.Asset asset : assetsList) {
+            Asset toAdd = new Asset();
+
+            toAdd.setTxIdAssetCreation(asset.getId());
+            Object data = asset.getData();
+            if (data instanceof java.util.Map) {
+                java.util.Map dataMap = (java.util.Map) data;
+                toAdd.setAssetData(dataMap);
+            } else {
+                LOGGER.error("Unkown data type: " + data.getClass());
+            }
+
+            boolean transferConfirmed = false;
+            Transactions txs = TransactionsApi.getTransactionsByAssetId(asset.getId(), Operations.TRANSFER);
+            for (Transaction tx : txs.getTransactions()) {
+                String txid = tx.getId().replaceAll("\"", "");
+                List<Output> outputs = tx.getOutputs();
+                for (Output output : outputs) {
+                    String amount = output.getAmount();
+                    if (StringUtil.isNotNullOrBlank(amount)) {
+                        toAdd.setAmount(amount);
+                    }
+                }
+                Object metaData = tx.getMetaData();
+                if (metaData instanceof java.util.Map) {
+                    java.util.Map metaDataMap = (java.util.Map) metaData;
+                    String confirmedFlag = (String) metaDataMap.get("receiver_confirmed");
+                    if (StringUtil.isNotNullOrBlank(confirmedFlag)) {
+                        if (confirmedFlag.equals("true")) {
+                            transferConfirmed = true;
+                            toAdd.setMetaData(metaDataMap);
+                            toAdd.setTxIdAssetConfirmation(txid);
+                        } else {
+                            toAdd.setTxIdAssetOperation(txid);
+                        }
+                    }
+                } else {
+                    LOGGER.error("Unkown metadata type: " + data.getClass());
+                }
+            }
+
+            if (transferConfirmed) {
+                results.add(toAdd);
+            }
+        }
+        return results;
     }
 
 }

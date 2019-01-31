@@ -16,7 +16,7 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item [routerLink]="['./home']" *ngIf="!isLoggedIn()">{{'MENU.HOME'|translate}}</button>
           <button mat-menu-item [routerLink]="['./resource']">{{'MENU.GENETIC_RESOURCES'|translate}}</button>
-          <button mat-menu-item [routerLink]="['./resource']">{{'MENU.BLOCKCHAIN_CONTRACTS'|translate}}</button>
+          <button mat-menu-item [routerLink]="['./blockchain-explorer']">{{'MENU.BLOCKCHAIN_CONTRACTS'|translate}}</button>
 
           <button mat-menu-item [routerLink]="['./trade/contract']" *ngIf="isLoggedIn()">{{'MENU.TRADE_CONTRACT' | translate}}</button>
           <button mat-menu-item [routerLink]="['./trade/overview']" *ngIf="isLoggedIn()">{{'MENU.OVERVIEW_CONTRACTS' | translate}}</button>

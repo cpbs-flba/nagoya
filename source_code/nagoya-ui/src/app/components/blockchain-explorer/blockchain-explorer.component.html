@@ -1,0 +1,131 @@
+<div>
+
+  <mat-card>
+    <h1 class="mat-h1">{{'MENU.BLOCKCHAIN_CONTRACTS'|translate}}</h1>
+
+    <div *ngIf="searching" class="alert alert-info">
+      <div>{{ 'BLOCKCHAIN_EXPLORER.SEARCHING' | translate }}</div>
+    </div>
+
+    <div>
+      <mat-form-field style="width: 30em;">
+        <input matInput placeholder="{{'BLOCKCHAIN_EXPLORER.SEARCH_FILTER'|translate}}" [(ngModel)]="searchCriteria"
+          matTooltip="{{'BLOCKCHAIN_EXPLORER.TOOLTIP'|translate}}" />
+      </mat-form-field>
+
+      <button style="margin-right: 1em; margin-left: 1em;" mat-raised-button color="accent" (click)=filter() [disabled]="searching">{{'GENERAL.FILTER'|translate}}</button>
+    </div>
+
+  </mat-card>
+
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" style="width:100%; margin-top: 2em;">
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>{{'CONTRACTS.DATE'|translate}}</th>
+      <td mat-cell *matCellDef="let element">{{element.assetData.genetic_resource.trading_date}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="txid">
+      <th mat-header-cell *matHeaderCellDef>TX ID</th>
+      <td mat-cell *matCellDef="let element">{{element.txIdAssetCreation}}</td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail" style="margin-bottom: 2em;">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div class="example-element-diagram">
+
+            <div style="margin: 0.5em 0 0.5em 0">
+
+              <div fxLayout="column" fxLayoutAlign="center stretch">
+
+                <div style="font-size: 1.2em; margin-top: 0.5em;">Transaction Details</div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">TX creation ID</div>
+                  <div fxFlex="70%">
+                    <div>{{element.txIdAssetCreation}}</div>
+                  </div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">TX transfer ID</div>
+                  <div fxFlex="70%">
+                    <div>{{element.txIdAssetOperation}}</div>
+                  </div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">TX confirmation ID</div>
+                  <div fxFlex="70%">
+                    <div>{{element.txIdAssetConfirmation}}</div>
+                  </div>
+                </div>
+
+                <div style="font-size: 1.2em; margin-top: 0.5em;">Parties Information</div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">Sender</div>
+                  <div fxFlex="70%">
+                    <div>{{element.assetData.sender.first_name}} {{element.assetData.sender.last_name}},
+                      {{element.assetData.sender.birthday}}</div>
+                  </div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">Receiver</div>
+                  <div fxFlex="70%">
+                    <div>{{element.assetData.receiver.first_name}} {{element.assetData.receiver.last_name}},
+                      {{element.assetData.receiver.birthday}}</div>
+                  </div>
+                </div>
+
+                <div style="font-size: 1.2em; margin-top: 0.5em;">Resource</div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'RESOURCE.CREATION.FORM.IDENTIFIER'|translate}}</div>
+                  <div fxFlex="70%">{{element.assetData.genetic_resource.gr_id}}</div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">Hash sequence</div>
+                  <div fxFlex="70%">{{element.assetData.genetic_resource.hash_sequence}}</div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">Taxonomy</div>
+                  <div fxFlex="70%">{{element.assetData.genetic_resource.taxonomy}}</div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">Origin</div>
+                  <div fxFlex="70%">{{element.metaData.origin}}</div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">Source</div>
+                  <div fxFlex="70%">{{element.metaData.source}}</div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">Quantity</div>
+                  <div fxFlex="70%">{{element.amount}} {{element.metaData.unit}}</div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? null : element">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
+
+  <mat-paginator [pageSize]=5 [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="customshadow" style="margin-bottom: 3em;"></mat-paginator>
+
+
+</div>

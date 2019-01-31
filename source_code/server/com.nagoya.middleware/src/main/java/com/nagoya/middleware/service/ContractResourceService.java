@@ -402,8 +402,8 @@ public class ContractResourceService extends ResourceService {
 
     public DefaultReturnObject accept(String token, String privateKey, String authorization, String language)
         throws BadRequestException, NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException, InvalidObjectException,
-        ResourceOutOfDateException, ForbiddenException, PreconditionFailedException {
-        OnlineUserDBO validateSession = validateSession(authorization);
+        ResourceOutOfDateException, ForbiddenException, PreconditionFailedException, OperationFailedException {
+        OnlineUserDBO onlinePerson = validateSession(authorization);
 
         if (StringUtil.isNullOrBlank(token)) {
             throw new BadRequestException("Token must be provided.");
@@ -436,13 +436,27 @@ public class ContractResourceService extends ResourceService {
             throw new ForbiddenException("Cannot accept contract which is not in the status 'created'.");
         }
 
-        PersonDBO person = validateSession.getPerson();
+        PersonDBO person = onlinePerson.getPerson();
         if (!person.isStorePrivateKey() && StringUtil.isNullOrBlank(privateKey)) {
             throw new PreconditionFailedException("Private key for blockchain is invalid or missing!");
         }
 
         // at this point everything is okay and the contract is legally concluded
-        // TODO: persist in blockchain
+        // we need the credentials and then we can transmit everything to the blockchain
+        Credentials credentialsReceiver = getValidCredentials(person);
+        if (person.isStorePrivateKey()) {
+            String privateKeyFromDB = onlinePerson.getPrivateKey();
+            if (StringUtil.isNullOrBlank(privateKeyFromDB)) {
+                throw new PreconditionFailedException("Private key for blockchain is invalid or missing!");
+            }
+            String decodedPrivateKey = AESEncryptionProvider.decrypt(onlinePerson.getBlockchainKey(), privateKeyFromDB);
+            credentialsReceiver.setPrivateKey(decodedPrivateKey);
+        } else {
+            credentialsReceiver.setPrivateKey(privateKey);
+        }
+        contract.setCredentialsReceiver(credentialsReceiver);
+        BlockchainService blockchainService = new BlockchainService(session);
+        blockchainService.confirmContractInBlockchain(contract);
 
         // delete the request only if everything else was okay...
         personDAO.delete(userRequest, true);

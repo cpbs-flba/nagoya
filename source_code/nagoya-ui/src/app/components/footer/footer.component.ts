@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {AuthenticationService} from '../../core';
-import {Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { AuthenticationService } from '../../core';
+import { Router } from '@angular/router';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-footer',
@@ -11,8 +12,9 @@ import {Router} from '@angular/router';
 export class FooterComponent implements OnInit {
 
   constructor(public translate: TranslateService,
-              private authenticationService: AuthenticationService,
-              private router: Router) {
+    private authenticationService: AuthenticationService,
+    private messageService: MessageService,
+    private router: Router) {
   }
 
 
@@ -24,8 +26,15 @@ export class FooterComponent implements OnInit {
   }
 
   logout() {
-    this.authenticationService.logout();
-    this.router.navigate(['login']);
+    // logout REST call
+    this.authenticationService.logout()
+      .subscribe(response => {
+        this.messageService.displayInfoMessage('FOOTER.LOGOUT_OK');
+        this.router.navigate(['login']);
+      }, error => {
+        this.messageService.displayInfoMessage('FOOTER.LOGOUT_OK');
+        this.router.navigate(['login']);
+      });
   }
 
 

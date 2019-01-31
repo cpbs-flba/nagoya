@@ -13,6 +13,9 @@
 
 package com.nagoya.blockchain.api;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.nagoya.model.blockchain.Asset;
 import com.nagoya.model.blockchain.Credentials;
 import com.nagoya.model.exception.NotAuthorizedException;
@@ -23,6 +26,9 @@ import com.nagoya.model.exception.OperationFailedException;
  *
  */
 public interface BlockchainDriver {
+
+    public static final String GENETIC_RESOURCE_ID = "gr_id";
+    public static final String RECEIVER_CONFIRMED  = "receiver_confirmed";
 
     /**
      * Generates credentials for a specified user: a public key and a private key.
@@ -50,5 +56,14 @@ public interface BlockchainDriver {
      */
     public String transferAsset(Credentials sender, Credentials receiver, Asset asset)
         throws NotAuthorizedException, OperationFailedException;
+
+    /**
+     * 
+     * @param query
+     * @return
+     * @throws IOException
+     */
+    public List<Asset> search(String query)
+        throws IOException;
 
 }

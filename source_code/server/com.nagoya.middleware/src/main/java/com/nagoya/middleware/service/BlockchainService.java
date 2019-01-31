@@ -13,7 +13,10 @@
 
 package com.nagoya.middleware.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +27,8 @@ import com.nagoya.common.blockchain.api.impl.BlockchainDriverImpl;
 import com.nagoya.common.util.DefaultDateProvider;
 import com.nagoya.dao.contract.ContractDAO;
 import com.nagoya.dao.contract.impl.ContractDAOImpl;
+import com.nagoya.middleware.util.DefaultJSONProvider;
+import com.nagoya.middleware.util.DefaultReturnObject;
 import com.nagoya.model.blockchain.Asset;
 import com.nagoya.model.dbo.contract.ContractDBO;
 import com.nagoya.model.dbo.contract.ContractResourceDBO;
@@ -43,10 +48,30 @@ import com.nagoya.model.exception.ResourceOutOfDateException;
  */
 public class BlockchainService {
 
-    private ContractDAO contractDAO;
+    private ContractDAO contractDAO = null;
 
     public BlockchainService(Session session) {
-        this.contractDAO = new ContractDAOImpl(session);
+        if (session != null) {
+            this.contractDAO = new ContractDAOImpl(session);
+        }
+    }
+
+    public void confirmContractInBlockchain(ContractDBO contractDBO)
+        throws NotAuthorizedException, OperationFailedException {
+        if (contractDBO == null) {
+            return;
+        }
+
+        Set<ContractResourceDBO> contractResources = contractDBO.getContractResources();
+        for (ContractResourceDBO contractResourceDBO : contractResources) {
+            BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
+
+            // step 1: create blockchain asset from contract data
+            Asset asset = createAssetFromContractResource(contractDBO, contractResourceDBO, true);
+
+            // step 2: transfer asset (meta-data change only)
+            blockchainDriver.transferAsset(contractDBO.getCredentialsReceiver(), contractDBO.getCredentialsReceiver(), asset);
+        }
     }
 
     public void persistContractInBlockchain(ContractDBO contractDBO)
@@ -57,22 +82,22 @@ public class BlockchainService {
             BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
 
             // step 1: create blockchain asset from contract data
-            Asset asset = createAssetFromContractResource(contractDBO, contractResourceDBO);
+            Asset asset = createAssetFromContractResource(contractDBO, contractResourceDBO, false);
 
             // step 2: persist asset into blockchain
-            String transactionId = blockchainDriver.createAsset(contractDBO.getCredentialsSender(), asset);
-            contractResourceDBO.setTransactionId(transactionId);
-            asset.setTransactionId(transactionId);
+            blockchainDriver.createAsset(contractDBO.getCredentialsSender(), asset);
+            contractResourceDBO.setTxIdAssetCreation(asset.getTxIdAssetCreation());
 
             // step 3: transfer asset to new owner
             blockchainDriver.transferAsset(contractDBO.getCredentialsSender(), contractDBO.getCredentialsReceiver(), asset);
+            contractResourceDBO.setTxIdAssetOperation(asset.getTxIdAssetOperation());
         }
 
         // update the contract
         contractDAO.update(contractDBO, true);
     }
 
-    private Asset createAssetFromContractResource(ContractDBO contractDBO, ContractResourceDBO contractResourceDBO) {
+    private Asset createAssetFromContractResource(ContractDBO contractDBO, ContractResourceDBO contractResourceDBO, boolean confirm) {
         Asset asset = new Asset();
         String amount = contractResourceDBO.getAmount().stripTrailingZeros().toPlainString();
         asset.setAmount(amount);
@@ -82,7 +107,7 @@ public class BlockchainService {
 
         // genetic resource
         Map<String, Object> gr = new HashMap<>();
-        gr.put("id", geneticResource.getIdentifier());
+        gr.put(BlockchainDriver.GENETIC_RESOURCE_ID, geneticResource.getIdentifier());
         gr.put("hash_sequence", geneticResource.getHashSequence());
         gr.put("taxonomy", geneticResource.getTaxonomy().toString());
         gr.put("trading_date", DefaultDateProvider.getCurrentDateAsString());
@@ -97,7 +122,10 @@ public class BlockchainService {
         asset.getMetaData().put("unit", measuringUnit);
         asset.getMetaData().put("source", geneticResource.getSource());
         asset.getMetaData().put("origin", geneticResource.getOrigin());
-        asset.getMetaData().put("receiver_confirmed", "false");
+        asset.getMetaData().put(BlockchainDriver.RECEIVER_CONFIRMED, confirm + "");
+
+        asset.setTxIdAssetCreation(contractResourceDBO.getTxIdAssetCreation());
+        asset.setTxIdAssetOperation(contractResourceDBO.getTxIdAssetOperation());
 
         return asset;
     }
@@ -118,6 +146,27 @@ public class BlockchainService {
             result.put("commercial_register_nr", legal.getCommercialRegisterNumber());
             result.put("tax_nr", legal.getTaxNumber());
         }
+        return result;
+    }
+
+    public DefaultReturnObject search(String query)
+        throws IOException {
+        BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
+        List<Asset> results = new ArrayList<>();
+
+        // search1: resource id
+        List<Asset> searched = blockchainDriver.search(BlockchainDriver.GENETIC_RESOURCE_ID + "=" + query);
+        results.addAll(searched);
+
+        // further searches...
+
+        // create response
+        DefaultReturnObject result = new DefaultReturnObject();
+        if (!results.isEmpty()) {
+            String objectAsJson = DefaultJSONProvider.getObjectAsJson(searched);
+            result.setEntity(objectAsJson);
+        }
+
         return result;
     }
 

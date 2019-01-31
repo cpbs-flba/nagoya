@@ -154,6 +154,14 @@ public abstract class ResourceService {
      */
     public String updateSession(OnlineUserDBO onlineUser)
         throws InvalidObjectException, ResourceOutOfDateException {
+
+        if (onlineUser == null) {
+            return null;
+        }
+        if (onlineUser.getPerson() == null) {
+            return null;
+        }
+
         // step 1: get the secret key or create a new one
         Key secretKey = null;
 

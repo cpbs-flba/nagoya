@@ -206,7 +206,7 @@ public class MailService {
     }
 
     public void sendContractCreationConfirmation(String emailAddress) {
-        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_genetic_resource_transfer_creation_confirmation.html";
+        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_contract_creation.html";
         String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
 
         String subject = getTitle(registrationMailText);
@@ -215,7 +215,7 @@ public class MailService {
     }
 
     public void sendContractAcceptancePending(String token, Date deadline, String emailAddress) {
-        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_genetic_resource_transfer_pending_acceptance.html";
+        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_contract_pending.html";
         String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
 
         String link = ServerPropertiesProvider.getString(ServerProperty.SERVER_HOST_NAME);

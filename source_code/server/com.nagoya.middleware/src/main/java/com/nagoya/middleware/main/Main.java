@@ -16,6 +16,7 @@ package com.nagoya.middleware.main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nagoya.middleware.rest.bl.impl.BlockchainSearchRESTResourceImpl;
 import com.nagoya.middleware.rest.bl.impl.ContractRESTResourceImpl;
 import com.nagoya.middleware.rest.bl.impl.GeneticRESTResourceImpl;
 import com.nagoya.middleware.rest.bl.impl.UserRESTResourceImpl;
@@ -38,6 +39,7 @@ public class Main extends Microservice {
         main.getResourceConfig().register(UserRESTResourceImpl.class);
         main.getResourceConfig().register(GeneticRESTResourceImpl.class);
         main.getResourceConfig().register(ContractRESTResourceImpl.class);
+        main.getResourceConfig().register(BlockchainSearchRESTResourceImpl.class);
 
         main.runServer(args);
     }

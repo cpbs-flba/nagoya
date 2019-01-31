@@ -84,6 +84,7 @@ import {
   MatTooltipModule,
   MatTreeModule,
 } from '@angular/material';
+import { BlockchainExplorerComponent } from './components/blockchain-explorer/blockchain-explorer.component';
 
 
 // import {RegistrationModule} from './registration/registration.module';
@@ -114,7 +115,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterDataComponent,
     TradeOverviewComponent,
     TradeContractComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    BlockchainExplorerComponent
   ],
 
   imports: [

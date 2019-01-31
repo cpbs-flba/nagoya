@@ -14,6 +14,7 @@ import { TradeContractComponent } from './components/trade-contract/trade-contra
 import { TradeOverviewComponent } from './components/trade-overview/trade-overview.component';
 import { MasterDataComponent } from './components/master-data/master-data.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { BlockchainExplorerComponent } from './components/blockchain-explorer/blockchain-explorer.component';
 
 const routes: Routes = [
   { path: 'about', component: AboutComponent, },
@@ -25,7 +26,8 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthenticationGuard] },
   { path: 'confirmation', component: ConfirmationComponent },
   { path: 'confirmation/:token', component: ConfirmationComponent },
-  { path: 'resource', component: ResourceComponent, canActivate: [AuthenticationGuard] },
+  { path: 'resource', component: ResourceComponent},
+  { path: 'blockchain-explorer', component: BlockchainExplorerComponent},
   { path: 'trade/contract', component: TradeContractComponent, canActivate: [AuthenticationGuard] },
   { path: 'trade/overview', component: TradeOverviewComponent, canActivate: [AuthenticationGuard] },
   { path: 'masterData', component: MasterDataComponent, canActivate: [AuthenticationGuard] },

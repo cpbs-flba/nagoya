@@ -9,7 +9,8 @@
     "SELECT": "Language",
     "TERMS": "Terms",
     "LEGAL": "Legal",
-    "LOGOUT": "Logout"
+    "LOGOUT": "Logout",
+    "LOGOUT_OK": "You have been succesfully logged out."
   },
   "BROWSER_NOT_OK": {
     "WARNING": "WARNUNG",
@@ -31,7 +32,8 @@
     "AUTHENTICATE": "Login",
     "REGISTER": "Register",
     "FIRSTNAME": "Firstname",
-    "LASTNAME": "Lastname"
+    "LASTNAME": "Lastname",
+    "FILTER": "Filter"
   },
   "MESSAGES": {
     "COOKIE_MESSAGE": "We use cookies to provide a better user experience",
@@ -266,6 +268,12 @@
     "USER_PROFILE": "User Profile",
     "TRADE_CONTRACT": "Create Contract",
     "CHANGE_PW": "Change Password"
+  },
+  "BLOCKCHAIN_EXPLORER": {
+    "SEARCH_FILTER" : "Search criteria",
+    "TOOLTIP": "Try inserting the ID of a genetic resource",
+    "SEARCHING": "Your request is being processed, this could take a while. Seriously...",
+    "NO_RESULTS": "No results found"
   },
   "ENUM": {
     "VISIBILITY_TYPES": {
