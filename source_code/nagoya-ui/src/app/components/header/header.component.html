@@ -1,0 +1,29 @@
+<mat-toolbar color="primary" class="headerToolbar" fxLayout.xs="column">
+
+  <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100">
+    <img alt="plantinhand" src="./assets/icons/icons8-tree-planting-60_w.png" class="headerImg clickable"
+         (click)="navigateToHome()">
+
+    <div fxLayout="column" class="fillHeaderSpace clickable" (click)="navigateToHome()">
+      <h1 class="headerTitle" [translate]="'HEADER.TITLE'"></h1>
+      <span fxHide.lt-sm="true" fxHide.xs="true">{{'HEADER.SUBTITLE'|translate}}</span>
+    </div>
+      <div>
+        <!--TODO *ngIf="isLoggedIn()-->
+        <button mat-button [matMenuTriggerFor]="menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item [routerLink]="['./home']" *ngIf="!isLoggedIn()">{{'MENU.HOME'|translate}}</button>
+          <button mat-menu-item [routerLink]="['./resource']">{{'MENU.GENETIC_RESOURCES'|translate}}</button>
+          <button mat-menu-item [routerLink]="['./blockchain-explorer']">{{'MENU.BLOCKCHAIN_CONTRACTS'|translate}}</button>
+
+          <button mat-menu-item [routerLink]="['./trade/contract']" *ngIf="isLoggedIn()">{{'MENU.TRADE_CONTRACT' | translate}}</button>
+          <button mat-menu-item [routerLink]="['./trade/overview']" *ngIf="isLoggedIn()">{{'MENU.OVERVIEW_CONTRACTS' | translate}}</button>
+          <button mat-menu-item [routerLink]="['./masterData']" *ngIf="isLoggedIn()">{{'MENU.USER_PROFILE' | translate}}</button>
+          <button mat-menu-item [routerLink]="['./change/password']" *ngIf="isLoggedIn()">{{'MENU.CHANGE_PW' | translate}}</button>
+        </mat-menu>
+      </div>
+
+  </div>
+</mat-toolbar>

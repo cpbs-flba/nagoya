@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
+
 package com.nagoya.dao.person.impl;
 
 import java.util.ArrayList;
@@ -21,262 +34,265 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.nagoya.common.util.StringUtil;
 import com.nagoya.dao.base.impl.BasicDAOImpl;
 import com.nagoya.dao.person.PersonDAO;
-import com.nagoya.dao.util.StringUtil;
-import com.nagoya.model.dbo.person.Person;
-import com.nagoya.model.dbo.person.PersonKeys;
-import com.nagoya.model.dbo.person.PersonLegal;
-import com.nagoya.model.dbo.person.PersonNatural;
-import com.nagoya.model.dbo.user.OnlineUser;
-import com.nagoya.model.dbo.user.UserRequest;
+import com.nagoya.model.dbo.person.PersonDBO;
+import com.nagoya.model.dbo.person.PersonKeysDBO;
+import com.nagoya.model.dbo.person.PersonLegalDBO;
+import com.nagoya.model.dbo.person.PersonNaturalDBO;
+import com.nagoya.model.dbo.user.OnlineUserDBO;
+import com.nagoya.model.dbo.user.UserRequestDBO;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.InvalidObjectException;
 
-public class PersonDAOImpl extends BasicDAOImpl<Person> implements PersonDAO {
+public class PersonDAOImpl extends BasicDAOImpl<PersonDBO> implements PersonDAO {
 
-	private Session session;
+    private Session session;
 
-	public PersonDAOImpl(Session session) {
-		super(session);
-		this.session = session;
-	}
+    public PersonDAOImpl(Session session) {
+        super(session);
+        this.session = session;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.nagoya.dao.person.PersonDAO#register(java.lang.String)
-	 */
-	@Override
-	public Person register(Person person) throws ConflictException {
-		Person existent = findPersonForEmail(person.getEmail());
-		if (existent != null) {
-			throw new ConflictException("E-mail already registered.");
-		}
-		Person inserted = (Person) this.insert(person, true);
-		return inserted;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.nagoya.dao.person.PersonDAO#register(java.lang.String)
+     */
+    @Override
+    public PersonDBO register(PersonDBO person)
+        throws ConflictException {
+        PersonDBO existent = findPersonForEmail(person.getEmail());
+        if (existent != null) {
+            throw new ConflictException("E-mail already registered.");
+        }
+        PersonDBO inserted = (PersonDBO) this.insert(person, true);
+        return inserted;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.nagoya.dao.person.PersonDAO#findPersonForEmail(java.lang.String)
-	 */
-	@Override
-	public Person findPersonForEmail(String email) throws ConflictException {
-		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.nagoya.dao.person.PersonDAO#findPersonForEmail(java.lang.String)
+     */
+    @Override
+    public PersonDBO findPersonForEmail(String email)
+        throws ConflictException {
+        EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
-		// Create criteriaQuery
-		CriteriaQuery<Person> criteriaQuery = criteriaBuilder.createQuery(Person.class);
+        // Create criteriaQuery
+        CriteriaQuery<PersonDBO> criteriaQuery = criteriaBuilder.createQuery(PersonDBO.class);
 
-		Root<Person> root = criteriaQuery.from(Person.class);
-		Predicate condition = criteriaBuilder.equal(root.get("email"), email);
-		criteriaQuery.select(root).where(condition);
+        Root<PersonDBO> root = criteriaQuery.from(PersonDBO.class);
+        Predicate condition = criteriaBuilder.equal(root.get("email"), email.toLowerCase());
+        criteriaQuery.select(root).where(condition);
 
-		TypedQuery<Person> createdQuery = entityManager.createQuery(criteriaQuery);
-		try {
-			Person singleResult = createdQuery.getSingleResult();
-			return singleResult;
-		} catch (NoResultException e) {
-			return null;
-		} catch (NonUniqueResultException e) {
-			throw new ConflictException("Too many results found for e-mail: " + email);
-		}
-	}
+        TypedQuery<PersonDBO> createdQuery = entityManager.createQuery(criteriaQuery);
+        try {
+            PersonDBO singleResult = createdQuery.getSingleResult();
+            return singleResult;
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new ConflictException("Too many results found for e-mail: " + email);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.nagoya.dao.person.PersonDAO#removeOldSessions(com.nagoya.model.dbo.person
-	 * .Person)
-	 */
-	@Override
-	public void removeOldSessions(Person person) {
-		String query = "DELETE FROM tonline_user WHERE person_id=" + person.getId();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.nagoya.dao.person.PersonDAO#removeOldSessions(com.nagoya.model.dbo.person .Person)
+     */
+    @Override
+    public void removeOldSessions(PersonDBO person) {
+        String query = "DELETE FROM tonline_user WHERE person_id=" + person.getId();
 
-		Transaction transaction = null;
-		try {
-			transaction = session.beginTransaction();
-			session.createNativeQuery(query).executeUpdate();
-			transaction.commit();
-		} catch (HibernateException e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			throw e;
-		}
-	}
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            session.createNativeQuery(query).executeUpdate();
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.nagoya.dao.person.PersonDAO#getOnlineUser(java.lang.String)
-	 */
-	@Override
-	public OnlineUser getOnlineUser(String sessionToken) throws ConflictException {
-		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.nagoya.dao.person.PersonDAO#getOnlineUser(java.lang.String)
+     */
+    @Override
+    public OnlineUserDBO getOnlineUser(String sessionToken)
+        throws ConflictException {
+        EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
-		// Create criteriaQuery
-		CriteriaQuery<OnlineUser> criteriaQuery = criteriaBuilder.createQuery(OnlineUser.class);
+        // Create criteriaQuery
+        CriteriaQuery<OnlineUserDBO> criteriaQuery = criteriaBuilder.createQuery(OnlineUserDBO.class);
 
-		Root<OnlineUser> root = criteriaQuery.from(OnlineUser.class);
-		Predicate condition = criteriaBuilder.equal(root.get("sessionToken"), sessionToken);
-		criteriaQuery.select(root).where(condition);
+        Root<OnlineUserDBO> root = criteriaQuery.from(OnlineUserDBO.class);
+        Predicate condition = criteriaBuilder.equal(root.get("sessionToken"), sessionToken);
+        criteriaQuery.select(root).where(condition);
 
-		TypedQuery<OnlineUser> createdQuery = entityManager.createQuery(criteriaQuery);
-		try {
-			OnlineUser singleResult = createdQuery.getSingleResult();
-			return singleResult;
-		} catch (NoResultException e) {
-			return null;
-		} catch (NonUniqueResultException e) {
-			throw new ConflictException("Too many results found for sessionToken: " + sessionToken);
-		}
-	}
+        TypedQuery<OnlineUserDBO> createdQuery = entityManager.createQuery(criteriaQuery);
+        try {
+            OnlineUserDBO singleResult = createdQuery.getSingleResult();
+            return singleResult;
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new ConflictException("Too many results found for sessionToken: " + sessionToken);
+        }
+    }
 
-	@Override
-	public UserRequest findUserRequest(String token) throws ConflictException {
-		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+    @Override
+    public UserRequestDBO findUserRequest(String token)
+        throws ConflictException {
+        EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
-		// Create criteriaQuery
-		CriteriaQuery<UserRequest> criteriaQuery = criteriaBuilder.createQuery(UserRequest.class);
+        // Create criteriaQuery
+        CriteriaQuery<UserRequestDBO> criteriaQuery = criteriaBuilder.createQuery(UserRequestDBO.class);
 
-		Root<UserRequest> root = criteriaQuery.from(UserRequest.class);
-		Predicate condition = criteriaBuilder.equal(root.get("token"), token);
-		criteriaQuery.select(root).where(condition);
+        Root<UserRequestDBO> root = criteriaQuery.from(UserRequestDBO.class);
+        Predicate condition = criteriaBuilder.equal(root.get("token"), token);
+        criteriaQuery.select(root).where(condition);
 
-		TypedQuery<UserRequest> createdQuery = entityManager.createQuery(criteriaQuery);
-		try {
-			UserRequest singleResult = createdQuery.getSingleResult();
-			return singleResult;
-		} catch (NoResultException e) {
-			return null;
-		} catch (NonUniqueResultException e) {
-			throw new ConflictException("Too many results found for token: " + token);
-		}
-	}
+        TypedQuery<UserRequestDBO> createdQuery = entityManager.createQuery(criteriaQuery);
+        try {
+            UserRequestDBO singleResult = createdQuery.getSingleResult();
+            return singleResult;
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new ConflictException("Too many results found for token: " + token);
+        }
+    }
 
-	@Override
-	public void delete(Person person) throws InvalidObjectException {
-		// first delete the person data normally
-		Long id = person.getId();
-		super.delete(person, true);
+    @Override
+    public void delete(PersonDBO person)
+        throws InvalidObjectException {
+        // first delete the person data normally
+        Long id = person.getId();
+        super.delete(person, true);
 
-		// now clean up all history tables
-		String query1 = "DELETE FROM tperson_aud WHERE id=" + id.toString();
-		String query2 = "DELETE FROM tperson_legal_aud WHERE person_id=" + id.toString();
-		String query3 = "DELETE FROM tperson_natural_aud WHERE person_id=" + id.toString();
-		String query4 = "DELETE FROM tuser_request WHERE person_id=" + id.toString();
-		String query5 = "DELETE FROM tonline_user WHERE person_id=" + id.toString();
+        // now clean up all history tables
+        String query1 = "DELETE FROM tperson_aud WHERE id=" + id.toString();
+        String query2 = "DELETE FROM tperson_legal_aud WHERE person_id=" + id.toString();
+        String query3 = "DELETE FROM tperson_natural_aud WHERE person_id=" + id.toString();
+        String query4 = "DELETE FROM tuser_request WHERE person_id=" + id.toString();
+        String query5 = "DELETE FROM tonline_user WHERE person_id=" + id.toString();
 
-		Transaction transaction = null;
-		try {
-			transaction = session.beginTransaction();
-			session.createNativeQuery(query1).executeUpdate();
-			session.createNativeQuery(query2).executeUpdate();
-			session.createNativeQuery(query3).executeUpdate();
-			session.createNativeQuery(query4).executeUpdate();
-			session.createNativeQuery(query5).executeUpdate();
-			transaction.commit();
-		} catch (HibernateException e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			throw e;
-		}
-	}
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            session.createNativeQuery(query1).executeUpdate();
+            session.createNativeQuery(query2).executeUpdate();
+            session.createNativeQuery(query3).executeUpdate();
+            session.createNativeQuery(query4).executeUpdate();
+            session.createNativeQuery(query5).executeUpdate();
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
 
-	@Override
-	public List<PersonNatural> searchNatural(String filter, int maxResults) {
-		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+    @Override
+    public List<PersonNaturalDBO> searchNatural(String filter, int maxResults) {
+        EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
-		// Create criteriaQuery
-		CriteriaQuery<PersonNatural> criteriaQuery = criteriaBuilder.createQuery(PersonNatural.class);
+        // Create criteriaQuery
+        CriteriaQuery<PersonNaturalDBO> criteriaQuery = criteriaBuilder.createQuery(PersonNaturalDBO.class);
 
-		Root<PersonNatural> root = criteriaQuery.from(PersonNatural.class);
+        Root<PersonNaturalDBO> root = criteriaQuery.from(PersonNaturalDBO.class);
 
-		List<Predicate> blockPredicates = new ArrayList<Predicate>();
+        List<Predicate> blockPredicates = new ArrayList<Predicate>();
 
-		if (StringUtil.isNotNullOrBlank(filter)) {
-			Pattern pattern = Pattern.compile("\\w+");
-			Matcher matcher = pattern.matcher(filter);
-			while (matcher.find()) {
-				String singleWord = matcher.group();
+        if (StringUtil.isNotNullOrBlank(filter)) {
+            Pattern pattern = Pattern.compile("\\w+");
+            Matcher matcher = pattern.matcher(filter);
+            while (matcher.find()) {
+                String singleWord = matcher.group();
 
-				Predicate p1 = criteriaBuilder.like(root.get("firstname"), "%" + singleWord + "%");
-				Predicate p2 = criteriaBuilder.like(root.get("lastname"), "%" + singleWord + "%");
-				Predicate p3 = criteriaBuilder.like(root.get("email"), "%" + singleWord + "%");
-				
-				SetJoin<PersonNatural, PersonKeys> children = root.joinSet("keys", JoinType.LEFT);
-				Predicate p4 = criteriaBuilder.equal(children.get("publicKey"), singleWord);
+                Predicate p1 = criteriaBuilder.like(root.get("firstname"), "%" + singleWord + "%");
+                Predicate p2 = criteriaBuilder.like(root.get("lastname"), "%" + singleWord + "%");
+                Predicate p3 = criteriaBuilder.like(root.get("email"), "%" + singleWord + "%");
 
-				Predicate blockPredicate = criteriaBuilder.or(p1, p2, p3, p4);
-				blockPredicates.add(blockPredicate);
-			}
-		}
-		Predicate finalWordsPredicate = criteriaBuilder.and(blockPredicates.toArray(new Predicate[] {}));
-		criteriaQuery.select(root).where(finalWordsPredicate);
+                SetJoin<PersonNaturalDBO, PersonKeysDBO> children = root.joinSet("keys", JoinType.LEFT);
+                Predicate p4 = criteriaBuilder.equal(children.get("publicKey"), singleWord);
 
-		// set a default value
-		if (maxResults <= 0) {
-			maxResults = 20;
-		}
-		TypedQuery<PersonNatural> createdQuery = entityManager.createQuery(criteriaQuery);
-		List<PersonNatural> results = createdQuery.getResultList();
-		return results;
+                Predicate blockPredicate = criteriaBuilder.or(p1, p2, p3, p4);
+                blockPredicates.add(blockPredicate);
+            }
+        }
+        Predicate finalWordsPredicate = criteriaBuilder.and(blockPredicates.toArray(new Predicate[] {}));
+        criteriaQuery.select(root).where(finalWordsPredicate);
 
-	}
-	
-	@Override
-	public List<PersonLegal> searchLegal(String filter, int maxResults) {
-		EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+        // set a default value
+        if (maxResults <= 0) {
+            maxResults = 20;
+        }
+        TypedQuery<PersonNaturalDBO> createdQuery = entityManager.createQuery(criteriaQuery);
+        List<PersonNaturalDBO> results = createdQuery.getResultList();
+        return results;
 
-		// Create criteriaQuery
-		CriteriaQuery<PersonLegal> criteriaQuery = criteriaBuilder.createQuery(PersonLegal.class);
+    }
 
-		Root<PersonLegal> root = criteriaQuery.from(PersonLegal.class);
+    @Override
+    public List<PersonLegalDBO> searchLegal(String filter, int maxResults) {
+        EntityManagerFactory entityManagerFactory = session.getEntityManagerFactory();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
 
-		List<Predicate> blockPredicates = new ArrayList<Predicate>();
+        // Create criteriaQuery
+        CriteriaQuery<PersonLegalDBO> criteriaQuery = criteriaBuilder.createQuery(PersonLegalDBO.class);
 
-		if (StringUtil.isNotNullOrBlank(filter)) {
-			Pattern pattern = Pattern.compile("\\w+");
-			Matcher matcher = pattern.matcher(filter);
-			while (matcher.find()) {
-				String singleWord = matcher.group();
+        Root<PersonLegalDBO> root = criteriaQuery.from(PersonLegalDBO.class);
 
-				Predicate p1 = criteriaBuilder.like(root.get("name"), "%" + singleWord + "%");
-				Predicate p2 = criteriaBuilder.like(root.get("commercialRegisterNumber"), "%" + singleWord + "%");
-				Predicate p3 = criteriaBuilder.like(root.get("taxNumber"), "%" + singleWord + "%");
-				
-				SetJoin<PersonLegal, PersonKeys> children = root.joinSet("keys", JoinType.LEFT);
-				Predicate p4 = criteriaBuilder.equal(children.get("publicKey"), singleWord);
+        List<Predicate> blockPredicates = new ArrayList<Predicate>();
 
-				Predicate blockPredicate = criteriaBuilder.or(p1, p2, p3, p4);
-				blockPredicates.add(blockPredicate);
-			}
-		}
-		Predicate finalWordsPredicate = criteriaBuilder.and(blockPredicates.toArray(new Predicate[] {}));
-		criteriaQuery.select(root).where(finalWordsPredicate);
+        if (StringUtil.isNotNullOrBlank(filter)) {
+            Pattern pattern = Pattern.compile("\\w+");
+            Matcher matcher = pattern.matcher(filter);
+            while (matcher.find()) {
+                String singleWord = matcher.group();
 
-		// set a default value
-		if (maxResults <= 0) {
-			maxResults = 20;
-		}
-		TypedQuery<PersonLegal> createdQuery = entityManager.createQuery(criteriaQuery);
-		List<PersonLegal> results = createdQuery.getResultList();
-		return results;
+                Predicate p1 = criteriaBuilder.like(root.get("name"), "%" + singleWord + "%");
+                Predicate p2 = criteriaBuilder.like(root.get("commercialRegisterNumber"), "%" + singleWord + "%");
+                Predicate p3 = criteriaBuilder.like(root.get("taxNumber"), "%" + singleWord + "%");
 
-	}
+                SetJoin<PersonLegalDBO, PersonKeysDBO> children = root.joinSet("keys", JoinType.LEFT);
+                Predicate p4 = criteriaBuilder.equal(children.get("publicKey"), singleWord);
+
+                Predicate blockPredicate = criteriaBuilder.or(p1, p2, p3, p4);
+                blockPredicates.add(blockPredicate);
+            }
+        }
+        Predicate finalWordsPredicate = criteriaBuilder.and(blockPredicates.toArray(new Predicate[] {}));
+        criteriaQuery.select(root).where(finalWordsPredicate);
+
+        // set a default value
+        if (maxResults <= 0) {
+            maxResults = 20;
+        }
+        TypedQuery<PersonLegalDBO> createdQuery = entityManager.createQuery(criteriaQuery);
+        List<PersonLegalDBO> results = createdQuery.getResultList();
+        return results;
+
+    }
 
 }

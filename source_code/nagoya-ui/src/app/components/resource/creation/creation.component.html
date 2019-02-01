@@ -1,0 +1,83 @@
+<form [formGroup]="geneticResourceForm" novalidate fxLayout="column">
+
+  <h3>{{'RESOURCE.CREATION.FORM.HEADER.DESCRIPTION'| translate}}</h3>
+
+  <mat-form-field>
+    <input matInput type="text" formControlName="identifier"
+           placeholder="{{'RESOURCE.CREATION.FORM.IDENTIFIER'| translate}}">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="text" formControlName="description"
+           placeholder="{{'RESOURCE.CREATION.FORM.DESCRIPTION'| translate}}">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="text" formControlName="source" placeholder="{{'RESOURCE.CREATION.FORM.SOURCE'| translate}}">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="text" formControlName="origin" placeholder="{{'RESOURCE.CREATION.FORM.ORIGIN'| translate}}">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="text" formControlName="hashSequence"
+           placeholder="{{'RESOURCE.CREATION.FORM.HASH_SEQUENCE'| translate}}">
+  </mat-form-field>
+
+  <span class="visibilityRadioHint">{{'RESOURCE.CREATION.FORM.VISIBILITY'| translate}}</span>
+  <mat-radio-group formControlName="visibilityType" class="visibilityRadioGroup">
+
+    <mat-radio-button [checked] *ngFor="let visibilityType of visibilityTypes" [value]="visibilityType"
+                      class="visibilityRadioButton">
+      {{'ENUM.VISIBILITY_TYPES.'+visibilityType.valueOf() | translate}}
+    </mat-radio-button>
+  </mat-radio-group>
+
+
+  <h3>{{'RESOURCE.CREATION.FORM.HEADER.TAXONOMY'| translate}}</h3>
+
+  <div *ngFor="let taxonomyLevel of taxonomyLevels">
+    <mat-form-field *ngIf="taxonomyLevel.length > 0" fxFlex>
+      <mat-select placeholder="Taxonomy" >
+        <mat-option *ngFor="let taxonomy of taxonomyLevel" [value]="taxonomy" (onSelectionChange)="getTaxonomy(taxonomy)">
+          {{taxonomy.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="column">
+    <div fxLayout="row">
+      <div>
+        <h3>{{'RESOURCE.CREATION.FORM.HEADER.ATTACHMENT'| translate}}</h3>
+      </div>
+      <div fxFlex></div>
+      <div>
+        <input type="file" hidden #fileInput (change)="addAttachment($event)">
+
+        <button mat-raised-button (click)="fileInput.click()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div *ngFor="let attachment of attachments" fxLayout="row">
+      <div fxLayoutAlign="center center">
+        {{attachment.name}}
+      </div>
+      <div fxFlex></div>
+      <div>
+        <button mat-button (click)="removeAttachment(attachment)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <br/>
+  </div>
+
+  <button type="submit" mat-raised-button color="accent" [disabled]="geneticResourceForm.invalid" (click)="onSubmit()">
+    <span>{{'RESOURCE.CREATION.ACTION.CREATE'| translate}}</span>
+  </button>
+
+
+</form>

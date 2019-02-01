@@ -1,0 +1,17 @@
+.cardStyling{
+  margin: 10px;
+}
+
+.loginForm{
+  margin-top:2% !important;
+}
+
+.loginHint{
+  color: gray;
+  text-decoration: none;
+}
+
+.loginRegistrationBox{
+  margin-top:10%;
+}
+

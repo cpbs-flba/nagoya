@@ -1,14 +1,15 @@
-/**
- * (C) Copyright 2004 - 2018 CPB Software AG
- * 1020 Wien, Vorgartenstrasse 206c
- * All rights reserved.
- * 
- * This software is provided by the copyright holders and contributors "as is". 
- * In no event shall the copyright owner or contributors be liable for any direct,
- * indirect, incidental, special, exemplary, or consequential damages.
- * 
- * Created by : flba
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.middleware.main;
 
@@ -29,7 +30,10 @@ public enum ServerProperty {
 
     SERVER_HOST_NAME("server.host.name"), //
     SERVER_MAIL_CONFIRMATION_PATH("server.mail.confirmation.path"), //
-    EMAIL_CONFIG_FILENAME("email.config.filename") //
+    EMAIL_CONFIG_FILENAME("email.config.filename"), //
+
+    // BUSINESS LOGIC VALUES BELOW...
+    CONTRACT_EXPIRAETION_TIME("contract.expiration.time")//
     ;
 
     private String property;

@@ -1,0 +1,25 @@
+<div class="contentWrapper">
+  <h1 class="mat-h1">{{'RESOURCE.TITLE' | translate}}</h1>
+
+  <div>
+    <div>
+      <button mat-raised-button color="accent" (click)="toggleResourceCreation()" [disabled]="createNew"
+              class="createButton">
+        <mat-icon>add</mat-icon>
+        <span>{{'RESOURCE.ACTION.CREATE' | translate}}</span>
+      </button>
+      <div fxFlex></div>
+      <button mat-button (click)="toggleResourceCreation()" *ngIf="createNew">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <br/>
+    <div class="creationForm">
+      <app-creation *ngIf="createNew" [(createNew)]="createNew" (resourceSubmitted)="reloadResources($event)"></app-creation>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
+  <br/>
+  <app-overview [reloadChanges]="reloadChanges"></app-overview>
+  <br/>
+</div>

@@ -4,10 +4,7 @@
 
 export const environment = {
   production: false,
-  defaultLanguage: 'Deutsch',
-  supportedLanguages: ['English', 'Deutsch'],
   serverUrl: "http://localhost:13200/rest/",
-
 };
 
 

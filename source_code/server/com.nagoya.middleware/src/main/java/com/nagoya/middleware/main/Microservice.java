@@ -1,14 +1,15 @@
-/**
- * (C) Copyright 2004 - 2018 CPB Software AG
- * 1020 Wien, Vorgartenstrasse 206c
- * All rights reserved.
- * 
- * This software is provided by the copyright holders and contributors "as is". 
- * In no event shall the copyright owner or contributors be liable for any direct,
- * indirect, incidental, special, exemplary, or consequential damages.
- * 
- * Created by : flba
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.middleware.main;
 
@@ -45,10 +46,10 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import com.nagoya.middleware.rest.ShutdownResource;
+import com.nagoya.middleware.rest.base.ShutdownRESTResource;
+import com.nagoya.middleware.rest.base.impl.PingRESTResourceImpl;
+import com.nagoya.middleware.rest.base.impl.ShutdownRESTResourceImpl;
 import com.nagoya.middleware.rest.filter.CustomContainerResponseFilter;
-import com.nagoya.middleware.rest.impl.PingResourceImpl;
-import com.nagoya.middleware.rest.impl.ShutdownResourceImpl;
 
 /**
  * 
@@ -56,13 +57,13 @@ import com.nagoya.middleware.rest.impl.ShutdownResourceImpl;
  */
 public abstract class Microservice {
 
-    private static final Logger   LOGGER                 = LogManager.getLogger(Microservice.class);
+    private static final Logger LOGGER                 = LogManager.getLogger(Microservice.class);
 
-    private static final String   ADMIN_REALM            = "private";
-    private static final String   SECURITY_HANDLER_REALM = "myrealm";
-    private static final String   ROLE_USER              = "user";
+    private static final String ADMIN_REALM            = "private";
+    private static final String SECURITY_HANDLER_REALM = "myrealm";
+    private static final String ROLE_USER              = "user";
 
-    private ResourceConfig resourceConfig         = new ResourceConfig();
+    private ResourceConfig      resourceConfig         = new ResourceConfig();
 
     /**
      * Returns the current resource configuration for the web application. Use this to extend and add your own web services.
@@ -80,8 +81,8 @@ public abstract class Microservice {
         resourceConfig.register(JacksonFeature.class);
         resourceConfig.register(CustomContainerResponseFilter.class);
         // register rest resources
-        resourceConfig.register(PingResourceImpl.class);
-        resourceConfig.register(ShutdownResourceImpl.class);
+        resourceConfig.register(PingRESTResourceImpl.class);
+        resourceConfig.register(ShutdownRESTResourceImpl.class);
 
         ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(resourceConfig));
 
@@ -180,7 +181,7 @@ public abstract class Microservice {
 
         ConstraintMapping cm = new ConstraintMapping();
         cm.setConstraint(constraint);
-        cm.setPathSpec("/" + ShutdownResource.SHUTDOWN_PATH);
+        cm.setPathSpec("/" + ShutdownRESTResource.SHUTDOWN_PATH);
 
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setAuthenticator(new BasicAuthenticator());

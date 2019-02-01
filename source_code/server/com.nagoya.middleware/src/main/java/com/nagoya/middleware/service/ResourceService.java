@@ -1,10 +1,19 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
+
 package com.nagoya.middleware.service;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Calendar;
@@ -12,20 +21,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nagoya.common.util.DefaultDateProvider;
+import com.nagoya.common.util.StringUtil;
 import com.nagoya.dao.person.PersonDAO;
 import com.nagoya.dao.person.impl.PersonDAOImpl;
-import com.nagoya.dao.util.StringUtil;
-import com.nagoya.middleware.rest.UserResource;
-import com.nagoya.middleware.util.DefaultDateProvider;
+import com.nagoya.middleware.rest.bl.UserRESTResource;
 import com.nagoya.middleware.util.DefaultIDGenerator;
 import com.nagoya.middleware.util.DefaultReturnObject;
-import com.nagoya.model.dbo.user.OnlineUser;
+import com.nagoya.model.dbo.user.OnlineUserDBO;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.InvalidObjectException;
 import com.nagoya.model.exception.InvalidTokenException;
@@ -43,133 +54,173 @@ import io.jsonwebtoken.impl.crypto.MacProvider;
  */
 public abstract class ResourceService {
 
-	private static final Logger LOGGER = LogManager.getLogger(ResourceService.class);
+    private static final Logger LOGGER = LogManager.getLogger(ResourceService.class);
 
-	private PersonDAO personDAO;
+    private PersonDAO           personDAO;
 
-	public ResourceService(Session session) {
-		this.personDAO = new PersonDAOImpl(session);
-	}
+    public ResourceService(Session session) {
+        this.personDAO = new PersonDAOImpl(session);
+    }
 
-	public OnlineUser validateSession(String jsonWebToken)
-			throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
-		if (StringUtil.isNullOrBlank(jsonWebToken)) {
-			throw new NotAuthorizedException();
-		}
+    public OnlineUserDBO validateSession(String jsonWebToken)
+        throws NotAuthorizedException, ConflictException, TimeoutException, InvalidTokenException {
+        if (StringUtil.isNullOrBlank(jsonWebToken)) {
+            throw new NotAuthorizedException();
+        }
 
-		String sessionToken = extractSessionToken(jsonWebToken);
-		OnlineUser onlineUser = personDAO.getOnlineUser(sessionToken);
-		if (onlineUser == null) {
-			throw new NotAuthorizedException();
-		}
+        String sessionToken = extractSessionToken(jsonWebToken);
+        OnlineUserDBO onlineUser = personDAO.getOnlineUser(sessionToken);
+        if (onlineUser == null) {
+            throw new NotAuthorizedException();
+        }
 
-		// if the session expired, remove the object
-		Date expirationDate = onlineUser.getExpirationDate();
-		Date currentDate = Calendar.getInstance().getTime();
-		if (currentDate.after(expirationDate)) {
-			try {
-				// always delete the old/expired session
-				personDAO.delete(onlineUser, true);
-			} catch (InvalidObjectException e) {
-				LOGGER.error(e, e);
-			}
-			// then throw an exception
-			throw new TimeoutException();
-		}
+        // if the session expired, remove the object
+        Date expirationDate = onlineUser.getExpirationDate();
+        Date currentDate = Calendar.getInstance().getTime();
+        if (currentDate.after(expirationDate)) {
+            try {
+                // always delete the old/expired session
+                personDAO.delete(onlineUser, true);
+            } catch (InvalidObjectException e) {
+                LOGGER.error(e, e);
+            }
+            // then throw an exception
+            throw new TimeoutException();
+        }
 
-		return onlineUser;
-	}
+        return onlineUser;
+    }
 
-	/**
-	 * Refreshes the session token for a logged in user.
-	 * 
-	 * @param onlineUser
-	 * @param responseEntity
-	 * @param header
-	 * @return
-	 * @throws InvalidObjectException
-	 * @throws ResourceOutOfDateException
-	 */
-	public DefaultReturnObject refreshSession(OnlineUser onlineUser, Object responseEntity, Map<String, String> header)
-			throws InvalidObjectException, ResourceOutOfDateException {
+    /**
+     * Refreshes the session token for a logged in user.
+     * 
+     * @param onlineUser
+     * @param responseEntity
+     * @param header
+     * @return
+     * @throws InvalidObjectException
+     * @throws ResourceOutOfDateException
+     */
+    public DefaultReturnObject refreshSession(OnlineUserDBO onlineUser, Object responseEntity, Map<String, String> header)
+        throws InvalidObjectException, ResourceOutOfDateException {
 
-		DefaultReturnObject result = new DefaultReturnObject();
+        DefaultReturnObject result = new DefaultReturnObject();
 
-		// set the response object/entity
-		result.setEntity(responseEntity);
+        // set the response object/entity
+        result.setEntity(responseEntity);
 
-		// add all the headers, in case there are any
-		if (header != null) {
-			result.getHeader().putAll(header);
-		}
+        // add all the headers, in case there are any
+        if (header != null) {
+            result.getHeader().putAll(header);
+        }
 
-		// refresh the token and retrieve it
-		String newJSONWebToken = updateSession(onlineUser);
-		String headerValue = UserResource.HEADER_AUTHORIZATION_BEARER + newJSONWebToken;
-		result.getHeader().put(UserResource.HEADER_AUTHORIZATION, headerValue);
+        // refresh the token and retrieve it
+        String newJSONWebToken = updateSession(onlineUser);
+        String headerValue = UserRESTResource.HEADER_AUTHORIZATION_BEARER + newJSONWebToken;
+        result.getHeader().put(UserRESTResource.HEADER_AUTHORIZATION, headerValue);
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Refreshes the session of the current user and returns the new json web token,
-	 * that has to be returned to the client.
-	 * 
-	 * @param onlineUser
-	 * @return
-	 * @throws InvalidObjectException
-	 * @throws ResourceOutOfDateException
-	 */
-	public String updateSession(OnlineUser onlineUser) throws InvalidObjectException, ResourceOutOfDateException {
-		// step 1: create new session
-		String sessionToken = DefaultIDGenerator.generateRandomID();
-		LOGGER.debug("Created token: " + sessionToken);
-		Key key = MacProvider.generateKey();
-		String privateKey = new String(Base64.getEncoder().encode(key.getEncoded()), StandardCharsets.UTF_8);
+    public DefaultReturnObject buildDefaultReturnObject(String authorization, Object responseEntity, Map<String, String> header)
+        throws InvalidObjectException, ResourceOutOfDateException {
+        DefaultReturnObject result = new DefaultReturnObject();
 
-		// append the deadline to the token
-		Date deadline = DefaultDateProvider.getDeadline(10);
-		long time = deadline.getTime();
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("deadline", time);
+        // set the response object/entity
+        result.setEntity(responseEntity);
 
-		String jsonWebToken = Jwts.builder().setClaims(claims).setSubject(sessionToken)
-				.signWith(SignatureAlgorithm.HS512, key).compact();
+        // add all the headers, in case there are any
+        if (header != null) {
+            result.getHeader().putAll(header);
+        }
 
-		// persist
-		onlineUser.setExpirationDate(deadline);
-		onlineUser.setPrivateKey(privateKey);
-		onlineUser.setSessionToken(sessionToken);
-		personDAO.update(onlineUser, true);
+        // check the 'Bearer ' string...
+        // and add if necessary
+        if (!authorization.contains(UserRESTResource.HEADER_AUTHORIZATION_BEARER)) {
+            authorization = UserRESTResource.HEADER_AUTHORIZATION_BEARER + authorization;
+        }
+        result.getHeader().put(UserRESTResource.HEADER_AUTHORIZATION, authorization);
 
-		return jsonWebToken;
-	}
+        return result;
+    }
 
-	public static String extractSessionToken(String jsonWebToken) throws InvalidTokenException {
-		if (StringUtil.isNullOrBlank(jsonWebToken)) {
-			throw new InvalidTokenException("Invalid token");
-		}
-		if (jsonWebToken.indexOf(".") < 1 || jsonWebToken.lastIndexOf(".") < 1) {
-			throw new InvalidTokenException("Invalid token");
-		}
-		String token = jsonWebToken.substring(jsonWebToken.indexOf(".") + 1, jsonWebToken.lastIndexOf("."));
-		byte[] decode = Base64.getDecoder().decode(token);
-		String json = new String(decode);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			JsonNode actualObj = mapper.readTree(json);
-			String sessionToken = actualObj.get("sub").asText();
-			return sessionToken;
-		} catch (IOException e) {
-			throw new InvalidTokenException("Invalid token");
-		}
-	}
+    /**
+     * Refreshes the session of the current user and returns the new json web token, that has to be returned to the client.
+     * 
+     * @param onlineUser
+     * @return
+     * @throws InvalidObjectException
+     * @throws ResourceOutOfDateException
+     */
+    public String updateSession(OnlineUserDBO onlineUser)
+        throws InvalidObjectException, ResourceOutOfDateException {
 
-	/**
-	 * @return the personDAO
-	 */
-	public PersonDAO getPersonDAO() {
-		return personDAO;
-	}
+        if (onlineUser == null) {
+            return null;
+        }
+        if (onlineUser.getPerson() == null) {
+            return null;
+        }
+
+        // step 1: get the secret key or create a new one
+        Key secretKey = null;
+
+        String privateKey = onlineUser.getPrivateKey();
+        if (StringUtil.isNullOrBlank(privateKey)) {
+            secretKey = MacProvider.generateKey();
+            privateKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+        } else {
+            byte[] decodedPrivateKey = Base64.getDecoder().decode(privateKey);
+            secretKey = new SecretKeySpec(decodedPrivateKey, SignatureAlgorithm.HS512.getJcaName());
+        }
+
+        // append the deadline to the token
+        // default deadline is 30 minutes
+        Date deadline = DefaultDateProvider.getDeadline(30);
+        long time = deadline.getTime();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("deadline", time);
+
+        // the session token is always random
+        String sessionToken = DefaultIDGenerator.generateRandomID();
+        LOGGER.debug("Created token: " + sessionToken);
+        String jsonWebToken = Jwts.builder().setClaims(claims).setSubject(sessionToken).signWith(SignatureAlgorithm.HS512, secretKey).compact();
+
+        // persist
+        onlineUser.setExpirationDate(deadline);
+        onlineUser.setPrivateKey(privateKey);
+        onlineUser.setSessionToken(sessionToken);
+        personDAO.update(onlineUser, true);
+
+        return jsonWebToken;
+    }
+
+    public static String extractSessionToken(String jsonWebToken)
+        throws InvalidTokenException {
+        if (StringUtil.isNullOrBlank(jsonWebToken)) {
+            throw new InvalidTokenException("Invalid token");
+        }
+        if (jsonWebToken.indexOf(".") < 1 || jsonWebToken.lastIndexOf(".") < 1) {
+            throw new InvalidTokenException("Invalid token");
+        }
+        String token = jsonWebToken.substring(jsonWebToken.indexOf(".") + 1, jsonWebToken.lastIndexOf("."));
+        byte[] decode = Base64.getDecoder().decode(token);
+        String json = new String(decode);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode actualObj = mapper.readTree(json);
+            String sessionToken = actualObj.get("sub").asText();
+            return sessionToken;
+        } catch (IOException e) {
+            throw new InvalidTokenException("Invalid token");
+        }
+    }
+
+    /**
+     * @return the personDAO
+     */
+    public PersonDAO getPersonDAO() {
+        return personDAO;
+    }
 
 }

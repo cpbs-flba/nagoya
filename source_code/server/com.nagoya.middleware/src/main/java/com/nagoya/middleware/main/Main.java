@@ -1,23 +1,25 @@
-/**
- * (C) Copyright 2004 - 2018 CPB Software AG
- * 1020 Wien, Vorgartenstrasse 206c
- * All rights reserved.
- * 
- * This software is provided by the copyright holders and contributors "as is". 
- * In no event shall the copyright owner or contributors be liable for any direct,
- * indirect, incidental, special, exemplary, or consequential damages.
- * 
- * Created by : flba
- */
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 
 package com.nagoya.middleware.main;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nagoya.middleware.rest.impl.GeneticResourceImpl;
-import com.nagoya.middleware.rest.impl.GeneticResourceTransferResourceImpl;
-import com.nagoya.middleware.rest.impl.UserResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.BlockchainSearchRESTResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.ContractRESTResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.GeneticRESTResourceImpl;
+import com.nagoya.middleware.rest.bl.impl.UserRESTResourceImpl;
 
 /**
  * @author flba
@@ -25,19 +27,21 @@ import com.nagoya.middleware.rest.impl.UserResourceImpl;
  */
 public class Main extends Microservice {
 
-	private static final Logger LOGGER = LogManager.getLogger(Main.class);
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-	public static void main(String args[]) throws Exception {
-		LOGGER.debug("Starting program.");
+    public static void main(String args[])
+        throws Exception {
+        LOGGER.debug("Starting program.");
 
-		Main main = new Main();
-		
-		// add the REST resources here
-		main.getResourceConfig().register(UserResourceImpl.class);
-		main.getResourceConfig().register(GeneticResourceImpl.class);
-		main.getResourceConfig().register(GeneticResourceTransferResourceImpl.class);
-		
-		main.runServer(args);
-	}
+        Main main = new Main();
+
+        // add the REST resources here
+        main.getResourceConfig().register(UserRESTResourceImpl.class);
+        main.getResourceConfig().register(GeneticRESTResourceImpl.class);
+        main.getResourceConfig().register(ContractRESTResourceImpl.class);
+        main.getResourceConfig().register(BlockchainSearchRESTResourceImpl.class);
+
+        main.runServer(args);
+    }
 
 }

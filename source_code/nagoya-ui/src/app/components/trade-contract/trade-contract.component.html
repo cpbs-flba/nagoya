@@ -1,0 +1,76 @@
+<div fxLayout="column" class="contentWrapper" >
+  <h1 class="mat-h1">{{'CONTRACTS.CREATE'|translate}}</h1>
+
+  <!-- Recipient -->
+  <mat-form-field>
+    <input matInput placeholder="{{'CONTRACTS.RECEIVER'|translate}}" type="text" [(ngModel)]="emailReceiver">
+  </mat-form-field>
+
+  <!-- Resources -->
+  <h2>{{'CONTRACTS.RESOURCES'|translate}}</h2>
+  <mat-selection-list class="resourceSelectionList" [(ngModel)]="selectedContractResources">
+    <div class="innerResourceSelectionList">
+      <mat-list-option checkboxPosition="before" *ngFor="let cr of contractResources" [value]="cr" class="optionClass">
+        <div flex fxLayout="row" fxLayoutAlign="space-around center" fxLayout.lt-md="column">
+          <div fxFlex="33%">
+            <div>ID: {{cr.geneticResource.identifier}}</div>
+            <div>{{'RESOURCE.CREATION.FORM.SOURCE'|translate}}: {{cr.geneticResource.source}}</div>
+          </div>
+          <div fxFlex="33%">
+            <mat-form-field style="width: 10em;">
+              <input matInput placeholder="{{'CONTRACTS.QUANTITY'|translate}}" type="text" [(ngModel)]="cr.amount">
+            </mat-form-field>
+          </div>
+          <div fxFlex="33%">
+            <mat-form-field style="width: 10em;">
+              <input matInput placeholder="{{'CONTRACTS.MEASURING_UNIT'|translate}}" type="text" [(ngModel)]="cr.measuringUnit">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+
+  <!-- Attachments -->
+  <div fxLayout="column">
+    <div fxLayout="row">
+      <div>
+        <h2>{{'CONTRACTS.DOCS'|translate}}</h2>
+      </div>
+      <div fxFlex></div>
+      <div>
+        <input type="file" hidden #fileInput (change)="addAttachment($event)">
+
+        <button mat-raised-button (click)="fileInput.click()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div *ngFor="let attachment of attachments" fxLayout="row">
+      <div fxLayoutAlign="center center">
+        {{attachment.name}}
+      </div>
+      <div fxFlex></div>
+      <div>
+        <button mat-button (click)="removeAttachment(attachment)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <div fxLayout="row">
+    <div *ngIf="isPrivateKeyNeeded()" fxLayout="row" fxLayoutAlign="start center" style="margin-top: 1em;">
+      <mat-form-field style="width: 15em;">
+        <input matInput placeholder="{{'CONFIRMATION.VALIDATION.SUCCESS.PRIVATE_KEY'|translate}}" [(ngModel)]="privateKey" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div fxLayout="row">
+    <button type="submit" mat-raised-button color="accent" (click)=createContract()>{{'CONTRACTS.CREATE'|translate}}</button>
+  </div>
+
+</div>

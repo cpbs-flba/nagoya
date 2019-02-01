@@ -1,0 +1,38 @@
+<mat-spinner *ngIf="spinner" class="spinner"></mat-spinner>
+
+<form novalidate (ngSubmit)="onSubmit()" [(formGroup)]="form" fxLayout="column">
+
+  <div *ngFor="let property of objectProps">
+
+    <div [ngSwitch]="property.type" fxLayoutAlign="center">
+
+      <mat-form-field *ngSwitchCase="'text'" fxFlex="100">
+        <input matInput [formControlName]="property.key" [id]="property.key"
+               [type]="property.type" [placeholder]=" 'REGISTRATION.FORM.MODEL.'+property.label | translate">
+      </mat-form-field>
+
+      <mat-form-field *ngSwitchCase="'password'" fxFlex="100">
+        <input matInput [formControlName]="property.key" [id]="property.key"
+               [type]="property.type" [placeholder]="'REGISTRATION.FORM.MODEL.'+property.label | translate">
+      </mat-form-field>
+
+      <mat-form-field *ngSwitchCase="'date'" fxFlex="100">
+        <input matInput [matDatepicker]="picker"
+               [formControlName]="property.key" [placeholder]="'REGISTRATION.FORM.MODEL.'+property.label | translate"  [max]="maxDate" [min]="minDate" [id]="property.key">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker startView="year"></mat-datepicker>
+      </mat-form-field>
+
+    </div>
+
+  </div>
+
+  <mat-checkbox formControlName="storePrivateKey"><a target="_blank" routerLink="/terms">{{'REGISTRATION.STORE_PRIVATE_KEYS'|translate}}</a></mat-checkbox>
+
+  <mat-checkbox formControlName="termsAccepted"><a target="_blank" routerLink="/terms">{{'REGISTRATION.ACCEPT_TERMS'|translate}}</a></mat-checkbox>
+
+  <p class="submitFormButton">
+    <button fxFlex="100" type="submit" mat-raised-button color="accent" [disabled]="form.invalid || spinner"><span>{{'REGISTRATION.FORM.BUTTON.REGISTER' | translate}}</span></button>
+  </p>
+
+</form>

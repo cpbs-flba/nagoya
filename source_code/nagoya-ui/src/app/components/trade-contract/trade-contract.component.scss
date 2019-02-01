@@ -1,0 +1,17 @@
+.resourceSelectionList{
+  background-color: white;
+  overflow: hidden;
+  margin-bottom: 2em;
+}
+
+.innerResourceSelectionList{
+  overflow-y: scroll;
+  max-height: 30em;
+}
+
+.optionClass {
+  margin: 1em 0;
+  font-size: 14px;
+  height: auto !important;
+  border-bottom: 1px solid gray;
+}

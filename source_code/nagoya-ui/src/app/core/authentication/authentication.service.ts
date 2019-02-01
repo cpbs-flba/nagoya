@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
-import {map, tap} from 'rxjs/internal/operators';
-import {HttpClient, HttpResponse} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import {ServerConfigService} from '../../services/serverconfig.service';
-import {LoginContext} from '../../model/loginContext';
-import {User} from '../../model/user';
-import {TokenService} from './token.service';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/internal/operators';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { ServerConfigService } from '../../services/serverconfig.service';
+import { LoginContext } from '../../model/loginContext';
+import { User } from '../../model/user';
+import { TokenService } from './token.service';
 
 export interface Credentials {
   // Customize received credentials here
@@ -38,17 +38,17 @@ export class AuthenticationService {
    * @return The user credentials.
    */
   login(context: LoginContext): Observable<any> {
-    return this.http.post<HttpResponse<User>>(environment.serverUrl + 'users/login', context, {observe: 'response'})
+    return this.http.post<HttpResponse<User>>(environment.serverUrl + 'users/login', context, { observe: 'response' })
       .pipe(
         tap(response => {
-        const data = {
-          email: response.body.email,
-          token: response.headers.get('Authorization')
-        };
-        this.setCredentials(data);
-        this.tokenServie.setToken(response.headers.get('Authorization'))
-        return response.body;
-      }));
+          const data = {
+            email: response.body.email,
+            token: response.headers.get('Authorization')
+          };
+          this.setCredentials(data);
+          this.tokenServie.setToken(response.headers.get('Authorization'))
+          return response.body;
+        }));
 
   }
 
@@ -56,10 +56,13 @@ export class AuthenticationService {
    * Logs out the user and clear credentials.
    * @return True if the user was logged out successfully.
    */
-  logout(): Observable<boolean> {
-    // Customize credentials invalidation here
+  logout(): Observable<any> {
     this.setCredentials();
-    return of(true);
+    return this.http.get<HttpResponse<any>>(environment.serverUrl + 'users/logout', { observe: 'response' })
+      .pipe(
+        tap(response => {
+          // noop
+        }));
   }
 
   /**
@@ -93,7 +96,6 @@ export class AuthenticationService {
       storage.setItem(credentialsKey, JSON.stringify(credentials));
     } else {
       sessionStorage.removeItem(credentialsKey);
-      // localStorage.removeItem(credentialsKey);
     }
   }
 

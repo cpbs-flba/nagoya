@@ -1,0 +1,143 @@
+<div>
+
+  <mat-card style="margin-bottom: 2em;">
+    <h1 class="mat-h1">{{'MENU.BLOCKCHAIN_CONTRACTS'|translate}}</h1>
+
+    <div *ngIf="searching" class="alert alert-info">
+      <div>{{ 'BLOCKCHAIN_EXPLORER.SEARCHING' | translate }}</div>
+    </div>
+
+    <div *ngIf="noresults" class="alert alert-info">
+        <div>{{ 'BLOCKCHAIN_EXPLORER.NO_RESULTS' | translate }}</div>
+      </div>
+
+    <div>
+      <mat-form-field style="width: 30em;">
+        <input matInput placeholder="{{'BLOCKCHAIN_EXPLORER.SEARCH_FILTER'|translate}}" [(ngModel)]="searchCriteria"
+          matTooltip="{{'BLOCKCHAIN_EXPLORER.TOOLTIP'|translate}}" />
+      </mat-form-field>
+
+      <button style="margin-right: 1em; margin-left: 1em;" mat-raised-button color="accent" (click)=filter() [disabled]="searching">{{'GENERAL.FILTER'|translate}}</button>
+    </div>
+
+  </mat-card>
+
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>{{'BLOCKCHAIN_EXPLORER.DATE'|translate}}</th>
+      <td mat-cell *matCellDef="let element">{{element.assetData.genetic_resource.trading_date | date:'dd.MM.yyyy'}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="txid">
+      <th mat-header-cell *matHeaderCellDef>{{'BLOCKCHAIN_EXPLORER.TX_ID'|translate}}</th>
+      <td mat-cell *matCellDef="let element">{{element.txIdAssetCreation}}</td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div class="example-element-diagram">
+
+            <div style="margin: 0.5em 0 0.5em 0">
+
+              <div fxLayout="column" fxLayoutAlign="center stretch">
+
+                <h3>{{'BLOCKCHAIN_EXPLORER.TX_DETAILS'|translate}}</h3>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'BLOCKCHAIN_EXPLORER.CREATION_ID'|translate}}</div>
+                  <div fxFlex="70%">
+                    <div>{{element.txIdAssetCreation}}</div>
+                  </div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'BLOCKCHAIN_EXPLORER.TRANSFER_ID'|translate}}</div>
+                  <div fxFlex="70%">
+                    <div>{{element.txIdAssetOperation}}</div>
+                  </div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'BLOCKCHAIN_EXPLORER.CONFIRMATION_ID'|translate}}</div>
+                  <div fxFlex="70%">
+                    <div>{{element.txIdAssetConfirmation}}</div>
+                  </div>
+                </div>
+
+                <h3>{{'BLOCKCHAIN_EXPLORER.PARTIES_INFO'|translate}}</h3>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'CONTRACTS.SENDER'|translate}}</div>
+                  <div fxFlex="70%">
+                    <div *ngIf="element.assetData.sender.type === 'NATURAL'">
+                      {{element.assetData.sender.first_name}} {{element.assetData.sender.last_name}}, {{element.assetData.sender.birthday}}
+                    </div>
+                    <div *ngIf="element.assetData.sender.type === 'LEGAL'">
+                      {{element.assetData.sender.name}}, {{element.assetData.sender.commercial_register_nr}}, {{element.assetData.sender.tax_nr}}
+                    </div>
+                  </div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'CONTRACTS.RECEIVER'|translate}}</div>
+                  <div fxFlex="70%">
+                    <div *ngIf="element.assetData.receiver.type === 'NATURAL'">
+                      {{element.assetData.receiver.first_name}} {{element.assetData.receiver.last_name}}, {{element.assetData.receiver.birthday}}
+                    </div>
+                    <div *ngIf="element.assetData.receiver.type === 'LEGAL'">
+                      {{element.assetData.receiver.name}}, {{element.assetData.receiver.commercial_register_nr}}, {{element.assetData.receiver.tax_nr}}
+                    </div>
+                  </div>
+                </div>
+
+                <h3>{{'BLOCKCHAIN_EXPLORER.GENETIC_RESOURCE'|translate}}</h3>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'RESOURCE.CREATION.FORM.IDENTIFIER'|translate}}</div>
+                  <div fxFlex="70%">{{element.assetData.genetic_resource.gr_id}}</div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'RESOURCE.CREATION.FORM.HASH_SEQUENCE'|translate}}</div>
+                  <div fxFlex="70%">{{element.assetData.genetic_resource.hash_sequence}}</div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'BLOCKCHAIN_EXPLORER.TAXONOMY'|translate}}</div>
+                  <div fxFlex="70%">{{element.assetData.genetic_resource.taxonomy}}</div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'RESOURCE.CREATION.FORM.ORIGIN'|translate}}</div>
+                  <div fxFlex="70%">{{element.metaData.origin}}</div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'RESOURCE.CREATION.FORM.SOURCE'|translate}}</div>
+                  <div fxFlex="70%">{{element.metaData.source}}</div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <div fxFlex="30%">{{'CONTRACTS.QUANTITY'|translate}}</div>
+                  <div fxFlex="70%">{{element.amount}} {{element.metaData.unit}}</div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? null : element">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
+
+  <mat-paginator [pageSize]=5 [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="customshadow" style="margin-bottom: 3em;"></mat-paginator>
+
+
+</div>

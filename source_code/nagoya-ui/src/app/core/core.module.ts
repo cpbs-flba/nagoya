@@ -6,14 +6,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouteReusableStrategy } from './route-reusable-strategy';
 import { AuthenticationService } from './authentication/authentication.service';
 import { AuthenticationGuard } from './authentication/authentication.guard';
-import { HttpService } from './http/http.service';
 import { HttpCacheService } from './http/http-cache.service';
-import { ApiPrefixInterceptor } from './http/api-prefix.interceptor';
 import { ErrorHandlerInterceptor } from './http/error-handler.interceptor';
 import { CacheInterceptor } from './http/cache.interceptor';
-import {I18nService} from '../services/i18n.service';
-import {TokenInterceptor} from './http/token.interceptor';
-import {TokenService} from './authentication/token.service';
+import { TokenInterceptor } from './http/token.interceptor';
+import { TokenService } from './authentication/token.service';
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, TranslateModule, RouterModule],
@@ -21,16 +18,10 @@ import {TokenService} from './authentication/token.service';
     AuthenticationService,
     TokenService,
     AuthenticationGuard,
-    I18nService,
     HttpCacheService,
-    ApiPrefixInterceptor,
     ErrorHandlerInterceptor,
     CacheInterceptor,
     TokenInterceptor,
-    {
-      provide: HttpClient,
-      useClass: HttpService
-    },
     {
       provide: RouteReuseStrategy,
       useClass: RouteReusableStrategy

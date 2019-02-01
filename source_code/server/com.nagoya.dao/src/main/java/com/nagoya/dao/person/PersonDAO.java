@@ -1,17 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2004 - 2019 CPB Software AG
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS".
+ * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES.
+ *
+ * This software is published under the Apache License, Version 2.0, January 2004, 
+ * http://www.apache.org/licenses/
+ *  
+ * Author: Florin Bogdan Balint
+ *******************************************************************************/
 package com.nagoya.dao.person;
 
 import java.util.List;
 
 import com.nagoya.dao.base.BasicDAO;
-import com.nagoya.model.dbo.person.Person;
-import com.nagoya.model.dbo.person.PersonLegal;
-import com.nagoya.model.dbo.person.PersonNatural;
-import com.nagoya.model.dbo.user.OnlineUser;
-import com.nagoya.model.dbo.user.UserRequest;
+import com.nagoya.model.dbo.person.PersonDBO;
+import com.nagoya.model.dbo.person.PersonLegalDBO;
+import com.nagoya.model.dbo.person.PersonNaturalDBO;
+import com.nagoya.model.dbo.user.OnlineUserDBO;
+import com.nagoya.model.dbo.user.UserRequestDBO;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.InvalidObjectException;
 
-public interface PersonDAO extends BasicDAO<Person> {
+public interface PersonDAO extends BasicDAO<PersonDBO> {
 
 	/**
 	 * Searches for a person based on the provided email address.
@@ -20,7 +32,7 @@ public interface PersonDAO extends BasicDAO<Person> {
 	 * @return
 	 * @throws ConflictException - if more than one entry exists
 	 */
-	public Person findPersonForEmail(String email) throws ConflictException;
+	public PersonDBO findPersonForEmail(String email) throws ConflictException;
 
 	/**
 	 * Tries to register a person into the db.
@@ -29,14 +41,14 @@ public interface PersonDAO extends BasicDAO<Person> {
 	 * @return
 	 * @throws ConflictException
 	 */
-	public Person register(Person person) throws ConflictException;
+	public PersonDBO register(PersonDBO person) throws ConflictException;
 
 	/**
 	 * Removes old saved sessions for the specified person.
 	 * 
 	 * @param person
 	 */
-	public void removeOldSessions(Person person);
+	public void removeOldSessions(PersonDBO person);
 
 	/**
 	 * Returns the online user object based on the specified session token.
@@ -45,7 +57,7 @@ public interface PersonDAO extends BasicDAO<Person> {
 	 * @return
 	 * @throws ConflictException
 	 */
-	public OnlineUser getOnlineUser(String sessionToken) throws ConflictException;
+	public OnlineUserDBO getOnlineUser(String sessionToken) throws ConflictException;
 
 	/**
 	 * Searches for the user request based on the token.
@@ -54,27 +66,27 @@ public interface PersonDAO extends BasicDAO<Person> {
 	 * @return the userRequest object or NULL.
 	 * @throws ConflictException
 	 */
-	public UserRequest findUserRequest(String token) throws ConflictException;
+	public UserRequestDBO findUserRequest(String token) throws ConflictException;
 
 	/**
 	 * 
 	 * @param person
 	 * @throws InvalidObjectException
 	 */
-	public void delete(Person person) throws InvalidObjectException;
+	public void delete(PersonDBO person) throws InvalidObjectException;
 
 	/**
 	 * Searches for a natural person based on the specified filter.
 	 * 
 	 * @return
 	 */
-	public List<PersonNatural> searchNatural(String filter, int maxResults);
+	public List<PersonNaturalDBO> searchNatural(String filter, int maxResults);
 	
 	/**
 	 * Searches for a legal person based on the specified filter.
 	 * 
 	 * @return
 	 */
-	public List<PersonLegal> searchLegal(String filter, int maxResults);
+	public List<PersonLegalDBO> searchLegal(String filter, int maxResults);
 
 }

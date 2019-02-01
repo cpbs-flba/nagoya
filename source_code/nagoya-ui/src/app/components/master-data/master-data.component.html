@@ -1,0 +1,73 @@
+<div class="contentWrapper" *ngIf="isUserLoggedIn()">
+  <h2 class="mat-h2">{{'MASTER_DATA.TITLE'| translate}}</h2>
+  <div class="descriptionBlock" fxLayout="column" *ngIf="toggleUpdateData">
+    <div class="innerDescriptionBlock" fxLayout="column">
+      <div *ngIf="user.personType === 'NATURAL'" fxLayout="column">
+        <span class="descriptionTitle">{{'MASTER_DATA.DESCRIPTION.FIRSTNAME'|translate}}</span>
+        <span>{{user.firstname}}</span>
+        <br/>
+        <span class="descriptionTitle">{{'MASTER_DATA.DESCRIPTION.LASTNAME'|translate}}</span>
+        <span>{{user.lastname}}</span>
+        <br/>
+      </div>
+      <div *ngIf="user.personType === 'LEGAL'" fxLayout="column">
+        <span class="descriptionTitle">{{'MASTER_DATA.DESCRIPTION.NAME'|translate}}</span>
+        <span>{{user.name}}</span>
+        <br/>
+        <span class="descriptionTitle">{{'MASTER_DATA.DESCRIPTION.COMMERCIAL_REGISTER_NUMBER'|translate}}</span>
+        <span>{{user.commercialRegisterNumber}}</span>
+        <br/>
+        <span class="descriptionTitle">{{'MASTER_DATA.DESCRIPTION.TAX_NUMBER'|translate}}</span>
+        <span>{{user.taxNumber}}</span>
+        <br/>
+      </div>
+      <span class="descriptionTitle">{{'MASTER_DATA.DESCRIPTION.EMAIL'|translate}}</span>
+      <span>{{user.email}}</span>
+      <br/>
+      <div>
+        <div fxFlex></div>
+        <button type="button" mat-raised-button color="accent" (click)="toggleEditMode()">{{'MASTER_DATA.ACTION.EDIT'|translate}}</button>
+      </div>
+    </div>
+  </div>
+  <form *ngIf="!toggleUpdateData" [formGroup]="masterDataForm" (onSubmit)="updateData()" fxLayout="column">
+
+    <div>
+      <div fxFlex></div>
+      <button mat-button (click)="toggleEditMode()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div *ngIf="user.personType === 'NATURAL'" fxLayout="column">
+      <mat-form-field>
+        <input matInput type="text" formControlName="firstname" placeholder="{{'MASTER_DATA.DESCRIPTION.FIRSTNAME'|translate}}">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="text" formControlName="lastname" placeholder="{{'MASTER_DATA.DESCRIPTION.LASTNAME'|translate}}">
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="user.personType === 'LEGAL'" fxLayout="column">
+      <mat-form-field>
+        <input matInput type="text" formControlName="name" placeholder="{{'MASTER_DATA.DESCRIPTION.NAME'|translate}}">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="text" formControlName="commercialRegisterNumber" placeholder="{{'MASTER_DATA.DESCRIPTION.COMMERCIAL_REGISTER_NUMBER'|translate}}">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="text" formControlName="taxNumber" placeholder="{{'MASTER_DATA.DESCRIPTION.TAX_NUMBER'|translate}}">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field>
+      <input matInput type="text" formControlName="email" placeholder="{{'MASTER_DATA.DESCRIPTION.EMAIL'|translate}}">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput type="password" formControlName="passwordConfirmation" placeholder="{{'MASTER_DATA.DESCRIPTION.PASSWORD_CONFIRMATION'|translate}}">
+    </mat-form-field>
+
+    <button type="submit" mat-raised-button color="accent" [disabled]="masterDataForm.invalid" (click)="updateData()">{{'MASTER_DATA.ACTION.UPDATE'|translate}}</button>
+  </form>
+</div>
