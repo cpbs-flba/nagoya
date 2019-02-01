@@ -13,13 +13,14 @@
 
 package com.nagoya.middleware.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import com.nagoya.blockchain.api.BlockchainDriver;
@@ -48,7 +49,9 @@ import com.nagoya.model.exception.ResourceOutOfDateException;
  */
 public class BlockchainService {
 
-    private ContractDAO contractDAO = null;
+    private static final Logger LOGGER      = LogManager.getLogger(BlockchainService.class);
+
+    private ContractDAO         contractDAO = null;
 
     public BlockchainService(Session session) {
         if (session != null) {
@@ -110,7 +113,7 @@ public class BlockchainService {
         gr.put(BlockchainDriver.GENETIC_RESOURCE_ID, geneticResource.getIdentifier());
         gr.put("hash_sequence", geneticResource.getHashSequence());
         gr.put("taxonomy", geneticResource.getTaxonomy().toString());
-        gr.put("trading_date", DefaultDateProvider.getCurrentDateAsString());
+        gr.put("trading_date", DefaultDateProvider.getCurrentTimeInMillisecondsUTC());
 
         Map<String, Object> sender = getPersonData(contractDBO.getSender());
         Map<String, Object> receiver = getPersonData(contractDBO.getReceiver());
@@ -149,23 +152,25 @@ public class BlockchainService {
         return result;
     }
 
-    public DefaultReturnObject search(String query)
-        throws IOException {
+    public DefaultReturnObject search(String query) {
         BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
         List<Asset> results = new ArrayList<>();
 
-        // search1: resource id
-        List<Asset> searched = blockchainDriver.search(BlockchainDriver.GENETIC_RESOURCE_ID + "=" + query);
-        results.addAll(searched);
+        try {
+            // search1: resource id
+            List<Asset> searched = blockchainDriver.search(BlockchainDriver.GENETIC_RESOURCE_ID + "=" + query);
+            results.addAll(searched);
+        } catch (Exception e) {
+            // either we find something or not...
+            LOGGER.error(e, e);
+        }
 
-        // further searches...
+        LOGGER.debug("Results found: " + results.size());
 
         // create response
         DefaultReturnObject result = new DefaultReturnObject();
-        if (!results.isEmpty()) {
-            String objectAsJson = DefaultJSONProvider.getObjectAsJson(searched);
-            result.setEntity(objectAsJson);
-        }
+        String objectAsJson = DefaultJSONProvider.getObjectAsJson(results);
+        result.setEntity(objectAsJson);
 
         return result;
     }

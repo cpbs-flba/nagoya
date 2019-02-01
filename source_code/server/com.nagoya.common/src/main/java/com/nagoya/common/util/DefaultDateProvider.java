@@ -15,6 +15,8 @@ package com.nagoya.common.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -78,6 +80,11 @@ public class DefaultDateProvider {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         String result = sdf.format(current);
         return result;
+    }
+
+    public static long getCurrentTimeInMillisecondsUTC() {
+        long epochMilli = ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli();
+        return epochMilli;
     }
 
     public static String getDateAsString(Date date) {

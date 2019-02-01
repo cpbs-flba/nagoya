@@ -273,7 +273,17 @@
     "SEARCH_FILTER" : "Search criteria",
     "TOOLTIP": "Try inserting the ID of a genetic resource",
     "SEARCHING": "Your request is being processed, this could take a while. Seriously...",
-    "NO_RESULTS": "No results found"
+    "NO_RESULTS": "No results found",
+    "SEARCH_CRITERIA_MISSING": "Please provide a search criteria",
+    "DATE": "Transaction Date",
+    "TX_ID": "Transaction ID",
+    "TX_DETAILS": "Blockchain Transaction Details",
+    "CREATION_ID": "Creation ID",
+    "TRANSFER_ID": "Transfer ID",
+    "CONFIRMATION_ID": "Confirmation ID",
+    "GENETIC_RESOURCE": "Genetic Resource",
+    "PARTIES_INFO": "Involved Parties",
+    "TAXONOMY": "Taxonomy"
   },
   "ENUM": {
     "VISIBILITY_TYPES": {

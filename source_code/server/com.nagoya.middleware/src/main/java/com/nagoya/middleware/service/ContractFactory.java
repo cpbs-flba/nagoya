@@ -77,6 +77,10 @@ public class ContractFactory {
             throw new BadRequestException("Sender/Receiver could not be found.", "ERROR_SENDER_1");
         }
 
+        if (emailReceiver.equalsIgnoreCase(senderDBO.getEmail())) {
+            throw new BadRequestException("Sender/Receiver should be different.", "ERROR_SENDER_2");
+        }
+
         contractDBO.setSender(senderDBO);
         contractDBO.setReceiver(receiverDBO);
 

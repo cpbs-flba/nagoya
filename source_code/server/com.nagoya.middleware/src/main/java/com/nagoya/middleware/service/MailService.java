@@ -231,7 +231,11 @@ public class MailService {
     }
 
     public void sendContractAccepted(ContractDBO contract) {
-        // TODO Auto-generated method stub
+        String htmlPath = DEFAULT_DIR + this.language + "/" + "mail_contract_accepted.html";
+        String registrationMailText = FileReader.readFile(htmlPath, StandardCharsets.UTF_8);
 
+        String subject = getTitle(registrationMailText);
+        sendMail(contract.getSender().getEmail(), subject, registrationMailText);
+        sendMail(contract.getReceiver().getEmail(), subject, registrationMailText);
     }
 }

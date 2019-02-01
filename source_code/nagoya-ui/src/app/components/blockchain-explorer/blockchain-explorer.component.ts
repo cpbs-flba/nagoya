@@ -1,14 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'src/app/services/message.service';
 import { BlockchainExplorerService } from 'src/app/services/blockchain-explorer.service';
-import { ContractStatus } from '../../model/contract/contractStatus';
-import { FormControl } from '@angular/forms';
-import { Contract } from '../../model/contract/contract';
-import { ContractsService } from '../../services/contracts.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { UserService } from '../../services/user.service';
-import { DatePipe } from '@angular/common';
-import { ContractRole } from 'src/app/model/contract/contractRole';
 
 @Component({
   selector: 'app-blockchain-explorer',
@@ -28,17 +21,24 @@ export class BlockchainExplorerComponent implements OnInit {
 
   searchCriteria: string;
   searching: boolean;
+  noresults: boolean;
 
   columnsToDisplay = ['date', 'txid'];
 
-  constructor(private blockchainExplorerService: BlockchainExplorerService) { }
+  constructor(
+    private blockchainExplorerService: BlockchainExplorerService,
+    private messageService: MessageService,
+  ) { }
 
   ngOnInit() {
   }
 
   filter() {
+    this.noresults = false;
+
     // if the search criteria is NULL or undefinded we have nothing to do
-    if (this.searchCriteria == null) {
+    if (!this.searchCriteria) {
+      this.messageService.displayErrorMessage('BLOCKCHAIN_EXPLORER.SEARCH_CRITERIA_MISSING');
       return;
     }
 
@@ -47,7 +47,9 @@ export class BlockchainExplorerComponent implements OnInit {
     this.blockchainExplorerService.search(this.searchCriteria).subscribe(result => {
       this.searching = false;
       this.dataSource = this.blockchainExplorerService.getAssets();
-      console.log(this.dataSource);
+      if (this.dataSource.length == 0) {
+        this.noresults = true;
+      }
     }, error => {
       this.searching = false;
     });

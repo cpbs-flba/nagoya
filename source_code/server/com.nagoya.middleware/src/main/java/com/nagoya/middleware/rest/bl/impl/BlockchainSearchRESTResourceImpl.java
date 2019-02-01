@@ -39,14 +39,10 @@ public class BlockchainSearchRESTResourceImpl implements BlockchainSearchRESTRes
             BlockchainService service = new BlockchainService(null);
             DefaultReturnObject result = service.search(query);
             ResponseBuilder responseBuilder = null;
-            if (result.getEntity() == null) {
-                responseBuilder = Response.noContent();
-            } else {
-                responseBuilder = Response.ok(result.getEntity());
-            }
+            responseBuilder = Response.ok(result.getEntity());
             response = responseBuilder.build();
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(e, e);
             response = Response.serverError().build();
         }
         asyncResponse.resume(response);

@@ -37,7 +37,6 @@ public interface BlockchainSearchRESTResource {
      * Searches in the blockchain. Returns one of the following status codes:
      * <ul>
      * <li>200 OK - if everything was okay</li>
-     * <li>204 No Content - if everything was okay but there are no results</li>
      * <li>500 Internal Server Error - if something went terribly wrong</li>
      * </ul>
      * 

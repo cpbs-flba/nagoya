@@ -93,6 +93,9 @@ export class TradeContractComponent implements OnInit {
       if (error.error== 'ERROR_SENDER_1') {
         this.messageService.displayErrorMessage('CONTRACTS.ERROR.INVALID_COUNTERPARTY');
       }
+      if (error.error== 'ERROR_SENDER_2') {
+        this.messageService.displayErrorMessage('CONTRACTS.ERROR.INVALID_COUNTERPARTY');
+      }
       if (error.error== 'ERROR_RESOURCE_1') {
         this.messageService.displayErrorMessage('CONTRACTS.ERROR.INVALID_RESOURCE_SELECTION');
       }

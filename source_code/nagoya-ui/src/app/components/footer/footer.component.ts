@@ -11,14 +11,16 @@ import { MessageService } from 'src/app/services/message.service';
 })
 export class FooterComponent implements OnInit {
 
+  selectedLanguage: string;
+
   constructor(public translate: TranslateService,
     private authenticationService: AuthenticationService,
     private messageService: MessageService,
     private router: Router) {
   }
 
-
   ngOnInit(): void {
+    this.selectedLanguage = this.translate.currentLang;
   }
 
   isLoggedIn() {

@@ -34,13 +34,24 @@ public class BlockChainPropertiesProvider {
         return valueAsString;
     }
 
+    public static int getConnectionTimeout(int defaultValue) {
+        int result = defaultValue;
+        try {
+            String valueAsString = BUNDLE.getString("blockchain.connection.timeout");
+            result = Integer.parseInt(valueAsString);
+        } catch (Exception e) {
+            // noop
+        }
+        return result;
+    }
+
     /**
      * Returns the base URL of the blockchain
      * 
      * @return
      */
-    public static String getURL() {
-        return getString("blockchain.base.url", "https://test.bigchaindb.com");
+    public static String getURL(int urlNumber) {
+        return getString("blockchain.base.url." + urlNumber, null);
     }
 
     /**

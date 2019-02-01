@@ -85,39 +85,30 @@ public class BlockchainDriverImpl implements BlockchainDriver {
     public static void configureConnectionManager()
         throws TimeoutException {
 
-        // define connections
-        Map<String, Object> conn1Config = new HashMap<String, Object>(), conn2Config = new HashMap<String, Object>();
-
-        // defien headers for connections
-        Map<String, String> headers1 = new HashMap<String, String>();
-        Map<String, String> headers2 = new HashMap<String, String>();
-
-        // config header for connection 1
-        headers1.put("app_id", "");
-        headers1.put("app_key", "");
-
-        // config header for connection 2
-        headers2.put("app_id", "8609ee17");
-        headers2.put("app_key", "130a79938e5dcc6c7aa1166028f06e20");
-
-        // config connection 1
-        conn1Config.put("baseUrl", "https://test.bigchaindb.com");
-        conn1Config.put("headers", headers1);
-        Connection conn1 = new Connection(conn1Config);
-
-        // config connection 2
-        conn2Config.put("baseUrl", "https://test.bigchaindb.com");
-        conn2Config.put("headers", headers2);
-        Connection conn2 = new Connection(conn2Config);
-
-        // add connections
         List<Connection> connections = new ArrayList<Connection>();
-        connections.add(conn1);
-        // connections.add(conn2);
 
-        BigchainDbConfigBuilder.addConnections(connections).setTimeout(60000) // override default timeout of 20000 milliseconds
+        // read the connections from a properties file
+        for (int i = 0; i < 20; i++) {
+            Map<String, String> headers = new HashMap<String, String>();
+            headers.put("app_id", BlockChainPropertiesProvider.getAppId());
+            headers.put("app_key", BlockChainPropertiesProvider.getAppKey());
+
+            String baseUrl = BlockChainPropertiesProvider.getURL(i);
+            if (StringUtil.isNullOrBlank(baseUrl)) {
+                continue;
+            }
+
+            Map<String, Object> connConfig = new HashMap<String, Object>();
+            connConfig.put("baseUrl", baseUrl);
+            connConfig.put("headers", headers);
+            Connection connection = new Connection(connConfig);
+            connections.add(connection);
+        }
+
+        BigchainDbConfigBuilder //
+            .addConnections(connections) //
+            .setTimeout(BlockChainPropertiesProvider.getConnectionTimeout(60000)) //
             .setup();
-
     }
 
     @Override
@@ -211,7 +202,7 @@ public class BlockchainDriverImpl implements BlockchainDriver {
             asset.setTxIdAssetCreation(new String(transactionID));
             asset.setTxIdAssetOperation(new String(transactionID));
 
-            String txURL = BlockChainPropertiesProvider.getURL() + "/api/v1/transactions/" + transactionID;
+            String txURL = BlockChainPropertiesProvider.getURL(0) + "/api/v1/transactions/" + transactionID;
             LOGGER.debug("URL: " + txURL);
 
             return transactionID;
@@ -276,7 +267,7 @@ public class BlockchainDriverImpl implements BlockchainDriver {
             LOGGER.debug("Asset transferred with transaction ID: " + transactionID);
             asset.setTxIdAssetOperation(new String(transactionID));
 
-            String txURL = BlockChainPropertiesProvider.getURL() + "/api/v1/transactions/" + transactionID;
+            String txURL = BlockChainPropertiesProvider.getURL(0) + "/api/v1/transactions/" + transactionID;
             LOGGER.debug("URL: " + txURL);
             return transactionID;
         } catch (Exception e) {
@@ -311,51 +302,67 @@ public class BlockchainDriverImpl implements BlockchainDriver {
         Assets assets = AssetsApi.getAssets(query);
         List<com.bigchaindb.model.Asset> assetsList = assets.getAssets();
         for (com.bigchaindb.model.Asset asset : assetsList) {
-            Asset toAdd = new Asset();
+            try {
+                Asset toAdd = new Asset();
 
-            toAdd.setTxIdAssetCreation(asset.getId());
-            Object data = asset.getData();
-            if (data instanceof java.util.Map) {
-                java.util.Map dataMap = (java.util.Map) data;
-                toAdd.setAssetData(dataMap);
-            } else {
-                LOGGER.error("Unkown data type: " + data.getClass());
-            }
+                boolean transferConfirmed = extractAsset(asset, toAdd);
 
-            boolean transferConfirmed = false;
-            Transactions txs = TransactionsApi.getTransactionsByAssetId(asset.getId(), Operations.TRANSFER);
-            for (Transaction tx : txs.getTransactions()) {
-                String txid = tx.getId().replaceAll("\"", "");
-                List<Output> outputs = tx.getOutputs();
-                for (Output output : outputs) {
-                    String amount = output.getAmount();
-                    if (StringUtil.isNotNullOrBlank(amount)) {
-                        toAdd.setAmount(amount);
-                    }
+                if (transferConfirmed) {
+                    results.add(toAdd);
                 }
-                Object metaData = tx.getMetaData();
-                if (metaData instanceof java.util.Map) {
-                    java.util.Map metaDataMap = (java.util.Map) metaData;
-                    String confirmedFlag = (String) metaDataMap.get("receiver_confirmed");
-                    if (StringUtil.isNotNullOrBlank(confirmedFlag)) {
-                        if (confirmedFlag.equals("true")) {
-                            transferConfirmed = true;
-                            toAdd.setMetaData(metaDataMap);
-                            toAdd.setTxIdAssetConfirmation(txid);
-                        } else {
-                            toAdd.setTxIdAssetOperation(txid);
-                        }
-                    }
-                } else {
-                    LOGGER.error("Unkown metadata type: " + data.getClass());
-                }
-            }
 
-            if (transferConfirmed) {
-                results.add(toAdd);
+            } catch (Exception e) {
+                // an asset either can or cannot be extracted from the blockchain
+                LOGGER.error("Could not extract data from blockchain asset.");
             }
         }
         return results;
+    }
+
+    @SuppressWarnings("all")
+    private boolean extractAsset(com.bigchaindb.model.Asset asset, Asset toAdd)
+        throws IOException {
+
+        toAdd.setTxIdAssetCreation(asset.getId());
+
+        Object data = asset.getData();
+        if (data instanceof java.util.Map) {
+            java.util.Map dataMap = (java.util.Map) data;
+            toAdd.setAssetData(dataMap);
+        } else {
+            LOGGER.error("Unkown data type: " + data.getClass());
+        }
+
+        boolean transferConfirmed = false;
+        Transactions txs = TransactionsApi.getTransactionsByAssetId(asset.getId(), Operations.TRANSFER);
+
+        for (Transaction tx : txs.getTransactions()) {
+            String txid = tx.getId().replaceAll("\"", "");
+            List<Output> outputs = tx.getOutputs();
+            for (Output output : outputs) {
+                String amount = output.getAmount();
+                if (StringUtil.isNotNullOrBlank(amount)) {
+                    toAdd.setAmount(amount);
+                }
+            }
+            Object metaData = tx.getMetaData();
+            if (metaData instanceof java.util.Map) {
+                java.util.Map metaDataMap = (java.util.Map) metaData;
+                String confirmedFlag = (String) metaDataMap.get("receiver_confirmed");
+                if (StringUtil.isNotNullOrBlank(confirmedFlag)) {
+                    if (confirmedFlag.equals("true")) {
+                        transferConfirmed = true;
+                        toAdd.setMetaData(metaDataMap);
+                        toAdd.setTxIdAssetConfirmation(txid);
+                    } else {
+                        toAdd.setTxIdAssetOperation(txid);
+                    }
+                }
+            } else {
+                LOGGER.error("Unkown metadata type: " + data.getClass());
+            }
+        }
+        return transferConfirmed;
     }
 
 }
