@@ -1,37 +1,23 @@
-## Welcome to GitHub Pages
+# Nagoya Protocol
+## Access to genetic resources and benefit sharing
 
-You can use the [editor on GitHub](https://github.com/cpbs-flba/nagoya/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+According to the Nagoya Protocol (see <a href="https://en.wikipedia.org/wiki/Nagoya_Protocol">Wikipedia</a>) when genetic resources are bought (for example tomatoa seeds) the data of the buyer and seller (or sender and receiver) has to be stored for 30 years.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+This project can be used to set up a platform, that enables users to conduct transactions and store the relevant data in a blockchain (BigChainDB).
 
-### Markdown
+## Prototype
+We are currently working on a prototype. As soon as it will be ready, we will publish the link here.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Supported Use-Cases
+* User management (user registration, login, logout, password recovery)
+* Managing and exploring genetic resources (support for private, grouped and public resources)
+* Creating contracts for genetic resources (incl. e-mail notifications, contract confirmation)
+* Exploring contracts in the blockchain
 
-```markdown
-Syntax highlighted code block
+## Used Technologies
+The project was programmed using the latest open-source technologies
+* Front-end: Angular 7
+* Back-end: Java 11, Jetty, PostgreSQL, BigChainDB
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/cpbs-flba/nagoya/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+## About this project
+This project is created by <a href="https://www.cpb-software.com">CPB Software (Austria) GmbH</a> in collaboration with  <a href="https://www.arche-noah.at/ueber-uns/vielfalt-erleben-gmbh">Vielfalt Erleben GmbH</a> of the <a href="https://www.arche-noah.at/">Arche Noah</a> association.
