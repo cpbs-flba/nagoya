@@ -29,7 +29,7 @@ import com.nagoya.common.util.DefaultDateProvider;
 import com.nagoya.dao.contract.ContractDAO;
 import com.nagoya.dao.contract.impl.ContractDAOImpl;
 import com.nagoya.middleware.util.DefaultJSONProvider;
-import com.nagoya.middleware.util.DefaultReturnObject;
+import com.nagoya.middleware.util.DefaultResponse;
 import com.nagoya.model.blockchain.Asset;
 import com.nagoya.model.dbo.contract.ContractDBO;
 import com.nagoya.model.dbo.contract.ContractResourceDBO;
@@ -152,7 +152,7 @@ public class BlockchainService {
         return result;
     }
 
-    public DefaultReturnObject search(String query) {
+    public DefaultResponse search(String query) {
         BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
         List<Asset> results = new ArrayList<>();
 
@@ -168,7 +168,7 @@ public class BlockchainService {
         LOGGER.debug("Results found: " + results.size());
 
         // create response
-        DefaultReturnObject result = new DefaultReturnObject();
+        DefaultResponse result = new DefaultResponse();
         String objectAsJson = DefaultJSONProvider.getObjectAsJson(results);
         result.setEntity(objectAsJson);
 

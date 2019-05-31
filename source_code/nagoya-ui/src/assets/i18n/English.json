@@ -199,7 +199,7 @@
       }
     },
     "OVERVIEW": {
-      "TITLE": "My genetic Resources",
+      "TITLE": "Genetic Resources",
       "SEARCH": {
         "TITLE": "Search",
         "FORM": {
@@ -291,5 +291,8 @@
       "PUBLIC": "Public",
       "GROUP": "Group"
     }
+  },
+  "SERVER": {
+	"E400_PERSON_MISSING": "Person e-mail is missing"
   }
 }

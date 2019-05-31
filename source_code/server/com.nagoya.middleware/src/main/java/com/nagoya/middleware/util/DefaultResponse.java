@@ -13,6 +13,7 @@
 /**
  * 
  */
+
 package com.nagoya.middleware.util;
 
 import java.io.Serializable;
@@ -25,39 +26,55 @@ import java.util.Map;
  * @author adim
  *
  */
-public class DefaultReturnObject implements Serializable {
+public class DefaultResponse implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID = 1L;
 
-	private Object entity;
-	private Map<String, String> header = new HashMap<String, String>();
+    private int                 httpStatusCode   = 200;
+    private Object              entity;
+    private Map<String, String> header           = new HashMap<String, String>();
 
-	/**
-	 * @return the entity
-	 */
-	public Object getEntity() {
-		return entity;
-	}
+    public DefaultResponse() {
+        // empty constructor
+    }
 
-	/**
-	 * @param entity the entity to set
-	 */
-	public void setEntity(Object entity) {
-		this.entity = entity;
-	}
+    public DefaultResponse(int httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
+    }
 
-	/**
-	 * @return the header
-	 */
-	public Map<String, String> getHeader() {
-		return header;
-	}
+    /**
+     * @return the entity
+     */
+    public Object getEntity() {
+        return entity;
+    }
 
-	/**
-	 * @param header the header to set
-	 */
-	public void setHeader(Map<String, String> header) {
-		this.header = header;
-	}
+    /**
+     * @param entity the entity to set
+     */
+    public void setEntity(Object entity) {
+        this.entity = entity;
+    }
 
+    /**
+     * @return the header
+     */
+    public Map<String, String> getHeader() {
+        return header;
+    }
+
+    /**
+     * @param header the header to set
+     */
+    public void setHeader(Map<String, String> header) {
+        this.header = header;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public void setHttpStatusCode(int httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
+    }
 }

@@ -14,7 +14,23 @@ export class TokenService {
   }
 
   public setToken(token) {
+    // sometimes the UI calls local services (like getting assets) and then we do not want to override the token with a null value
+    if (token === undefined) {
+      return;
+    }
+    if (token === null) {
+      return;
+    }
+    if (token.trim() === '') {
+      return;
+    }
+    console.log('Setting token to: ' + token);
     this.token = token;
+  }
+
+  // use this method to explicitely remove the token
+  public removeToken() {
+    this.token = null;
   }
 
 }

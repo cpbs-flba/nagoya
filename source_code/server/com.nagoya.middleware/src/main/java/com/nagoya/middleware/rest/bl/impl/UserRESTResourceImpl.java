@@ -27,12 +27,15 @@ import org.hibernate.Session;
 
 import com.nagoya.dao.db.ConnectionProvider;
 import com.nagoya.middleware.rest.bl.UserRESTResource;
+import com.nagoya.middleware.service.DefaultSecureResourceService;
 import com.nagoya.middleware.service.UserService;
-import com.nagoya.middleware.util.DefaultReturnObject;
+import com.nagoya.middleware.service.user.UserDeletionService;
+import com.nagoya.middleware.service.user.UserSearchService;
+import com.nagoya.middleware.service.user.UserUpdateService;
+import com.nagoya.middleware.util.DefaultResponse;
 import com.nagoya.model.exception.BadRequestException;
 import com.nagoya.model.exception.ConflictException;
 import com.nagoya.model.exception.ForbiddenException;
-import com.nagoya.model.exception.InvalidTokenException;
 import com.nagoya.model.exception.NotAuthorizedException;
 import com.nagoya.model.exception.TimeoutException;
 import com.nagoya.model.to.person.PersonLegalTO;
@@ -60,7 +63,7 @@ public class UserRESTResourceImpl implements UserRESTResource {
         try {
             session = ConnectionProvider.getInstance().getSession();
             UserService userService = new UserService(session);
-            DefaultReturnObject result = userService.login(person);
+            DefaultResponse result = userService.login(person);
             ResponseBuilder responseBuilder = Response.ok(result.getEntity());
             Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
             for (Entry<String, String> entry : entrySet) {
@@ -164,7 +167,7 @@ public class UserRESTResourceImpl implements UserRESTResource {
         try {
             session = ConnectionProvider.getInstance().getSession();
             UserService userService = new UserService(session);
-            DefaultReturnObject result = userService.confirmRequest(token, person);
+            DefaultResponse result = userService.confirmRequest(token, person);
             ResponseBuilder responseBuilder = null;
             if (result == null) {
                 responseBuilder = Response.status(Status.NO_CONTENT);
@@ -217,34 +220,9 @@ public class UserRESTResourceImpl implements UserRESTResource {
 
     @Override
     public void delete(String authorization, String language, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            UserService userService = new UserService(session);
-            DefaultReturnObject result = userService.delete(authorization, language);
-            ResponseBuilder responseBuilder = Response.status(Status.NO_CONTENT);
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (Exception e) {
-            LOGGER.error(e, e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
+        DefaultSecureResourceService service = new UserDeletionService(authorization, language);
+        Response response = service.runService();
         asyncResponse.resume(response);
-
     }
 
     /*
@@ -255,35 +233,8 @@ public class UserRESTResourceImpl implements UserRESTResource {
      */
     @Override
     public void update(String authorization, String language, PersonNaturalTO person, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            UserService userService = new UserService(session);
-            DefaultReturnObject result = userService.update(authorization, language, person);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (ForbiddenException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.FORBIDDEN).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (Exception e) {
-            LOGGER.error(e, e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
+        DefaultSecureResourceService service = new UserUpdateService(authorization, language);
+        Response response = service.runService(person);
         asyncResponse.resume(response);
 
     }
@@ -296,37 +247,9 @@ public class UserRESTResourceImpl implements UserRESTResource {
      */
     @Override
     public void update(String authorization, String language, PersonLegalTO person, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            UserService userService = new UserService(session);
-            DefaultReturnObject result = userService.update(authorization, language, person);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (ForbiddenException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.FORBIDDEN).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (Exception e) {
-            LOGGER.error(e, e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
+        DefaultSecureResourceService service = new UserUpdateService(authorization, language);
+        Response response = service.runService(person);
         asyncResponse.resume(response);
-
     }
 
     /*
@@ -363,41 +286,10 @@ public class UserRESTResourceImpl implements UserRESTResource {
     }
 
     @Override
-    public void search(String authorization, String filter, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            UserService service = new UserService(session);
-            DefaultReturnObject result = service.search(authorization, filter);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (BadRequestException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.BAD_REQUEST).build();
-        } catch (InvalidTokenException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (Exception e) {
-            LOGGER.error(e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
+    public void search(String authorization, String language, String filter, AsyncResponse asyncResponse) {
+        DefaultSecureResourceService service = new UserSearchService(authorization, language);
+        Response response = service.runService(filter);
         asyncResponse.resume(response);
-
     }
 
 }

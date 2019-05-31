@@ -44,7 +44,7 @@ public class DefaultGenericCallback implements GenericCallback {
         try {
             errorMessage += "\r\nBody: " + response.body().string();
         } catch (IOException e) {
-            //
+            LOGGER.error(e);
         }
         LOGGER.error(errorMessage);
         this.operationFinished = true;
@@ -59,7 +59,7 @@ public class DefaultGenericCallback implements GenericCallback {
         try {
             errorMessage += "\r\nBody: " + response.body().string();
         } catch (IOException e) {
-            //
+            LOGGER.error(e);
         }
         LOGGER.error(errorMessage);
         this.operationFinished = true;

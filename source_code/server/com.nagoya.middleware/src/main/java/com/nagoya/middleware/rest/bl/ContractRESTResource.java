@@ -46,15 +46,6 @@ public interface ContractRESTResource {
     /**
      * Creates a new contract.
      * 
-     * Returns one of the following status codes:
-     * <ul>
-     * <li>204 No Content - if everything was okay</li>
-     * <li>400 Bad Request - if the provided contract is invalid</li>
-     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
-     * <li>408 Timeout - if the authorization token has expired</li>
-     * <li>500 Internal server error - if something went terribly wrong</li>
-     * </ul>
-     * 
      * @param authorization
      * @param geneticRessource
      * @param asyncResponse
@@ -73,16 +64,6 @@ public interface ContractRESTResource {
 
     /**
      * Adds a file to an existing contract
-     * 
-     * Returns one of the following status codes:
-     * <ul>
-     * <li>204 No Content - if everything was okay</li>
-     * <li>400 Bad Request - if the provided file is invalid</li>
-     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
-     * <li>403 Forbidden - if the user is not authorized for the operation</li>
-     * <li>408 Timeout - if the authorization token has expired</li>
-     * <li>500 Internal server error - if something went terribly wrong</li>
-     * </ul>
      * 
      * @param authorization
      * @param geneticRessource
@@ -103,14 +84,6 @@ public interface ContractRESTResource {
     /**
      * Deletes a created contract.
      * 
-     * Returns one of the following status codes:
-     * <ul>
-     * <li>204 No Content - if everything was okay</li>
-     * <li>400 Bad Request - if the contract ID was not provided or the contract does not exist</li>
-     * <li>403 Forbidden - if the contract cannot be deleted (e.g., if a contract is already accepted, it cannot be deleted)</li>
-     * <li>500 Internal server error - if something went terribly wrong.</li>
-     * </ul>
-     * 
      * @param authorization
      * @param geneticRessource
      * @param asyncResponse
@@ -129,15 +102,6 @@ public interface ContractRESTResource {
     /**
      * Removes a file from an existing contract
      * 
-     * Returns one of the following status codes:
-     * <ul>
-     * <li>204 No Content - if everything was okay</li>
-     * <li>400 Bad Request - if the provided file is invalid</li>
-     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
-     * <li>408 Timeout - if the authorization token has expired</li>
-     * <li>500 Internal server error - if something went terribly wrong</li>
-     * </ul>
-     * 
      * @param authorization
      * @param geneticRessource
      * @param asyncResponse
@@ -155,15 +119,6 @@ public interface ContractRESTResource {
 
     /**
      * Retrieves a file from an existing contract
-     * 
-     * Returns one of the following status codes:
-     * <ul>
-     * <li>204 No Content - if everything was okay</li>
-     * <li>400 Bad Request - if the provided file is invalid</li>
-     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
-     * <li>408 Timeout - if the authorization token has expired</li>
-     * <li>500 Internal server error - if something went terribly wrong</li>
-     * </ul>
      * 
      * @param authorization
      * @param geneticRessource
@@ -186,11 +141,6 @@ public interface ContractRESTResource {
      * If provided, the date parameters will be expected to be in the following <b>ISO-8601</b> format: <br>
      * yyyy-MM-dd'T'HH:mm:ssZ
      * 
-     * <ul>
-     * <li>204 No Content - if everything was okay</li>
-     * <li>500 Internal server error - if something went terribly wrong.</li>
-     * </ul>
-     * 
      * @param authorization
      * @param language
      * @param contractStatus
@@ -212,16 +162,6 @@ public interface ContractRESTResource {
     /**
      * Accepts a contract
      * 
-     * Returns one of the following status codes:
-     * <ul>
-     * <li>204 No Content - if everything was okay</li>
-     * <li>400 Bad Request - if the provided file is invalid</li>
-     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
-     * <li>408 Timeout - if the authorization token has expired</li>
-     * <li>412 Precondition Failed - if everything is okay, but the private key of the receiver is still missing.</li>
-     * <li>500 Internal server error - if something went terribly wrong</li>
-     * </ul>
-     * 
      * @param authorization
      * @param geneticRessource
      * @param asyncResponse
@@ -238,16 +178,7 @@ public interface ContractRESTResource {
         @Suspended final AsyncResponse asyncResponse);
 
     /**
-     * Accepts a contract
-     * 
-     * Returns one of the following status codes:
-     * <ul>
-     * <li>204 No Content - if everything was okay</li>
-     * <li>400 Bad Request - if the provided file is invalid</li>
-     * <li>401 Unauthorized - if the authorization token is missing or invalid</li>
-     * <li>408 Timeout - if the authorization token has expired</li>
-     * <li>500 Internal server error - if something went terribly wrong</li>
-     * </ul>
+     * Rejects a contract
      * 
      * @param authorization
      * @param geneticRessource

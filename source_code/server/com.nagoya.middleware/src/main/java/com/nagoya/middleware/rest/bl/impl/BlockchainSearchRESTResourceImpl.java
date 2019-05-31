@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nagoya.middleware.rest.bl.BlockchainSearchRESTResource;
 import com.nagoya.middleware.service.BlockchainService;
-import com.nagoya.middleware.util.DefaultReturnObject;
+import com.nagoya.middleware.util.DefaultResponse;
 
 /**
  * @author flba
@@ -37,7 +37,7 @@ public class BlockchainSearchRESTResourceImpl implements BlockchainSearchRESTRes
         Response response = null;
         try {
             BlockchainService service = new BlockchainService(null);
-            DefaultReturnObject result = service.search(query);
+            DefaultResponse result = service.search(query);
             ResponseBuilder responseBuilder = null;
             responseBuilder = Response.ok(result.getEntity());
             response = responseBuilder.build();

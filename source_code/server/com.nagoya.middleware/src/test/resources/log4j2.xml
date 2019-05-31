@@ -12,7 +12,7 @@
     Author: Florin Bogdan Balint
  -->
 
-<Configuration status="debug" monitorInterval="10">
+<Configuration status="INFO" monitorInterval="10">
 	<Appenders>
 		<Console name="console" target="SYSTEM_OUT">
 			<PatternLayout
@@ -35,15 +35,15 @@
 	</Appenders>
 
 	<Loggers>
-		<Root level="debug">
+		<Root level="INFO">
 			<AppenderRef ref="console" />
-			<!-- <AppenderRef ref="logfile" /> -->
+			<AppenderRef ref="logfile" />
 		</Root>
 
-		<logger name="com.nagoya" level="DEBUG">
+		<logger name="com.nagoya" level="INFO">
 			<AppenderRef ref="Console" />
 		</logger>
-		<logger name="com.mchange.v2.c3p0" level="ERROR">
+		<logger name="com.mchange.v2.c3p0" level="INFO">
 			<AppenderRef ref="Console" />
 		</logger>
 

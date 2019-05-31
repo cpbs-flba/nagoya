@@ -13,27 +13,22 @@
 
 package com.nagoya.middleware.rest.bl.impl;
 
-import java.util.Map.Entry;
-import java.util.Set;
-
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-
-import com.nagoya.dao.db.ConnectionProvider;
+import com.nagoya.common.util.StringUtil;
 import com.nagoya.middleware.rest.bl.GeneticResource;
-import com.nagoya.middleware.service.GeneticResourceService;
-import com.nagoya.middleware.util.DefaultReturnObject;
-import com.nagoya.model.exception.BadRequestException;
-import com.nagoya.model.exception.ForbiddenException;
-import com.nagoya.model.exception.NotAuthorizedException;
-import com.nagoya.model.exception.NotFoundException;
-import com.nagoya.model.exception.TimeoutException;
+import com.nagoya.middleware.service.DefaultSecureResourceService;
+import com.nagoya.middleware.service.genetic.GeneticResourceCreationService;
+import com.nagoya.middleware.service.genetic.GeneticResourceDeletionService;
+import com.nagoya.middleware.service.genetic.GeneticResourceFileCreationService;
+import com.nagoya.middleware.service.genetic.GeneticResourceFileDeletionService;
+import com.nagoya.middleware.service.genetic.GeneticResourceRetrievalService;
+import com.nagoya.middleware.service.genetic.GeneticResourceSearchService;
+import com.nagoya.middleware.service.genetic.GeneticResourceTaxonomyParentSearchService;
+import com.nagoya.middleware.service.genetic.GeneticResourceTaxonomySearchService;
+import com.nagoya.middleware.service.genetic.GeneticResourceUpdateService;
+import com.nagoya.middleware.service.genetic.PublicGeneticResourceSearchService;
 import com.nagoya.model.to.resource.ResourceFileTO;
 import com.nagoya.model.to.resource.filter.GeneticResourceFilter;
 
@@ -43,339 +38,74 @@ import com.nagoya.model.to.resource.filter.GeneticResourceFilter;
  */
 public class GeneticRESTResourceImpl implements GeneticResource {
 
-    private static final Logger LOGGER = LogManager.getLogger(GeneticRESTResourceImpl.class);
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.nagoya.middleware.rest.GeneticResource#create(java.lang.String, com.nagoya.model.to.resource.GeneticResource,
-     * javax.ws.rs.container.AsyncResponse)
-     */
     @Override
-    public void create(String authorization, com.nagoya.model.to.resource.GeneticResourceTO geneticRessource, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            GeneticResourceService service = new GeneticResourceService(session);
-            DefaultReturnObject result = service.create(authorization, geneticRessource);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (BadRequestException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.BAD_REQUEST).build();
-        } catch (Exception e) {
-            LOGGER.error(e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
-        asyncResponse.resume(response);
-    }
-
-    @Override
-    public void read(String authorization, String resourceId, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            GeneticResourceService service = new GeneticResourceService(session);
-            DefaultReturnObject result = service.read(authorization, resourceId);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotFoundException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.NOT_FOUND).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (ForbiddenException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.FORBIDDEN).build();
-        } catch (BadRequestException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.BAD_REQUEST).build();
-        } catch (Exception e) {
-            LOGGER.error(e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
-        asyncResponse.resume(response);
-    }
-
-    @Override
-    public void delete(String authorization, String resourceId, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            GeneticResourceService service = new GeneticResourceService(session);
-            DefaultReturnObject result = service.delete(authorization, resourceId);
-            ResponseBuilder responseBuilder = Response.noContent();
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotFoundException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.NOT_FOUND).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (ForbiddenException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.FORBIDDEN).build();
-        } catch (BadRequestException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.BAD_REQUEST).build();
-        } catch (Exception e) {
-            LOGGER.error(e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
-        asyncResponse.resume(response);
-    }
-
-    @Override
-    public void delete(String authorization, String resourceId, String fileId, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            GeneticResourceService service = new GeneticResourceService(session);
-            DefaultReturnObject result = service.delete(authorization, resourceId, fileId);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotFoundException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.NOT_FOUND).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (ForbiddenException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.FORBIDDEN).build();
-        } catch (BadRequestException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.BAD_REQUEST).build();
-        } catch (Exception e) {
-            LOGGER.error(e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
-        asyncResponse.resume(response);
-    }
-
-    @Override
-    public void create(String authorization, String resourceId, ResourceFileTO ressourceFile, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            GeneticResourceService service = new GeneticResourceService(session);
-            DefaultReturnObject result = service.addResourceFile(authorization, resourceId, ressourceFile);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotFoundException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.NOT_FOUND).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (ForbiddenException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.FORBIDDEN).build();
-        } catch (BadRequestException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.BAD_REQUEST).build();
-        } catch (Exception e) {
-            LOGGER.error(e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
-        asyncResponse.resume(response);
-    }
-
-    @Override
-    public void update(String authorization, String resourceId, com.nagoya.model.to.resource.GeneticResourceTO geneticRessource,
+    public void create(String authorization, String language, com.nagoya.model.to.resource.GeneticResourceTO geneticRessource,
         AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            GeneticResourceService service = new GeneticResourceService(session);
-            DefaultReturnObject result = service.update(authorization, resourceId, geneticRessource);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotFoundException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.NOT_FOUND).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (ForbiddenException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.FORBIDDEN).build();
-        } catch (BadRequestException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.BAD_REQUEST).build();
-        } catch (Exception e) {
-            LOGGER.error(e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
-        asyncResponse.resume(response);
-
-    }
-
-    @Override
-    public void search(String authorization, GeneticResourceFilter geneticRessourceFilter, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            GeneticResourceService service = new GeneticResourceService(session);
-            DefaultReturnObject result = service.search(authorization, geneticRessourceFilter);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (Exception e) {
-            LOGGER.error(e, e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
-        asyncResponse.resume(response);
-
-    }
-
-    @Override
-    public void searchForTaxonomy(String authorization, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            GeneticResourceService service = new GeneticResourceService(session);
-            DefaultReturnObject result = service.searchForTaxonomyRootLevel(authorization);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (Exception e) {
-            LOGGER.error(e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
+        DefaultSecureResourceService service = new GeneticResourceCreationService(authorization, language);
+        Response response = service.runService(geneticRessource);
         asyncResponse.resume(response);
     }
 
     @Override
-    public void searchForTaxonomyForParent(String authorization, String parentId, AsyncResponse asyncResponse) {
-        Response response = null;
-        Session session = null;
-        try {
-            session = ConnectionProvider.getInstance().getSession();
-            GeneticResourceService service = new GeneticResourceService(session);
-            DefaultReturnObject result = service.searchForTaxonomyLevel(authorization, parentId);
-            ResponseBuilder responseBuilder = Response.ok(result.getEntity());
-            Set<Entry<String, String>> entrySet = result.getHeader().entrySet();
-            for (Entry<String, String> entry : entrySet) {
-                responseBuilder.header(entry.getKey(), entry.getValue());
-            }
-            response = responseBuilder.build();
-        } catch (BadRequestException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.BAD_REQUEST).build();
-        } catch (NotAuthorizedException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.UNAUTHORIZED).build();
-        } catch (TimeoutException e) {
-            LOGGER.error(e, e);
-            response = Response.status(Status.REQUEST_TIMEOUT).build();
-        } catch (Exception e) {
-            LOGGER.error(e);
-            response = Response.serverError().build();
-        } finally {
-            if (session != null) {
-                ConnectionProvider.getInstance().closeSession(session);
-            }
-        }
+    public void read(String authorization, String language, String resourceId, AsyncResponse asyncResponse) {
+        DefaultSecureResourceService service = new GeneticResourceRetrievalService(authorization, language);
+        Response response = service.runService(resourceId);
         asyncResponse.resume(response);
+    }
 
+    @Override
+    public void delete(String authorization, String language, String resourceId, AsyncResponse asyncResponse) {
+        DefaultSecureResourceService service = new GeneticResourceDeletionService(authorization, language);
+        Response response = service.runService(resourceId);
+        asyncResponse.resume(response);
+    }
+
+    @Override
+    public void delete(String authorization, String language, String resourceId, String fileId, AsyncResponse asyncResponse) {
+        DefaultSecureResourceService service = new GeneticResourceFileDeletionService(authorization, language);
+        Response response = service.runService(resourceId, fileId);
+        asyncResponse.resume(response);
+    }
+
+    @Override
+    public void create(String authorization, String language, String resourceId, ResourceFileTO ressourceFile, AsyncResponse asyncResponse) {
+        DefaultSecureResourceService service = new GeneticResourceFileCreationService(authorization, language);
+        Response response = service.runService(resourceId, ressourceFile);
+        asyncResponse.resume(response);
+    }
+
+    @Override
+    public void update(String authorization, String language, String resourceId, com.nagoya.model.to.resource.GeneticResourceTO geneticRessource,
+        AsyncResponse asyncResponse) {
+        DefaultSecureResourceService service = new GeneticResourceUpdateService(authorization, language);
+        Response response = service.runService(resourceId, geneticRessource);
+        asyncResponse.resume(response);
+    }
+
+    @Override
+    public void search(String authorization, String language, GeneticResourceFilter geneticRessourceFilter, AsyncResponse asyncResponse) {
+        if (StringUtil.isNotNullOrBlank(authorization)) {
+            DefaultSecureResourceService service = new GeneticResourceSearchService(authorization, language);
+            Response response = service.runService(geneticRessourceFilter);
+            asyncResponse.resume(response);
+        } else {
+            PublicGeneticResourceSearchService service = new PublicGeneticResourceSearchService();
+            Response response = service.search(geneticRessourceFilter);
+            asyncResponse.resume(response);
+        }
+    }
+
+    @Override
+    public void searchForTaxonomy(String authorization, String language, AsyncResponse asyncResponse) {
+        DefaultSecureResourceService service = new GeneticResourceTaxonomySearchService(authorization, language);
+        Response response = service.runService();
+        asyncResponse.resume(response);
+    }
+
+    @Override
+    public void searchForTaxonomyForParent(String authorization, String language, String parentId, AsyncResponse asyncResponse) {
+        DefaultSecureResourceService service = new GeneticResourceTaxonomyParentSearchService(authorization, language);
+        Response response = service.runService(parentId);
+        asyncResponse.resume(response);
     }
 }

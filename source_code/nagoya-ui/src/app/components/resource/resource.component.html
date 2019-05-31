@@ -1,7 +1,7 @@
 <div class="contentWrapper">
   <h1 class="mat-h1">{{'RESOURCE.TITLE' | translate}}</h1>
 
-  <div>
+  <div *ngIf="loggedIn">
     <div>
       <button mat-raised-button color="accent" (click)="toggleResourceCreation()" [disabled]="createNew"
               class="createButton">

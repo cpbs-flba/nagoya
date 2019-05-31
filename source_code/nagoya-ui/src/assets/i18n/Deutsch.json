@@ -199,7 +199,7 @@
       }
     },
     "OVERVIEW": {
-      "TITLE": "Meine genetischen Ressourcen",
+      "TITLE": "Genetische Ressourcen",
       "SEARCH": {
         "TITLE": "Suche",
         "FORM": {
@@ -291,5 +291,8 @@
       "PUBLIC": "Öffentlich",
       "GROUP": "Gruppen"
     }
+  },
+  "SERVER": {
+	"E400_PERSON_MISSING": "Person e-mail is missing"
   }
 }

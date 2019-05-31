@@ -7,6 +7,7 @@ import { ServerConfigService } from '../../services/serverconfig.service';
 import { LoginContext } from '../../model/loginContext';
 import { User } from '../../model/user';
 import { TokenService } from './token.service';
+import { UserService } from 'src/app/services/user.service';
 
 export interface Credentials {
   // Customize received credentials here
@@ -25,7 +26,10 @@ const credentialsKey = 'credentials';
 export class AuthenticationService {
   private _credentials: Credentials | null;
 
-  constructor(private http: HttpClient, private serverConfigService: ServerConfigService, private tokenServie: TokenService) {
+  constructor(private http: HttpClient, 
+    private serverConfigService: ServerConfigService, 
+    private userService: UserService,
+    private tokenServie: TokenService) {
     const savedCredentials = sessionStorage.getItem(credentialsKey);
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
@@ -95,7 +99,10 @@ export class AuthenticationService {
       const storage = sessionStorage;
       storage.setItem(credentialsKey, JSON.stringify(credentials));
     } else {
+      console.log('Removing credentials');
       sessionStorage.removeItem(credentialsKey);
+      this.userService.setUser(null);
+      this.tokenServie.removeToken();
     }
   }
 

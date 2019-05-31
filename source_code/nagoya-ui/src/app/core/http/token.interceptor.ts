@@ -3,16 +3,19 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpResponse } fr
 import { Observable } from 'rxjs';
 import { TokenService } from '../authentication/token.service';
 import { tap } from 'rxjs/internal/operators';
+import { MessageService } from 'src/app/services/message.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(public tokenService: TokenService) {
+
+  constructor(public tokenService: TokenService,
+    private messageService: MessageService) {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let token = this.tokenService.getToken();
     if (token) {
-      // console.log('Token is: ' + token);
+      console.log('Requesting with token: ' + token);
       request = request.clone({
         headers: request.headers.set('Authorization', token)
       });
@@ -23,7 +26,22 @@ export class TokenInterceptor implements HttpInterceptor {
         this.tokenService.setToken(token);
       }
       return event;
-    }));
+    },
+      error => {
+        const errorObject = error.error;
+        if (errorObject !== undefined && errorObject !== null) {
+          const e1 = errorObject[0];
+          if (e1 !== undefined && e1 !== null) {
+            const e1Code = e1.errorCode;
+            if (e1Code !== undefined && e1Code !== null) {
+              const messageCode = 'SERVER.' + e1Code;
+              this.messageService.displayErrorMessage(messageCode);
+            }
+          }
+        }
+      }
+
+    ));
 
   }
 }

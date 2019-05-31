@@ -13,8 +13,6 @@
 
 package com.nagoya.blockchain.impl;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -119,18 +117,6 @@ public class BlockchainDriverTest {
         asset.getMetaData().put("confirmed", "true");
         blockchainDriver.transferAsset(credentialsReceiver, credentialsReceiver, asset);
         Assert.assertNotNull(asset.getTxIdAssetOperation());
-    }
-
-    @Test
-    @DisplayName("Search test")
-    public void t5()
-        throws Exception {
-        LOGGER.debug("\r\n\r\n\r\n");
-
-        BlockchainDriver blockchainDriver = new BlockchainDriverImpl();
-        List<Asset> searched = blockchainDriver.search("gr_id=tomato123");
-        Assert.assertFalse(searched.isEmpty());
-
     }
 
 }

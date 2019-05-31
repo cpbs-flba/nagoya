@@ -3,6 +3,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from '../../core';
 import { Router } from '@angular/router';
 import { MessageService } from 'src/app/services/message.service';
+import { UserService } from 'src/app/services/user.service';
+import { TokenService } from 'src/app/core/authentication/token.service';
 
 @Component({
   selector: 'app-footer',
@@ -15,6 +17,7 @@ export class FooterComponent implements OnInit {
 
   constructor(public translate: TranslateService,
     private authenticationService: AuthenticationService,
+   
     private messageService: MessageService,
     private router: Router) {
   }
