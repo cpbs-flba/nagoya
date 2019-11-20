@@ -27,7 +27,7 @@
     "@angular/router": "~7.0.0",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "angular": "^1.7.6",
+    "angular": "^1.7.9",
     "angular-hammer": "^2.2.0",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.5.4",
